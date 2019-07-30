@@ -1,0 +1,58 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "args": [
+                // "components.docker.layers.SPInput.SPInput",
+                // "components.docker.layers.SPConv2D.SPConv2D",
+                // "components.docker.layers.SPReLU.SPReLU",
+                // "components.docker.layers.SPBatchNorm2D.SPBatchNorm2D",
+                // "components.docker.layers.SPMaxPool2D.SPMaxPool2D",
+                // "components.docker.layers.SPLinear.SPLinear",
+                // "components.docker.SPTrain.SPTrain",
+                "components.docker.dataset.SPMNIST.SPMNIST",
+                // "components.docker.dataset.SPDataLoader.SPDataLoader",
+                // "components.docker.dataset.SPTransform.SPTransform",
+                
+                // tableclf,tableregression,tableclf2
+                "--inputTable",
+                "tableclf",
+                "--outputTable",
+                "table2",
+                "--dw-type",
+                "mysql",
+                "--dw-mysql-database",
+                "db",
+                "--dw-mysql-username",
+                "root",
+                "--dw-mysql-password",
+                "123456",
+                "--storage-type",
+                "local",
+                "--storage_local_temp_store",
+                "/home/yanqinghao/demotmp",
+                //regression clf/binary clf/multi timeseries
+                "--inputData",
+                "/home/yanqinghao/code/AiLab-Pytorch/dataset/mnist",
+                // "--inputModel",
+                // "/home/yanqinghao/code/AiLab-Pytorch/dataset/input/model",
+                // "--outputModel",
+                // "/home/yanqinghao/code/AiLab-Pytorch/dataset/output/model",
+                // "--outputData",
+                // "/home/yanqinghao/code/AiLab-Pytorch/dataset/output/data",
+                "--outputModel1",
+                "/home/yanqinghao/code/AiLab-Pytorch/dataset/output/model1",
+                "--outputModel2",
+                "/home/yanqinghao/code/AiLab-Pytorch/dataset/output/model2",
+            ]
+        }
+    ]
+}

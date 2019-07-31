@@ -5,18 +5,18 @@ import torch.nn as nn
 
 from suanpan.docker import DockerComponent as dc
 from suanpan.docker.arguments import Int, String
-from arguments import PytorchModel
+from arguments import PytorchLayersModel
 from utils import getLayerName
 
 
-@dc.input(PytorchModel(key="inputModel"))
+@dc.input(PytorchLayersModel(key="inputModel"))
 @dc.param(Int(key="inChannel", default=16))
 @dc.param(Int(key="outChannel", default=32))
 @dc.param(Int(key="kernelSize", default=5))
 @dc.param(Int(key="stride", default=1))
 @dc.param(Int(key="padding", default=2))
 @dc.param(String(key="paddingMode", default="zeros"))
-@dc.output(PytorchModel(key="outputModel"))
+@dc.output(PytorchLayersModel(key="outputModel"))
 def SPConv2D(context):
     # 从 Context 中获取相关数据
     args = context.args

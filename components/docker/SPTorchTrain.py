@@ -6,13 +6,13 @@ import torch.nn as nn
 
 from suanpan.docker import DockerComponent as dc
 from suanpan.docker.arguments import Int, Float
-from arguments import PytorchModel
+from arguments import PytorchLayersModel, PytorchDataloader
 
-@dc.input(PytorchModel(key="inputModel"))
-@dc.input(PytorchModel(key="inputLoader"))
+@dc.input(PytorchLayersModel(key="inputModel"))
+@dc.input(PytorchDataloader(key="inputLoader"))
 @dc.param(Int(key="epochs", default=5))
 @dc.param(Float(key="learningRate", default=0.001))
-@dc.output(PytorchModel(key="outputModel"))
+@dc.output(PytorchLayersModel(key="outputModel"))
 def SPTrain(context):
     # 从 Context 中获取相关数据
     args = context.args

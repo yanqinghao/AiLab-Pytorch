@@ -3,10 +3,10 @@ from __future__ import absolute_import, print_function
 
 from suanpan.docker import DockerComponent as dc
 from suanpan.docker.arguments import Folder
-from arguments import PytorchModel, SPNet
+from arguments import PytorchLayersModel, SPNet
 
 @dc.input(Folder(key="inputData"))
-@dc.output(PytorchModel(key="outputModel"))
+@dc.output(PytorchLayersModel(key="outputModel"))
 def SPInput(context):
     # 从 Context 中获取相关数据
     args = context.args

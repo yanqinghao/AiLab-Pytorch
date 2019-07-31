@@ -5,10 +5,10 @@ import torch
 
 from suanpan.docker import DockerComponent as dc
 from suanpan.docker.arguments import Json
-from arguments import PytorchModel
+from arguments import PytorchLayersModel
 
 
-@dc.input(PytorchModel(key="inputModel"))
+@dc.input(PytorchLayersModel(key="inputModel"))
 @dc.output(Json(key="outputData"))
 def SPPredict(context):
     # 从 Context 中获取相关数据

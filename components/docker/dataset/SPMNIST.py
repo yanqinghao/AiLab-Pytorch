@@ -3,18 +3,17 @@ from __future__ import absolute_import, print_function
 
 import os
 import shutil
-import torchvision.transforms as transforms
 
 from suanpan.docker import DockerComponent as dc
-from suanpan.docker.arguments import Int, Folder
+from suanpan.docker.arguments import Folder
 import utils
-from arguments import PytorchModel
+from arguments import PytorchDataset, PytorchTransModel
 
 
 @dc.input(Folder(key="inputData"))
-@dc.param(Int(key="batchSize", default=100))
-@dc.output(PytorchModel(key="outputModel1"))
-@dc.output(PytorchModel(key="outputModel2"))
+@dc.input(PytorchTransModel(key="inputModel"))
+@dc.output(PytorchDataset(key="outputModel1"))
+@dc.output(PytorchDataset(key="outputModel2"))
 def SPMNIST(context):
     # 从 Context 中获取相关数据
     args = context.args
@@ -33,16 +32,14 @@ def SPMNIST(context):
     for i in filename:
         if not os.path.exists(os.path.join(filePath, i)):
             shutil.move(os.path.join(args.inputData, i), os.path.join(filePath, i))
-    # Hyper parameters
-    batch_size = args.batchSize
 
     # MNIST dataset
     train_dataset = utils.mnist.MNIST(
-        root=args.inputData, train=True, transform=transforms.ToTensor(), download=True
+        root=args.inputData, train=True, transform=args.inputModel, download=True
     )
 
     test_dataset = utils.mnist.MNIST(
-        root=args.inputData, train=False, transform=transforms.ToTensor()
+        root=args.inputData, train=False, transform=args.inputModel
     )
 
     return train_dataset, test_dataset

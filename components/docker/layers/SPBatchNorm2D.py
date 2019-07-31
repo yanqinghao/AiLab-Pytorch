@@ -5,13 +5,13 @@ import torch.nn as nn
 
 from suanpan.docker import DockerComponent as dc
 from suanpan.docker.arguments import Int
-from arguments import PytorchModel
+from arguments import PytorchLayersModel
 from utils import getLayerName
 
 
-@dc.input(PytorchModel(key="inputModel"))
+@dc.input(PytorchLayersModel(key="inputModel"))
 @dc.param(Int(key="numFeatures", default=32))
-@dc.output(PytorchModel(key="outputModel"))
+@dc.output(PytorchLayersModel(key="outputModel"))
 def SPBatchNorm2D(context):
     # 从 Context 中获取相关数据
     args = context.args

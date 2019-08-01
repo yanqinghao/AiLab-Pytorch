@@ -10,7 +10,7 @@ from arguments import PytorchDataloader, PytorchDataset
 @dc.input(PytorchDataset(key="inputData"))
 @dc.param(Int(key="batchSize", default=100))
 @dc.param(Bool(key="shuffle", default=True))
-@dc.output(PytorchDataloader(key="outputModel"))
+@dc.output(PytorchDataloader(key="outputData"))
 def SPDataLoader(context):
     # 从 Context 中获取相关数据
     args = context.args

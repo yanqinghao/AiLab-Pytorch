@@ -12,8 +12,8 @@ from arguments import PytorchDataset, PytorchTransModel
 
 @dc.input(Folder(key="inputData"))
 @dc.input(PytorchTransModel(key="inputModel"))
-@dc.output(PytorchDataset(key="outputModel1"))
-@dc.output(PytorchDataset(key="outputModel2"))
+@dc.output(PytorchDataset(key="outputData1"))
+@dc.output(PytorchDataset(key="outputData2"))
 def SPMNIST(context):
     # 从 Context 中获取相关数据
     args = context.args

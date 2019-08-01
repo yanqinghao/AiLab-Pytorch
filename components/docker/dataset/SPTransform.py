@@ -14,7 +14,9 @@ def SPTransform(context):
     # 从 Context 中获取相关数据
     args = context.args
 
-    transformsAug = transforms.Compose([transforms.ToTensor()])
+    transformsAug = transforms.Compose(
+        [transforms.Grayscale(), transforms.Resize(28), transforms.ToTensor()]
+    )
 
     return transformsAug
 

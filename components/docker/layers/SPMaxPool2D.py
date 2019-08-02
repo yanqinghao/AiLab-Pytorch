@@ -22,7 +22,7 @@ def SPMaxPool2D(context):
     model.layers.add_module(
         name, nn.MaxPool2d(kernel_size=args.kernelSize, stride=args.stride)
     )
-    print(model.layers)
+
     return model
 
 

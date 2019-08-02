@@ -17,10 +17,12 @@
                 // "components.docker.layers.SPBatchNorm2D.SPBatchNorm2D",
                 // "components.docker.layers.SPMaxPool2D.SPMaxPool2D",
                 // "components.docker.layers.SPLinear.SPLinear",
-                // "components.docker.SPTrain.SPTrain",
+                // "components.docker.SPTorchPredict.SPTorchPredict",
+                // "components.docker.SPTorchTrain.SPTorchTrain",
                 "components.docker.dataset.SPMNIST.SPMNIST",
                 // "components.docker.dataset.SPDataLoader.SPDataLoader",
                 // "components.docker.dataset.SPTransform.SPTransform",
+                // "components.docker.dataset.SPImageFolder.SPImageFolder",
                 
                 // tableclf,tableregression,tableclf2
                 "--inputTable",

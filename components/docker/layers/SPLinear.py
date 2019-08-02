@@ -22,7 +22,7 @@ def SPLinear(context):
     model.layers.add_module(
         name, nn.Linear(in_features=args.inFeature, out_features=args.outFeature)
     )
-    print(model.layers)
+
     return model
 
 

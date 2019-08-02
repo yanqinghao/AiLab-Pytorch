@@ -10,7 +10,7 @@ from arguments import PytorchLayersModel
 
 @dc.input(PytorchLayersModel(key="inputModel"))
 @dc.output(Json(key="outputData"))
-def SPPredict(context):
+def SPTorchPredict(context):
     # 从 Context 中获取相关数据
     args = context.args
     # 查看上一节点发送的 args.inputData 数据
@@ -43,4 +43,4 @@ def SPPredict(context):
 
 
 if __name__ == "__main__":
-    SPPredict()
+    SPTorchPredict()

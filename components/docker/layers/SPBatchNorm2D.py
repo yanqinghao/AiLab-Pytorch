@@ -20,8 +20,6 @@ def SPBatchNorm2D(context):
     name = getLayerName(model.layers, "BatchNorm2D")
     model.layers.add_module(name, nn.BatchNorm2d(args.numFeatures))
 
-    print(model.layers)
-
     return model
 
 

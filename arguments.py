@@ -5,7 +5,8 @@ import torch
 import torch.nn as nn
 
 from suanpan.components import Result
-from suanpan.storage.arguments import Model, File
+from suanpan.storage.arguments import Model
+from suanpan.storage.arguments import Folder
 
 
 class SPNet(nn.Module):
@@ -42,61 +43,25 @@ class PytorchLayersModel(Model):
         )
 
 
-class PytorchDataset(File):
+class PytorchDataset(PytorchLayersModel):
     FILENAME = "dataset"
-
-    def format(self, context):
-        super(PytorchDataset, self).format(context)
-        if self.filePath:
-            with open(self.filePath, "rb") as f:
-                self.value = torch.load(f)
-
-        return self.value
-
-    def save(self, context, result):
-        with open(self.filePath, "wb") as f:
-            torch.save(result.value, f)
-
-        return super(PytorchDataset, self).save(
-            context, Result.froms(value=self.filePath)
-        )
+    FILETYPE = None
 
 
-class PytorchDataloader(File):
+class PytorchDataloader(PytorchLayersModel):
     FILENAME = "dataloader"
-
-    def format(self, context):
-        super(PytorchDataloader, self).format(context)
-        if self.filePath:
-            with open(self.filePath, "rb") as f:
-                self.value = torch.load(f)
-
-        return self.value
-
-    def save(self, context, result):
-        with open(self.filePath, "wb") as f:
-            torch.save(result.value, f)
-
-        return super(PytorchDataloader, self).save(
-            context, Result.froms(value=self.filePath)
-        )
+    FILETYPE = None
 
 
-class PytorchTransModel(Model):
+class PytorchTransModel(PytorchLayersModel):
     FILETYPE = "transaug"
 
-    def format(self, context):
-        super(PytorchTransModel, self).format(context)
-        if self.filePath:
-            with open(self.filePath, "rb") as f:
-                self.value = torch.load(f)
 
+class FolderPath(Folder):
+    def load(self, args):
+        self.value = getattr(args, self.key)
+        self.logLoaded(self.value)
         return self.value
 
-    def save(self, context, result):
-        with open(self.filePath, "wb") as f:
-            torch.save(result.value, f)
-
-        return super(PytorchTransModel, self).save(
-            context, Result.froms(value=self.filePath)
-        )
+    def format(self, context):
+        return self.value

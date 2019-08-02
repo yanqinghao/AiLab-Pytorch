@@ -35,8 +35,6 @@ def SPConv2D(context):
         ),
     )
 
-    print(model.layers)
-
     return model
 
 

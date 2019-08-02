@@ -19,7 +19,7 @@ def SPReLU(context):
     model = args.inputModel
     name = getLayerName(model.layers, "ReLU")
     model.layers.add_module(name, nn.ReLU(inplace=args.inplace))
-    print(model.layers)
+
     return model
 
 

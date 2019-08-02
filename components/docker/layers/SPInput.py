@@ -5,6 +5,7 @@ from suanpan.docker import DockerComponent as dc
 from suanpan.docker.arguments import Folder
 from arguments import PytorchLayersModel, SPNet
 
+
 @dc.input(Folder(key="inputData"))
 @dc.output(PytorchLayersModel(key="outputModel"))
 def SPInput(context):
@@ -12,8 +13,6 @@ def SPInput(context):
     args = context.args
     # 查看上一节点发送的 args.inputData 数据
     model = SPNet()
-
-    print(model.layers)
 
     return model
 

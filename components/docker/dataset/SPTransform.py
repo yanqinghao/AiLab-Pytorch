@@ -15,7 +15,12 @@ def SPTransform(context):
     args = context.args
 
     transformsAug = transforms.Compose(
-        [transforms.Grayscale(), transforms.Resize(28), transforms.ToTensor()]
+        [
+            transforms.RandomCrop(28),
+            transforms.Grayscale(),
+            transforms.Resize(28),
+            transforms.ToTensor(),
+        ]
     )
 
     return transformsAug

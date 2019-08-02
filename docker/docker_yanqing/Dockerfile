@@ -30,9 +30,9 @@ COPY --from=builder /build /yanqing
 
 RUN pip install -r requirements.txt
 
-# RUN pip install https://download.pytorch.org/whl/cpu/torch-1.1.0-cp37-cp37m-linux_x86_64.whl
+RUN pip install ./whl/cpu/torch-1.1.0-cp37-cp37m-linux_x86_64.whl
 
-# RUN pip install https://download.pytorch.org/whl/cpu/torchvision-0.3.0-cp37-cp37m-linux_x86_64.whl
+RUN pip install ./whl/cpu/torchvision-0.3.0-cp37-cp37m-linux_x86_64.whl
 
 ENTRYPOINT [ "/sbin/my_init", "--" ]
 

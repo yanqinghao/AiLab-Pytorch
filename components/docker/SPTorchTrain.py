@@ -6,14 +6,16 @@ import torch.nn as nn
 
 from suanpan.docker import DockerComponent as dc
 from suanpan.docker.arguments import Int, Float
+from suanpan.log import logger
 from arguments import PytorchLayersModel, PytorchDataloader
+
 
 @dc.input(PytorchLayersModel(key="inputModel"))
 @dc.input(PytorchDataloader(key="inputLoader"))
 @dc.param(Int(key="epochs", default=5))
 @dc.param(Float(key="learningRate", default=0.001))
 @dc.output(PytorchLayersModel(key="outputModel"))
-def SPTrain(context):
+def SPTorchTrain(context):
     # 从 Context 中获取相关数据
     args = context.args
     # 查看上一节点发送的 args.inputData 数据
@@ -27,13 +29,13 @@ def SPTrain(context):
     num_epochs = args.epochs
     learning_rate = args.learningRate
 
-    
     # Loss and optimizer
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
     # Train the model
     total_step = len(train_loader)
+    print("total_step: ", total_step)
     for epoch in range(num_epochs):
         for i, (images, labels) in enumerate(train_loader):
             images = images.to(device)
@@ -48,8 +50,8 @@ def SPTrain(context):
             loss.backward()
             optimizer.step()
 
-            if (i + 1) % 100 == 0:
-                print(
+            if (i + 1) % 10 == 0:
+                logger.info(
                     "Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}".format(
                         epoch + 1, num_epochs, i + 1, total_step, loss.item()
                     )
@@ -59,4 +61,4 @@ def SPTrain(context):
 
 
 if __name__ == "__main__":
-    SPTrain()
+    SPTorchTrain()

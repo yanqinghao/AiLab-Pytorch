@@ -7,6 +7,7 @@ import torch
 import torch.utils.data as data
 from torchvision.datasets.folder import accimage_loader
 from suanpan.storage import storage
+from suanpan.log import logger
 
 
 class VisionDataset(data.Dataset):
@@ -119,12 +120,12 @@ def is_image_file(filename):
 
 def get_all_files(dir, class_id):
     files_ = []
-    list = [i.key for i in storage.listFolders(folderName=dir)]
+    list = [i.key for i in storage.listAll(dir)]
     for i in range(0, len(list)):
-        path = os.path.join(dir, list[i])
-        if not storage.isFile(objectName=path):
+        path = list[i]
+        if not storage.isFile(path):
             files_.extend(get_all_files(path, class_id))
-        if storage.isFile(objectName=path):
+        if storage.isFile(path):
             item = (path, class_id)
             files_.append(item)
     return files_
@@ -132,27 +133,11 @@ def get_all_files(dir, class_id):
 
 def make_dataset(dir, class_to_idx, extensions=None, is_valid_file=None):
     images = []
-    dir = os.path.expanduser(dir)
-    if not ((extensions is None) ^ (is_valid_file is None)):
-        raise ValueError(
-            "Both extensions and is_valid_file cannot be None or not None at the same time"
-        )
-    if extensions is not None:
-
-        def is_valid_file(x):
-            return has_file_allowed_extension(x, extensions)
-
     for target in sorted(class_to_idx.keys()):
         d = os.path.join(dir, target)
         if storage.isFile(d):
             continue
-        images = get_all_files(d, class_to_idx[target])
-        # for root, _, fnames in sorted(storage.walk(d)):
-        #     for fname in sorted(fnames):
-        #         path = os.path.join(root, fname)
-        #         if is_valid_file(path):
-        #             item = (path, class_to_idx[target])
-        #             images.append(item)
+        images += get_all_files(d, class_to_idx[target])
 
     return images
 
@@ -210,6 +195,11 @@ class DatasetFolder(VisionDataset):
                     "Supported extensions are: " + ",".join(extensions)
                 )
             )
+        logger.info(
+            "find {lenth} images, class labels: {classes}".format(
+                lenth=len(samples), classes=classes
+            )
+        )
 
         self.loader = loader
         self.extensions = extensions
@@ -232,14 +222,7 @@ class DatasetFolder(VisionDataset):
         Ensures:
             No class is a subdirectory of another.
         """
-        # if sys.version_info >= (3, 5):
-        #     # Faster and available in Python 3.5 and above
-        #     classes = [d.name for d in os.scandir(dir) if d.is_dir()]
-        # else:
-        #     classes = [
-        #         d for d in os.listdir(dir) if os.path.isdir(os.path.join(dir, d))
-        #     ]
-        folder_list = [i.key for i in storage.listFolders(folderName="common/data")]
+        folder_list = [i.key for i in storage.listFolders(dir)]
         classes = [os.path.split(i[:-1])[1] for i in folder_list]
         classes.sort()
         class_to_idx = {classes[i]: i for i in range(len(classes))}
@@ -286,21 +269,14 @@ def pil_loader(path):
         return img.convert("RGB")
 
 
-# def accimage_loader(path):
-#     import accimage
-
-#     try:
-#         return accimage.Image(path)
-#     except IOError:
-#         # Potentially a decoding problem, fall back to PIL.Image
-#         return pil_loader(path)
-
-
 def default_loader(path):
     from torchvision import get_image_backend
 
-    storage.downloadFile(objectName=path, filePath=os.path.join("/sp_data/" + path))
-    path = os.path.join("/sp_data" + path)
+    local_path = os.path.join("/sp_data/" + path)
+    if not os.path.exists(local_path):
+        storage.download(path, local_path)
+
+    path = local_path
 
     if get_image_backend() == "accimage":
         return accimage_loader(path)

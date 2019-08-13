@@ -26,6 +26,10 @@ RUN pip config set global.index-url ${PYPI_MIRROR}
 
 RUN pip install --upgrade pip
 
+RUN add-apt-repository ppa:deadsnakes/ppa
+
+RUN apt-get install graphviz -y
+
 COPY --from=builder /build /yanqing
 
 RUN pip install -r requirements.txt

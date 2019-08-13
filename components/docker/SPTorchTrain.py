@@ -11,6 +11,7 @@ from suanpan.log import logger
 from app import app
 from arguments import PytorchLayersModel, PytorchDataloader
 from utils import trainingLog
+from utils.visual import CNNNNVisualization
 
 
 @app.input(PytorchLayersModel(key="inputModel"))
@@ -65,11 +66,12 @@ def SPTorchTrain(context):
                 model.train()  # Set model to training mode
             else:
                 model.eval()  # Set model to evaluate mode
+                cnnVisual = CNNNNVisualization(model)
 
             running_loss = 0.0
             running_corrects = 0
             running_steps = len(loader[phase])
-            for i, (images, labels, _) in enumerate(loader[phase]):
+            for i, (images, labels, paths) in enumerate(loader[phase]):
                 images = images.to(device)
                 labels = labels.to(device)
 
@@ -92,6 +94,8 @@ def SPTorchTrain(context):
                 running_corrects += torch.sum(
                     preds == labels.data
                 ).double() / images.size(0)
+                if phase == "val":
+                    cnnVisual.plot_each_layer(images, paths)
 
             epoch_loss = running_loss / running_steps
             epoch_acc = running_corrects.double() / running_steps

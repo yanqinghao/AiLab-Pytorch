@@ -19,11 +19,17 @@
                 // "components.docker.layers.SPLinear.SPLinear",
                 // "components.docker.SPTorchPredict.SPTorchPredict",
                 // "components.docker.SPTorchTrain.SPTorchTrain",
-                "components.docker.dataset.SPMNIST.SPMNIST",
+                // "components.docker.dataset.SPMNIST.SPMNIST",
                 // "components.docker.dataset.SPDataLoader.SPDataLoader",
                 // "components.docker.dataset.SPTransform.SPTransform",
                 // "components.docker.dataset.SPImageFolder.SPImageFolder",
-                
+                // "components.docker.dataset.SPDatasetSampler.SPDatasetSampler",
+                // "components.docker.transform.SPCompose.SPCompose",
+                // "components.docker.transform.SPGrayscale.SPGrayscale",
+                // "components.docker.transform.SPRandomCrop.SPRandomCrop",
+                // "components.docker.transform.SPResize.SPResize",
+                // "components.docker.transform.SPToTensor.SPToTensor",
+                "components.docker.visualization.SPCNNVisual.SPCNNVisual",
                 // tableclf,tableregression,tableclf2
                 "--inputTable",
                 "tableclf",
@@ -42,19 +48,24 @@
                 "--storage_local_temp_store",
                 "/home/yanqinghao/demotmp",
                 //regression clf/binary clf/multi timeseries
-                "--inputData",
-                "/home/yanqinghao/code/AiLab-Pytorch/dataset/mnist",
-                // "--inputModel",
-                // "/home/yanqinghao/code/AiLab-Pytorch/dataset/input/model",
+                // "--inputData",
+                // "/home/yanqinghao/code/AiLab-Pytorch/dataset/input/data",
+                "--inputModel",
+                "/home/yanqinghao/code/AiLab-Pytorch/dataset/input/model",
+                "--inputLoader",
+                "/home/yanqinghao/code/AiLab-Pytorch/dataset/input/model",
                 // "--outputModel",
                 // "/home/yanqinghao/code/AiLab-Pytorch/dataset/output/model",
-                // "--outputData",
-                // "/home/yanqinghao/code/AiLab-Pytorch/dataset/output/data",
-                "--outputModel1",
-                "/home/yanqinghao/code/AiLab-Pytorch/dataset/output/model1",
-                "--outputModel2",
-                "/home/yanqinghao/code/AiLab-Pytorch/dataset/output/model2",
-            ]
+                "--outputData",
+                "/home/yanqinghao/code/AiLab-Pytorch/dataset/output/data",
+                // "--outputModel1",
+                // "/home/yanqinghao/code/AiLab-Pytorch/dataset/output/model1",
+                // "--outputModel2",
+                // "/home/yanqinghao/code/AiLab-Pytorch/dataset/output/model2",
+            ],
+            "env": {
+                "SP_APP_TYPE": "docker"
+            }
         }
     ]
 }

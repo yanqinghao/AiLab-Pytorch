@@ -10,6 +10,7 @@ from suanpan.screenshots import screenshots
 from suanpan.utils import image
 from .mnist import MNIST
 from .folder import ImageFolder
+from .visual import CNNNNVisualization, CNNLayerVisualization
 
 
 def getLayerName(moduleList, match):

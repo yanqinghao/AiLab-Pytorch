@@ -120,7 +120,7 @@ def is_image_file(filename):
 
 def get_all_files(dir, class_id):
     files_ = []
-    list = [i.key for i in storage.listAll(dir)]
+    list = [i for i in storage.listAll(dir)]
     for i in range(0, len(list)):
         path = list[i]
         if not storage.isFile(path):
@@ -222,7 +222,7 @@ class DatasetFolder(VisionDataset):
         Ensures:
             No class is a subdirectory of another.
         """
-        folder_list = [i.key for i in storage.listFolders(dir)]
+        folder_list = [i for i in storage.listFolders(dir)]
         classes = [os.path.split(i[:-1])[1] for i in folder_list]
         classes.sort()
         class_to_idx = {classes[i]: i for i in range(len(classes))}
@@ -243,7 +243,7 @@ class DatasetFolder(VisionDataset):
         if self.target_transform is not None:
             target = self.target_transform(target)
 
-        return sample, target
+        return sample, target, path
 
     def __len__(self):
         return len(self.samples)

@@ -1,19 +1,22 @@
 # coding=utf-8
 from __future__ import absolute_import, print_function
 
-from suanpan.docker import DockerComponent as dc
-from suanpan.docker.arguments import Folder
+from suanpan.app.arguments import Folder, ListOfInt
+from suanpan.log import logger
+from app import app
 from arguments import PytorchLayersModel, SPNet
+from utils import plotLayers
 
 
-@dc.input(Folder(key="inputData"))
-@dc.output(PytorchLayersModel(key="outputModel"))
+@app.input(Folder(key="inputData"))
+@app.param(ListOfInt(key="inputSize", default=[28, 28, 1]))
+@app.output(PytorchLayersModel(key="outputModel"))
 def SPInput(context):
-    # 从 Context 中获取相关数据
     args = context.args
-    # 查看上一节点发送的 args.inputData 数据
-    model = SPNet()
-
+    if len(args.inputSize) > 3:
+        logger.error("Wrong image size, pls input like (28,28,1).")
+    model = SPNet(args.inputSize)
+    plotLayers(model)
     return model
 
 

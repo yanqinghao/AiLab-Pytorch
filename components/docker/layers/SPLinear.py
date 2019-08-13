@@ -3,25 +3,33 @@ from __future__ import absolute_import, print_function
 
 import torch.nn as nn
 
-from suanpan.docker import DockerComponent as dc
-from suanpan.docker.arguments import Int
+from suanpan.app.arguments import Int, Bool
+from app import app
 from arguments import PytorchLayersModel
-from utils import getLayerName
+from utils import getLayerName, plotLayers, calOutput
 
 
-@dc.input(PytorchLayersModel(key="inputModel"))
-@dc.param(Int(key="inFeature", default=7 * 7 * 32))
-@dc.param(Int(key="outFeature", default=10))
-@dc.output(PytorchLayersModel(key="outputModel"))
+@app.input(PytorchLayersModel(key="inputModel"))
+@app.param(Int(key="inFeature", default=7 * 7 * 32))
+@app.param(Int(key="outFeature", default=10))
+@app.param(Bool(key="bias", default=False))
+@app.output(PytorchLayersModel(key="outputModel"))
 def SPLinear(context):
     # 从 Context 中获取相关数据
     args = context.args
     # 查看上一节点发送的 args.inputData 数据
     model = args.inputModel
+    inputSize = calOutput(model)
     name = getLayerName(model.layers, "Linear")
-    model.layers.add_module(
-        name, nn.Linear(in_features=args.inFeature, out_features=args.outFeature)
+    setattr(
+        model,
+        name,
+        nn.Linear(
+            in_features=args.inFeature, out_features=args.outFeature, bias=args.bias
+        ),
     )
+    model.layers.append((name, getattr(model, name)))
+    plotLayers(model, inputSize)
 
     return model
 

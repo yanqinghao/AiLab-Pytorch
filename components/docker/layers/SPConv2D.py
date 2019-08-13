@@ -2,28 +2,29 @@
 from __future__ import absolute_import, print_function
 
 import torch.nn as nn
-
-from suanpan.docker import DockerComponent as dc
-from suanpan.docker.arguments import Int, String
+from suanpan.app.arguments import Int, String
+from app import app
 from arguments import PytorchLayersModel
-from utils import getLayerName
+from utils import getLayerName, plotLayers, calOutput
 
 
-@dc.input(PytorchLayersModel(key="inputModel"))
-@dc.param(Int(key="inChannel", default=16))
-@dc.param(Int(key="outChannel", default=32))
-@dc.param(Int(key="kernelSize", default=5))
-@dc.param(Int(key="stride", default=1))
-@dc.param(Int(key="padding", default=2))
-@dc.param(String(key="paddingMode", default="zeros"))
-@dc.output(PytorchLayersModel(key="outputModel"))
+@app.input(PytorchLayersModel(key="inputModel"))
+@app.param(Int(key="inChannel", default=1))
+@app.param(Int(key="outChannel", default=16))
+@app.param(Int(key="kernelSize", default=5))
+@app.param(Int(key="stride", default=1))
+@app.param(Int(key="padding", default=2))
+@app.param(String(key="paddingMode", default="zeros"))
+@app.output(PytorchLayersModel(key="outputModel"))
 def SPConv2D(context):
     # 从 Context 中获取相关数据
     args = context.args
     # 查看上一节点发送的 args.inputData 数据
     model = args.inputModel
+    inputSize = calOutput(model)
     name = getLayerName(model.layers, "Conv2D")
-    model.layers.add_module(
+    setattr(
+        model,
         name,
         nn.Conv2d(
             args.inChannel,
@@ -34,6 +35,8 @@ def SPConv2D(context):
             padding_mode=args.paddingMode,
         ),
     )
+    model.layers.append((name, getattr(model, name)))
+    plotLayers(model, inputSize)
 
     return model
 

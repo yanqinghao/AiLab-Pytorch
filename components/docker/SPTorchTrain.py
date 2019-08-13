@@ -31,7 +31,7 @@ def SPTorchTrain(context):
         loader = {"train": trainLoader, "val": valLoader}
     else:
         loader = {"train": trainLoader, "val": trainLoader}
-
+    model.class_to_idx = trainLoader.dataset.class_to_idx
     log = {
         "epoch": [],
         "train_acc": [],
@@ -119,7 +119,6 @@ def SPTorchTrain(context):
     logger.info("Best val Acc: {:4f}".format(best_acc))
     # load best model weights
     model.load_state_dict(best_model_wts)
-    model.class_to_idx = trainLoader.dataset.class_to_idx
 
     return model
 

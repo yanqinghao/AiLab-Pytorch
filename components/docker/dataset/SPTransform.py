@@ -3,13 +3,13 @@ from __future__ import absolute_import, print_function
 
 import torchvision.transforms as transforms
 
-from suanpan.docker import DockerComponent as dc
-from suanpan.docker.arguments import Folder
+from suanpan.app import app
+from suanpan.app.arguments import Folder
 from arguments import PytorchTransModel
 
 
-@dc.input(Folder(key="inputData"))
-@dc.output(PytorchTransModel(key="outputModel"))
+@app.input(Folder(key="inputData"))
+@app.output(PytorchTransModel(key="outputModel"))
 def SPTransform(context):
     # 从 Context 中获取相关数据
     args = context.args

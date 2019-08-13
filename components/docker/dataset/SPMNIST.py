@@ -4,20 +4,20 @@ from __future__ import absolute_import, print_function
 import os
 import shutil
 
-from suanpan.docker import DockerComponent as dc
-from suanpan.docker.arguments import Folder
+from suanpan.app import app
+from suanpan.app.arguments import Folder
 import utils
 from arguments import PytorchDataset, PytorchTransModel
 
 
-@dc.input(Folder(key="inputData"))
-@dc.input(PytorchTransModel(key="inputModel"))
-@dc.output(PytorchDataset(key="outputData1"))
-@dc.output(PytorchDataset(key="outputData2"))
+@app.input(Folder(key="inputData"))
+@app.input(PytorchTransModel(key="inputModel"))
+@app.output(PytorchDataset(key="outputData1"))
+@app.output(PytorchDataset(key="outputData2"))
 def SPMNIST(context):
-    # 从 Context 中获取相关数据
+
     args = context.args
-    # 查看上一节点发送的 args.inputData 数据
+
     filePath = os.path.join(args.inputData, "MNIST", "raw")
     if "MNIST" not in os.listdir(args.inputData):
         os.mkdir(os.path.join(args.inputData, "MNIST"))

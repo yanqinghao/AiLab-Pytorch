@@ -1,1 +1,5 @@
-suanpan[docker]
+suanpan[docker]==0.9.52
+matplotlib
+hiddenlayer
+IPython
+graphviz

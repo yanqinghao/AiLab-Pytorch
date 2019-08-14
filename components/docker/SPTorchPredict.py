@@ -9,6 +9,7 @@ from PIL import Image, ImageFont, ImageDraw
 from suanpan.app import app
 from suanpan.app.arguments import Folder, Csv
 from arguments import PytorchLayersModel, PytorchDataloader
+from utils.visual import CNNNNVisualization
 
 
 @app.input(PytorchLayersModel(key="inputModel"))
@@ -33,10 +34,9 @@ def SPTorchPredict(context):
     with torch.no_grad():
         prediction = torch.tensor([], dtype=torch.long)
         filepath = []
-
-        for images, labels, paths in test_loader:
+        cnnVisual = CNNNNVisualization(model)
+        for images, _, paths in test_loader:
             images = images.to(device)
-            labels = labels.to(device)
             outputs = model(images)
             _, predicted = torch.max(outputs.data, 1)
             prediction = torch.cat((prediction, predicted), 0)
@@ -58,6 +58,7 @@ def SPTorchPredict(context):
                 if not os.path.exists(os.path.split(save_path)[0]):
                     os.makedirs(os.path.split(save_path)[0])
                 img.save(save_path)
+            cnnVisual.plot_each_layer(images, paths)
 
         df = pd.DataFrame(
             {

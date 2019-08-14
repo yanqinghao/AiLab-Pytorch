@@ -3,7 +3,6 @@ from __future__ import absolute_import, print_function
 
 
 from suanpan.app.arguments import Folder, String
-from suanpan.log import logger
 from app import app
 from arguments import PytorchLayersModel, PytorchDataloader
 from utils.visual import CNNLayerVisualization
@@ -21,13 +20,8 @@ def SPCNNVisual(context):
     selectedLayer = args.selectedLayer
     dataLoader = args.inputLoader
     cnnVisual = CNNLayerVisualization(model, selectedLayer)
-    logger.info("{}".format(len(dataLoader)))
-    i = 0
     for data, _, paths in dataLoader:
-        logger.info("{}".format(i))
-        folder = cnnVisual.plotLayer(data, paths)
-        i += 1
-    logger.info(folder)
+        folder = cnnVisual.plot_layer(data, paths)
     return folder
 
 

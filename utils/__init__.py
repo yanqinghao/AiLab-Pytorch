@@ -10,6 +10,7 @@ from suanpan.screenshots import screenshots
 from suanpan.utils import image
 from .mnist import MNIST
 from .folder import ImageFolder
+from .visual import CNNNNVisualization, CNNLayerVisualization
 
 
 def getLayerName(moduleList, match):
@@ -47,6 +48,11 @@ def transImgSave(dataset, transform):
         output = "/out_data"
     return output
 
+def mkFolder():
+    folder = "/out_data"
+    if not os.path.exists(folder):
+        os.mkdir(folder)
+    return folder
 
 def trainingLog(log):
     fig = plt.figure()

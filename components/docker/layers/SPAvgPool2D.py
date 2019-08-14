@@ -13,27 +13,25 @@ from utils import getLayerName, plotLayers, calOutput
 @app.param(Int(key="kernelSize", default=2))
 @app.param(Int(key="stride", default=2))
 @app.param(Int(key="padding", default=0))
-@app.param(Int(key="dilation", default=1))
-@app.param(Bool(key="returnIndices", default=False))
 @app.param(Bool(key="ceilMode", default=False))
+@app.param(Bool(key="countIncludePad", default=True))
 @app.output(PytorchLayersModel(key="outputModel"))
-def SPMaxPool2D(context):
+def SPAvgPool2D(context):
     # 从 Context 中获取相关数据
     args = context.args
     # 查看上一节点发送的 args.inputData 数据
     model = args.inputModel
     inputSize = calOutput(model)
-    name = getLayerName(model.layers, "MaxPool2D")
+    name = getLayerName(model.layers, "AvgPool2D")
     setattr(
         model,
         name,
-        nn.MaxPool2d(
+        nn.AvgPool2d(
             kernel_size=args.kernelSize,
             stride=args.stride,
             padding=args.padding,
-            dilation=args.dilation,
-            return_indices=args.returnIndices,
             ceil_mode=args.ceilMode,
+            count_include_pad=args.countIncludePad,
         ),
     )
     model.layers.append((name, getattr(model, name)))
@@ -43,4 +41,4 @@ def SPMaxPool2D(context):
 
 
 if __name__ == "__main__":
-    SPMaxPool2D()
+    SPAvgPool2D()

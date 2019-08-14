@@ -6,7 +6,7 @@ import torchvision.transforms as transforms
 from suanpan.app.arguments import Int, Bool, String, Folder
 from app import app
 from arguments import PytorchTransModel, PytorchDataset
-from utils import transImgSave
+from utils import transImgSave, mkFolder
 
 
 @app.input(PytorchDataset(key="inputData"))
@@ -47,9 +47,7 @@ def SPRandomCrop(context):
         fill=args.fill,
         padding_mode=args.paddingMode,
     )
-    folder = None
-    if args.inputData:
-        folder = transImgSave(args.inputData, transform)
+    folder = transImgSave(args.inputData, transform) if args.inputData else mkFolder()
 
     return transform, folder
 

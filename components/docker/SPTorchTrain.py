@@ -6,18 +6,35 @@ import time
 import torch
 import torch.nn as nn
 
-from suanpan.app.arguments import Int, Float
+from suanpan.app.arguments import Int, String
 from suanpan.log import logger
 from app import app
-from arguments import PytorchLayersModel, PytorchDataloader
+from arguments import (
+    PytorchLayersModel,
+    PytorchDataloader,
+    PytorchOptimModel,
+    PytorchSchedulerModel,
+)
 from utils import trainingLog
+from utils.visual import CNNNNVisualization
 
 
 @app.input(PytorchLayersModel(key="inputModel"))
 @app.input(PytorchDataloader(key="inputTrainLoader"))
 @app.input(PytorchDataloader(key="inputValLoader"))
+@app.input(PytorchOptimModel(key="inputOptimModel"))
+@app.input(PytorchSchedulerModel(key="inputSchedulerModel"))
 @app.param(Int(key="epochs", default=5))
-@app.param(Float(key="learningRate", default=0.001))
+@app.param(
+    String(
+        key="lossFunction",
+        default="CrossEntropyLoss",
+        help="L1Loss, NLLLoss, KLDivLoss, MSELoss, BCELoss, BCEWithLogitsLoss, NLLLoss2d, "
+        "CosineEmbeddingLoss, CTCLoss, HingeEmbeddingLoss, MarginRankingLoss, "
+        "MultiLabelMarginLoss, MultiLabelSoftMarginLoss, MultiMarginLoss, SmoothL1Loss,"
+        "SoftMarginLoss, CrossEntropyLoss, TripletMarginLoss, PoissonNLLLoss",
+    )
+)
 @app.output(PytorchLayersModel(key="outputModel"))
 def SPTorchTrain(context):
     # 从 Context 中获取相关数据
@@ -26,11 +43,14 @@ def SPTorchTrain(context):
     model = args.inputModel
     trainLoader = args.inputTrainLoader
     valLoader = args.inputValLoader
+    optimModel = args.inputOptimModel
+    schedulerModel = args.inputSchedulerModel
     if valLoader:
         loader = {"train": trainLoader, "val": valLoader}
     else:
+        logger.info("Use train_dataset as default val_dataset in training.")
         loader = {"train": trainLoader, "val": trainLoader}
-
+    model.class_to_idx = trainLoader.dataset.class_to_idx
     log = {
         "epoch": [],
         "train_acc": [],
@@ -48,28 +68,44 @@ def SPTorchTrain(context):
 
     # Hyper parameters
     num_epochs = args.epochs
-    learning_rate = args.learningRate
 
     # Loss and optimizer
-    criterion = nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
-    # Decay LR by a factor of 0.1 every 7 epochs
-    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=7, gamma=0.1)
+    criterion = getattr(nn, args.lossFunction)()
+    if optimModel:
+        logger.info("Use {} as optim function in training.".format(optimModel["name"]))
+        optimizer = getattr(torch.optim, optimModel["name"])(
+            model.parameters(), **optimModel["param"]
+        )
+    else:
+        logger.info("Use Adam as default optim function in training.")
+        optimizer = torch.optim.Adam(model.parameters())
+    # Decay LR by scheduler
+    if schedulerModel:
+        logger.info(
+            "Use {} as lr_scheduler in training.".format(schedulerModel["name"])
+        )
+        scheduler = getattr(torch.optim.lr_scheduler, schedulerModel["name"])(
+            optimizer, **schedulerModel["param"]
+        )
+    else:
+        logger.info("No model lr_scheduler is used in training.")
 
     for epoch in range(num_epochs):
         logger.info("Epoch {}/{}".format(epoch + 1, num_epochs))
         log["epoch"].append(epoch)
         for phase in ["train", "val"]:
             if phase == "train":
-                scheduler.step()
+                if schedulerModel:
+                    scheduler.step()
                 model.train()  # Set model to training mode
             else:
                 model.eval()  # Set model to evaluate mode
+                cnnVisual = CNNNNVisualization(model)
 
             running_loss = 0.0
             running_corrects = 0
             running_steps = len(loader[phase])
-            for i, (images, labels, _) in enumerate(loader[phase]):
+            for i, (images, labels, paths) in enumerate(loader[phase]):
                 images = images.to(device)
                 labels = labels.to(device)
 
@@ -92,6 +128,8 @@ def SPTorchTrain(context):
                 running_corrects += torch.sum(
                     preds == labels.data
                 ).double() / images.size(0)
+                if phase == "val":
+                    cnnVisual.plot_each_layer(images, paths)
 
             epoch_loss = running_loss / running_steps
             epoch_acc = running_corrects.double() / running_steps
@@ -115,7 +153,6 @@ def SPTorchTrain(context):
     logger.info("Best val Acc: {:4f}".format(best_acc))
     # load best model weights
     model.load_state_dict(best_model_wts)
-    model.class_to_idx = trainLoader.dataset.class_to_idx
 
     return model
 

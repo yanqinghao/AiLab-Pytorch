@@ -22,7 +22,7 @@ def SPAdam(context):
         "name": "Adam",
         "param": {
             "lr": args.lr,
-            "betas": args.betas,
+            "betas": (args.betas[0], args.betas[1]),
             "eps": args.eps,
             "weight_decay": args.weightDecay,
             "amsgrad": args.amsgrad,

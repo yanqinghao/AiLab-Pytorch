@@ -2,6 +2,7 @@
 from __future__ import absolute_import, print_function
 
 import torch
+import pickle
 import torch.nn as nn
 
 from suanpan.components import Result
@@ -67,3 +68,27 @@ class FolderPath(Folder):
 
     def format(self, context):
         return self.value
+
+
+class PytorchOptimModel(Model):
+    FILETYPE = "optim"
+
+    def format(self, context):
+        super(PytorchOptimModel, self).format(context)
+        if self.filePath:
+            with open(self.filePath, "rb") as f:
+                self.value = pickle.load(f)
+
+        return self.value
+
+    def save(self, context, result):
+        with open(self.filePath, "wb") as f:
+            pickle.dump(result.value, f)
+
+        return super(PytorchOptimModel, self).save(
+            context, Result.froms(value=self.filePath)
+        )
+
+
+class PytorchSchedulerModel(PytorchOptimModel):
+    FILETYPE = "scheduler"

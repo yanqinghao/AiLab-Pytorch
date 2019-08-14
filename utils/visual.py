@@ -29,7 +29,7 @@ class Visualization(object):
 
         # Hook the selected layer
         layer = getattr(self.model, selected_layer)
-        layer.register_forward_hook(hook_function)
+        return layer.register_forward_hook(hook_function)
 
     def plot_cnn_layer(self, data, file_name):
         fig = plt.figure()
@@ -73,8 +73,9 @@ class CNNLayerVisualization(Visualization):
 
     def plot_layer(self, data, paths):
         folder = "/out_data/"
-        self.hook_layer(self.selected_layer)
+        handle = self.hook_layer(self.selected_layer)
         out = self.model(data)
+        handle.remove()
         cnn_out = self.outputs[self.selected_layer]
         pathtmp = None
         for cnn_fillter, path in zip(cnn_out, paths):
@@ -110,9 +111,12 @@ class CNNNNVisualization(Visualization):
 
     def plot_each_layer(self, data, paths):
         folder = "/out_data/"
+        handles = {}
         for layer in self.layers:
-            self.hook_layer(layer[0])
+            handles[layer[0]] = self.hook_layer(layer[0])
         out = self.model(data[0].unsqueeze_(0))
+        for handle in handles.items():
+            handle[1].remove()
         outputs = self.outputs
         for layer_name, layer_outputs in outputs.items():
             if len(layer_outputs.size()) == 4:

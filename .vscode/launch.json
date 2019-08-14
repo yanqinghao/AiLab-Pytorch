@@ -30,6 +30,8 @@
                 // "components.docker.transform.SPResize.SPResize",
                 // "components.docker.transform.SPToTensor.SPToTensor",
                 "components.docker.visualization.SPCNNVisual.SPCNNVisual",
+                // "components.docker.optimizer.SPAdam.SPAdam",
+                // "components.docker.optimizer.scheduler.SPStepLR.SPStepLR",
                 // tableclf,tableregression,tableclf2
                 "--inputTable",
                 "tableclf",

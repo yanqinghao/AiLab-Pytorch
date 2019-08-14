@@ -22,8 +22,8 @@ from utils.visual import CNNNNVisualization
 @app.input(PytorchLayersModel(key="inputModel"))
 @app.input(PytorchDataloader(key="inputTrainLoader"))
 @app.input(PytorchDataloader(key="inputValLoader"))
-@app.output(PytorchOptimModel(key="inputOptimModel"))
-@app.output(PytorchSchedulerModel(key="inputSchedulerModel"))
+@app.input(PytorchOptimModel(key="inputOptimModel"))
+@app.input(PytorchSchedulerModel(key="inputSchedulerModel"))
 @app.param(Int(key="epochs", default=5))
 @app.param(
     String(

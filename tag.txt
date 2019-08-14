@@ -2,3 +2,5 @@ layers model.pytorch.layer
 dataset model.pytorch.dataset
 dataloader model.pytorch.dataloader
 transform model.pytorch.transform
+scheduler model.pytorch.scheduler
+optim model.pytorch.optim

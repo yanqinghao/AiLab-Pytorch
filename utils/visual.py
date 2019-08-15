@@ -39,7 +39,7 @@ class Visualization(object):
             if i >= len(data):
                 break
             axi.axis("off")
-            axi.imshow(np.round(data[i].data.numpy() * 225), cmap="gray")
+            axi.imshow(np.round(data[i].cpu().data.numpy() * 225), cmap="gray")
         fig.savefig(file_name)
         plt.close(fig)
         return file_name
@@ -48,7 +48,7 @@ class Visualization(object):
         fig = plt.figure()
         ax = fig.add_subplot(111)
         ax.pie(
-            softmax(data.data.numpy()),
+            softmax(data.cpu().data.numpy()),
             labels=list(self.model.class_to_idx.keys()),
             autopct="%1.1f%%",
             shadow=True,

@@ -1,4 +1,4 @@
-ARG PYTHON_VERSION=latest
+ARG PYTHON_VERSION=3.7
 
 FROM registry.cn-shanghai.aliyuncs.com/shuzhi/docker_base:${PYTHON_VERSION} as builder
 
@@ -34,9 +34,11 @@ COPY --from=builder /build /yanqing
 
 RUN pip install -r requirements.txt
 
-RUN pip install ./whl/cpu/torch-1.1.0-cp37-cp37m-linux_x86_64.whl
+RUN pip install ./whl/cpu/torch-1.2.0+cpu-cp37-cp37m-manylinux1_x86_64.whl
 
-RUN pip install ./whl/cpu/torchvision-0.3.0-cp37-cp37m-linux_x86_64.whl
+RUN pip install ./whl/cpu/torchvision-0.4.0+cpu-cp37-cp37m-manylinux1_x86_64.whl
+
+RUN rm -rf whl
 
 ENTRYPOINT [ "/sbin/my_init", "--" ]
 

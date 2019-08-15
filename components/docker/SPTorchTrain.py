@@ -24,6 +24,7 @@ from utils.visual import CNNNNVisualization
 @app.input(PytorchDataloader(key="inputValLoader"))
 @app.input(PytorchOptimModel(key="inputOptimModel"))
 @app.input(PytorchSchedulerModel(key="inputSchedulerModel"))
+@app.param(Int(key="__gpu"))
 @app.param(Int(key="epochs", default=5))
 @app.param(
     String(
@@ -45,6 +46,8 @@ def SPTorchTrain(context):
     valLoader = args.inputValLoader
     optimModel = args.inputOptimModel
     schedulerModel = args.inputSchedulerModel
+    gpu = args.__gpu
+
     if valLoader:
         loader = {"train": trainLoader, "val": valLoader}
     else:
@@ -64,7 +67,11 @@ def SPTorchTrain(context):
     best_acc = 0.0
 
     # Device configuration
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda:0" if gpu > 0 else "cpu")
+
+    logger.info("Use {} as device in training.".format("cuda:0" if gpu > 0 else "cpu"))
+
+    model = model.to(device)
 
     # Hyper parameters
     num_epochs = args.epochs

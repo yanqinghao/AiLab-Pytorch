@@ -33,7 +33,8 @@ class PytorchLayersModel(Model):
         super(PytorchLayersModel, self).format(context)
         if self.filePath:
             with open(self.filePath, "rb") as f:
-                self.value = torch.load(f)
+                device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+                self.value = torch.load(f, map_location=device)
 
         return self.value
 

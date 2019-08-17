@@ -2,12 +2,13 @@
 from __future__ import absolute_import, print_function
 
 import os
+import copy
 import torch
 
 import pandas as pd
 from PIL import Image, ImageFont, ImageDraw
-from suanpan.app import app
 from suanpan.app.arguments import Folder, Csv
+from app import app
 from arguments import PytorchLayersModel, PytorchDataloader
 from utils.visual import CNNNNVisualization
 
@@ -35,6 +36,8 @@ def SPTorchPredict(context):
         prediction = torch.tensor([], dtype=torch.long)
         filepath = []
         cnnVisual = CNNNNVisualization(model)
+        cnnVisual.daemon = True
+        cnnVisual.start()
         for images, _, paths in test_loader:
             images = images.to(device)
             outputs = model(images)
@@ -58,7 +61,17 @@ def SPTorchPredict(context):
                 if not os.path.exists(os.path.split(save_path)[0]):
                     os.makedirs(os.path.split(save_path)[0])
                 img.save(save_path)
-            cnnVisual.plot_each_layer(images, paths)
+            cnnVisual.put(
+                {
+                    "status": "running",
+                    "type": "layer",
+                    "data": (copy.deepcopy(images), copy.deepcopy(paths)),
+                }
+            )
+            # cnnVisual.plot_each_layer_async(images, paths)
+        cnnVisual.put({"status": "quit"})
+        cnnVisual.tag = False
+        cnnVisual.join()
 
         df = pd.DataFrame(
             {

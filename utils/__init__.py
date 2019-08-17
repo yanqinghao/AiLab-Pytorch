@@ -54,26 +54,6 @@ def mkFolder():
         os.mkdir(folder)
     return folder
 
-def trainingLog(log):
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    epochs = log["epoch"]
-    acc = log["train_acc"]
-    val_acc = log["val_acc"]
-
-    ax.plot(epochs, acc, "b", label="Training acc")
-    ax.plot(epochs, val_acc, "r", label="Validation acc")
-    ax.text(0, 7, "Training acc", fontsize=10, color="b")
-    ax.text(0, 6.5, "Validation acc", fontsize=10, color="r")
-    fig.canvas.draw()
-
-    data = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8)
-    data = data.reshape(fig.canvas.get_width_height()[::-1] + (3,))
-
-    plt.close(fig)
-
-    return screenshots.save(data)
-
 
 def plotLayers(model, input_size=None):
     file_name = "screenshots"
@@ -109,6 +89,7 @@ def plotLayers(model, input_size=None):
 
 
 def calOutput(model):
+    model.to(torch.device("cpu"))
     input_size = (
         [1] + [model.input_size[-1]] + list(model.input_size[:-1])
         if len(model.input_size) == 3

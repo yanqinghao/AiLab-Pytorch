@@ -15,7 +15,6 @@ from arguments import (
     PytorchOptimModel,
     PytorchSchedulerModel,
 )
-from utils import trainingLog
 from utils.visual import CNNNNVisualization
 
 
@@ -96,7 +95,7 @@ def SPTorchTrain(context):
         )
     else:
         logger.info("No model lr_scheduler is used in training.")
-
+    cnnThreads = []
     for epoch in range(num_epochs):
         logger.info("Epoch {}/{}".format(epoch + 1, num_epochs))
         log["epoch"].append(epoch)
@@ -108,6 +107,9 @@ def SPTorchTrain(context):
             else:
                 model.eval()  # Set model to evaluate mode
                 cnnVisual = CNNNNVisualization(model)
+                cnnThreads.append(cnnVisual)
+                cnnVisual.daemon = True
+                cnnVisual.start()
 
             running_loss = 0.0
             running_corrects = 0
@@ -135,11 +137,17 @@ def SPTorchTrain(context):
                 running_corrects += torch.sum(
                     preds == labels.data
                 ).double() / images.size(0)
-                if phase == "val":
-                    cnnVisual.plot_each_layer(images, paths)
+                if phase == "val" and i == 0:
+                    cnnVisual.put(
+                        {
+                            "status": "running",
+                            "type": "layer",
+                            "data": (copy.deepcopy(images), copy.deepcopy(paths)),
+                        }
+                    )
 
             epoch_loss = running_loss / running_steps
-            epoch_acc = running_corrects.double() / running_steps
+            epoch_acc = running_corrects.double().item() / running_steps
             log["{}_loss".format(phase)].append(epoch_loss)
             log["{}_acc".format(phase)].append(epoch_acc)
             logger.info(
@@ -149,7 +157,16 @@ def SPTorchTrain(context):
             if phase == "val" and epoch_acc > best_acc:
                 best_acc = epoch_acc
                 best_model_wts = copy.deepcopy(model.state_dict())
-        trainingLog(log)
+        cnnVisual.put(
+            {"status": "running", "type": "log", "data": (copy.deepcopy(log),)}
+        )
+        cnnVisual.put({"status": "quit"})
+
+    for i in cnnThreads:
+        i.tag = False
+    for i in cnnThreads:
+        logger.info("test thread:{},{}".format(i.q.qsize(), i.tag))
+        i.join()
 
     time_elapsed = time.time() - since
     logger.info(

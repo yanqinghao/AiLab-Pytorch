@@ -11,7 +11,6 @@ import matplotlib.pyplot as plt
 from scipy.special import softmax
 from suanpan.utils import image
 from suanpan.screenshots import screenshots
-from suanpan import asyncio
 
 
 class ScreenshotsThread(threading.Thread):

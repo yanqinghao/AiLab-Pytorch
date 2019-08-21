@@ -1,3 +1,8 @@
+"""
+Created on Sun Aug 19 2019
+@author: Yan Qinghao
+transforms
+"""
 # coding=utf-8
 from __future__ import absolute_import, print_function
 
@@ -37,7 +42,9 @@ from utils import transImgSave, mkFolder
 @app.output(PytorchTransModel(key="outputModel"))
 @app.output(Folder(key="outputData"))
 def SPRandomCrop(context):
-    # 从 Context 中获取相关数据
+    """
+    Crop the given PIL Image at a random location.
+    """
     args = context.args
 
     transform = transforms.RandomCrop(

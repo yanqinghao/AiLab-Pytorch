@@ -18,7 +18,9 @@ from utils.visual import CNNNNVisualization
 @app.output(Folder(key="outputData1"))
 @app.output(Csv(key="outputData2"))
 def SPTorchPredict(context):
-    # 从 Context 中获取相关数据
+    """
+    model predict
+    """
     args = context.args
     # 查看上一节点发送的 args.inputData 数据
     model = args.inputModel
@@ -50,13 +52,13 @@ def SPTorchPredict(context):
             for j in range(images.size()[0]):
                 save_path = os.path.join(folder, paths[j])
                 img = Image.open(os.path.join("/sp_data/", paths[j]))
-                # font = ImageFont.truetype("arial.ttf", size=20)
+                font = ImageFont.truetype("Ubuntu-B.ttf", size=20)
                 draw = ImageDraw.Draw(img)
                 draw.text(
-                    (0, 0),
+                    (5, 5),
                     "predicted: {}".format(class_names[predicted[j]]),
                     (255, 255, 255),
-                    # font=font,
+                    font=font,
                 )
                 if not os.path.exists(os.path.split(save_path)[0]):
                     os.makedirs(os.path.split(save_path)[0])
@@ -68,7 +70,6 @@ def SPTorchPredict(context):
                     "data": (copy.deepcopy(images), copy.deepcopy(paths)),
                 }
             )
-            # cnnVisual.plot_each_layer_async(images, paths)
         cnnVisual.put({"status": "quit"})
         cnnVisual.tag = False
         cnnVisual.join()

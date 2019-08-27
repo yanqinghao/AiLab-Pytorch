@@ -51,8 +51,8 @@ def SPRandomAffine(context):
     args = context.args
     transform = transforms.RandomAffine(
         args.degrees,
-        translate=(*args.translate, ),
-        scale=(*args.scale, ),
+        translate=(*args.translate, ) if args.translate else args.translate,
+        scale=(*args.scale, ) if args.scale else args.scale,
         shear=args.shear,
         resample=args.resample,
         fillcolor=args.fillcolor,

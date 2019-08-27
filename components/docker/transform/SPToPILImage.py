@@ -9,9 +9,8 @@ from __future__ import absolute_import, print_function
 import torchvision.transforms as transforms
 
 from suanpan.app import app
-from suanpan.app.arguments import Folder, String
+from suanpan.app.arguments import String, Folder
 from arguments import PytorchTransModel
-from utils import transImgSave, mkFolder
 
 
 @app.input(Folder(key="inputData"))
@@ -31,9 +30,8 @@ def SPToPILImage(context):
     args = context.args
 
     transform = transforms.ToPILImage(mode=args.mode)
-    folder = transImgSave(args.inputData, transform) if args.inputData else mkFolder()
 
-    return transform, folder
+    return transform
 
 
 if __name__ == "__main__":

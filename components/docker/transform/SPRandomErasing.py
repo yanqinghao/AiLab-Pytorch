@@ -8,12 +8,12 @@ from __future__ import absolute_import, print_function
 
 import torchvision.transforms as transforms
 
-from suanpan.app.arguments import Int, Bool, Float, ListOfFloat
+from suanpan.app.arguments import Int, Bool, Float, ListOfFloat, Folder
 from app import app
-from arguments import PytorchTransModel, PytorchDataset
+from arguments import PytorchTransModel
 
 
-@app.input(PytorchDataset(key="inputData"))
+@app.input(Folder(key="inputData"))
 @app.param(
     Float(
         key="p",

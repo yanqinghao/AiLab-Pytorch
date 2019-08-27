@@ -8,3 +8,6 @@ docker push registry.cn-shanghai.aliyuncs.com/shuzhi/pytorch-docker:latest
 docker build -t registry.cn-shanghai.aliyuncs.com/shuzhi/pytorch-docker-gpu:latest -f docker/docker_yanqing_gpu/Dockerfile .
 docker push registry.cn-shanghai.aliyuncs.com/shuzhi/pytorch-docker-gpu:latest
 export SP_APP_TYPE="docker"
+
+sudo mv ./code/AiLab-Pytorch/whl/cu100 ./temp/cu100
+sudo mv ./code/AiLab-Pytorch/whl/cpu ./temp/cpu

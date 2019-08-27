@@ -8,10 +8,9 @@ from __future__ import absolute_import, print_function
 
 import torchvision.transforms as transforms
 
-from suanpan.app.arguments import Int, Bool, String, Folder, Float, ListOfFloat
+from suanpan.app.arguments import Int, Bool, Float, ListOfFloat
 from app import app
 from arguments import PytorchTransModel, PytorchDataset
-from utils import transImgSave, mkFolder
 
 
 @app.input(PytorchDataset(key="inputData"))
@@ -39,7 +38,6 @@ from utils import transImgSave, mkFolder
     Bool(key="inplace", default=False, help="boolean to make this transform inplace.")
 )
 @app.output(PytorchTransModel(key="outputModel"))
-@app.output(Folder(key="outputData"))
 def SPRandomErasing(context):
     """
     Crop the given PIL Image at a random location.
@@ -53,9 +51,8 @@ def SPRandomErasing(context):
         value=args.value,
         inplace=args.inplace,
     )
-    folder = transImgSave(args.inputData, transform) if args.inputData else mkFolder()
 
-    return transform, folder
+    return transform
 
 
 if __name__ == "__main__":

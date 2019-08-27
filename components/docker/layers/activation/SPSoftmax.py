@@ -10,7 +10,7 @@ from utils import getLayerName, plotLayers, calOutput
 
 
 @app.input(PytorchLayersModel(key="inputModel"))
-@app.param(Int(key="dim"))
+@app.param(Int(key="dim", default=None))
 @app.output(PytorchLayersModel(key="outputModel"))
 def SPSoftmax(context):
     # 从 Context 中获取相关数据

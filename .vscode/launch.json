@@ -12,26 +12,63 @@
             "console": "integratedTerminal",
             "args": [
                 // "components.docker.layers.SPInput.SPInput",
-                // "components.docker.layers.SPConv2D.SPConv2D",
-                // "components.docker.layers.SPReLU.SPReLU",
-                // "components.docker.layers.SPBatchNorm2D.SPBatchNorm2D",
-                // "components.docker.layers.SPMaxPool2D.SPMaxPool2D",
-                // "components.docker.layers.SPLinear.SPLinear",
+
+                // "components.docker.layers.activation.SPReLU.SPReLU",
+                // "components.docker.layers.activation.SPSigmoid.SPSigmoid",
+                // "components.docker.layers.activation.SPSoftmax.SPSoftmax",
+
+                // "components.docker.layers.conv.SPConv1D.SPConv1D",
+                // "components.docker.layers.conv.SPConv2D.SPConv2D",
+                // "components.docker.layers.conv.SPConv3D.SPConv3D",
+
+                // "components.docker.layers.dropout.SPDropout.SPDropout",
+                // "components.docker.layers.dropout.SPDropout2D.SPDropout2D",
+
+                // "components.docker.layers.linear.SPLinear.SPLinear",
+
+                // "components.docker.layers.normalization.SPBatchNorm2D.SPBatchNorm2D",
+                
+                // "components.docker.layers.pooling.SPAvgPool2D.SPAvgPool2D",
+                // "components.docker.layers.pooling.SPMaxPool2D.SPMaxPool2D",
+                
                 // "components.docker.SPTorchPredict.SPTorchPredict",
                 // "components.docker.SPTorchTrain.SPTorchTrain",
+
                 // "components.docker.dataset.SPMNIST.SPMNIST",
                 // "components.docker.dataset.SPDataLoader.SPDataLoader",
                 // "components.docker.dataset.SPTransform.SPTransform",
                 // "components.docker.dataset.SPImageFolder.SPImageFolder",
                 // "components.docker.dataset.SPDatasetSampler.SPDatasetSampler",
+
+                // "components.docker.transform.SPCenterCrop.SPCenterCrop",
+                // "components.docker.transform.SPColorJitter.SPColorJitter",
                 // "components.docker.transform.SPCompose.SPCompose",
                 // "components.docker.transform.SPGrayscale.SPGrayscale",
+                // "components.docker.transform.SPNormalize.SPNormalize",
+                // "components.docker.transform.SPPad.SPPad",
+                // "components.docker.transform.SPRandomAffine.SPRandomAffine",
+                // "components.docker.transform.SPRandomApply.SPRandomApply",
+                // "components.docker.transform.SPRandomChoice.SPRandomChoice",
                 // "components.docker.transform.SPRandomCrop.SPRandomCrop",
+                // "components.docker.transform.SPRandomErasing.SPRandomErasing",
+                // "components.docker.transform.SPRandomGrayscale.SPRandomGrayscale",
+                // "components.docker.transform.SPRandomHorizontalFlip.SPRandomHorizontalFlip",
+                // "components.docker.transform.SPRandomOrder.SPRandomOrder",
+                // "components.docker.transform.SPRandomPerspective.SPRandomPerspective",
+                // "components.docker.transform.SPRandomResizedCrop.SPRandomResizedCrop",
+                // "components.docker.transform.SPRandomRotation.SPRandomRotation",
+                // "components.docker.transform.SPRandomVerticalFlip.SPRandomVerticalFlip",
                 // "components.docker.transform.SPResize.SPResize",
+                // "components.docker.transform.SPToPILImage.SPToPILImage",
                 // "components.docker.transform.SPToTensor.SPToTensor",
+
                 "components.docker.visualization.SPCNNVisual.SPCNNVisual",
+
                 // "components.docker.optimizer.SPAdam.SPAdam",
+                // "components.docker.optimizer.SPSGD.SPSGD",
+                // "components.docker.optimizer.scheduler.SPReduceLROnPlateau.SPReduceLROnPlateau",
                 // "components.docker.optimizer.scheduler.SPStepLR.SPStepLR",
+
                 // tableclf,tableregression,tableclf2
                 "--inputTable",
                 "tableclf",

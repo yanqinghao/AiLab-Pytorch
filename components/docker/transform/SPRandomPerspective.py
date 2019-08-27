@@ -40,7 +40,7 @@ from utils import transImgSave, mkFolder
 @app.output(Folder(key="outputData"))
 def SPRandomPerspective(context):
     """
-    Crop the given PIL Image at a random location.
+    Performs Perspective transformation of the given PIL Image randomly with a given probability.
     """
     args = context.args
 

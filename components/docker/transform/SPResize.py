@@ -5,11 +5,11 @@ import torchvision.transforms as transforms
 
 from suanpan.app import app
 from suanpan.app.arguments import Folder, Int
-from arguments import PytorchTransModel
+from arguments import PytorchTransModel, PytorchDataset
 from utils import transImgSave, mkFolder
 
 
-@app.input(Folder(key="inputData"))
+@app.input(PytorchDataset(key="inputData"))
 @app.param(Int(key="size", default=28, help=" Desired output size."))
 @app.param(
     Int(

@@ -11,6 +11,7 @@ import torchvision.transforms as transforms
 from suanpan.app import app
 from suanpan.app.arguments import Folder, String
 from arguments import PytorchTransModel
+from utils import transImgSave, mkFolder
 
 
 @app.input(Folder(key="inputData"))
@@ -19,7 +20,7 @@ from arguments import PytorchTransModel
         key="mode",
         default=None,
         help="color space and pixel depth of input data (optional)."
-             "1, L, P, RGB, RGBA, CMYK, YCbCr, LAB, HSV, I, F",
+        "1, L, P, RGB, RGBA, CMYK, YCbCr, LAB, HSV, I, F",
     )
 )
 @app.output(PytorchTransModel(key="outputModel"))
@@ -30,8 +31,9 @@ def SPToPILImage(context):
     args = context.args
 
     transform = transforms.ToPILImage(mode=args.mode)
+    folder = transImgSave(args.inputData, transform) if args.inputData else mkFolder()
 
-    return transform
+    return transform, folder
 
 
 if __name__ == "__main__":

@@ -34,7 +34,10 @@ def SPRandomRotation(context):
     args = context.args
 
     transform = transforms.RandomRotation(
-        args.degrees, resample=args.resample, expand=args.resample, center=args.resample
+        args.degrees,
+        resample=args.resample,
+        expand=args.resample,
+        center=(*args.center,) if args.center else args.center,
     )
     folder = transImgSave(args.inputData, transform) if args.inputData else mkFolder()
 

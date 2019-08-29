@@ -5,7 +5,7 @@ from suanpan.app.arguments import Folder, ListOfInt
 from suanpan.log import logger
 from app import app
 from arguments import PytorchLayersModel, SPNet
-from utils import plotLayers
+from utils import plotLayers, getScreenshotPath
 
 
 @app.input(Folder(key="inputData"))
@@ -16,6 +16,7 @@ def SPInput(context):
     if len(args.inputSize) > 3:
         logger.error("Wrong image size, pls input like (28,28,1).")
     model = SPNet(args.inputSize)
+    model.layers["Input Layer"] = (None, getScreenshotPath())
     plotLayers(model)
     return model
 

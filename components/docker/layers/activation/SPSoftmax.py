@@ -6,7 +6,7 @@ import torch.nn as nn
 from suanpan.app.arguments import Int
 from app import app
 from arguments import PytorchLayersModel
-from utils import getLayerName, plotLayers, calOutput
+from utils import getLayerName, plotLayers, calOutput, getScreenshotPath
 
 
 @app.input(PytorchLayersModel(key="inputModel"))
@@ -20,7 +20,7 @@ def SPSoftmax(context):
     inputSize = calOutput(model)
     name = getLayerName(model.layers, "Softmax")
     setattr(model, name, nn.Softmax(dim=args.dim))
-    model.layers.append((name, getattr(model, name)))
+    model.layers[name] = (getattr(model, name), getScreenshotPath())
     plotLayers(model, inputSize)
     return model
 

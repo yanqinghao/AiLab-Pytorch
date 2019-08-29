@@ -13,16 +13,17 @@ from suanpan.storage.arguments import Folder
 class SPNet(nn.Module):
     def __init__(self, input_size):
         super(SPNet, self).__init__()
-        self.layers = []
+        self.layers = {}
         self.class_to_idx = None
         self.input_size = tuple(input_size)
 
     def forward(self, x):
         out = x
-        for i, j in self.layers:
-            if isinstance(j, nn.Linear):
-                out = out.reshape(out.size(0), -1)
-            out = j(out)
+        for _, j in self.layers.items():
+            if j[0]:
+                if isinstance(j[0], nn.Linear):
+                    out = out.reshape(out.size(0), -1)
+                out = j[0](out)
         return out
 
 

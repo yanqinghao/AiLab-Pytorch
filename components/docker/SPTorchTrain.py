@@ -23,7 +23,7 @@ from utils.visual import CNNNNVisualization
 @app.input(PytorchDataloader(key="inputValLoader"))
 @app.input(PytorchOptimModel(key="inputOptimModel"))
 @app.input(PytorchSchedulerModel(key="inputSchedulerModel"))
-@app.param(Int(key="__gpu"))
+@app.param(Int(key="__gpu", default=0))
 @app.param(Int(key="epochs", default=5))
 @app.param(
     String(
@@ -165,7 +165,6 @@ def SPTorchTrain(context):
     for i in cnnThreads:
         i.tag = False
     for i in cnnThreads:
-        logger.info("test thread:{},{}".format(i.q.qsize(), i.tag))
         i.join()
 
     time_elapsed = time.time() - since

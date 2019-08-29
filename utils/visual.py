@@ -60,7 +60,8 @@ class Visualization(ScreenshotsThread):
         fig = plt.figure()
         row_col = int(np.ceil(np.sqrt(len(data))))
         ax = fig.subplots(row_col, row_col)
-        for i, axi in enumerate(ax.reshape(-1)):
+        axArr = ax.reshape(-1) if isinstance(ax, np.ndarray) else [ax]
+        for i, axi in enumerate(axArr):
             if i >= len(data):
                 break
             axi.axis("off")
@@ -144,13 +145,15 @@ class CNNNNVisualization(Visualization):
     def plot_each_layer(self, data, paths):
         folder = "/out_data/"
         handles = {}
-        for layer in self.layers:
-            handles[layer[0]] = self.hook_layer(layer[0])
+        self.outputs["Input Layer"] = data[0].unsqueeze_(0)
+        for layer_name, layer in self.layers.items():
+            handles[layer_name] = self.hook_layer(layer_name)
         out = self.model(data[0].unsqueeze_(0))
         for handle in handles.items():
             handle[1].remove()
         outputs = self.outputs
         for layer_name, layer_outputs in outputs.items():
+            screenshots.current.storageName = self.layers[layer_name][1]
             if len(layer_outputs.size()) == 4:
                 for layer_output, path in zip(layer_outputs, [paths[0]]):
                     if isinstance(path, str):
@@ -169,8 +172,10 @@ class CNNNNVisualization(Visualization):
                     else:
                         time.sleep(1)
                         screenshots.save(img)
-                    self.last_time = time.time()
-            elif len(layer_outputs.size()) == 2:
+            elif (
+                len(layer_outputs.size()) == 2
+                and layer_name == list(outputs.keys())[-1]
+            ):
                 for layer_output, path in zip(layer_outputs, [paths[0]]):
                     if isinstance(path, str):
                         file_name = os.path.join(folder, path)
@@ -188,9 +193,9 @@ class CNNNNVisualization(Visualization):
                     else:
                         time.sleep(1)
                         screenshots.save(img)
-                    self.last_time = time.time()
             else:
                 pass
+        self.last_time = time.time()
         return time.time()
 
     def training_log(self, log):
@@ -220,5 +225,61 @@ class CNNNNVisualization(Visualization):
             screenshots.save(data)
         self.last_time = time.time()
 
+        return time.time()
+
+    def plot_each_layer_onenode(self, data, paths):
+        folder = "/out_data/"
+        handles = {}
+        self.outputs["input"] = data[0].unsqueeze_(0)
+        for layer in self.layers:
+            handles[layer[0]] = self.hook_layer(layer[0])
+        out = self.model(data[0].unsqueeze_(0))
+        for handle in handles.items():
+            handle[1].remove()
+        outputs = self.outputs
+        for layer_name, layer_outputs in outputs.items():
+            if len(layer_outputs.size()) == 4:
+                for layer_output, path in zip(layer_outputs, [paths[0]]):
+                    if isinstance(path, str):
+                        file_name = os.path.join(folder, path)
+                    else:
+                        paths_img = "{}.png".format(path)
+                        file_name = os.path.join(folder, paths_img)
+                    if not os.path.exists(os.path.split(file_name)[0]):
+                        os.makedirs(os.path.split(file_name)[0])
+                    self.plot_cnn_layer(layer_output, file_name)
+                    img = image.read(file_name)
+                    if not self.last_time:
+                        screenshots.save(img)
+                    elif (time.time() - self.last_time) > 1:
+                        screenshots.save(img)
+                    else:
+                        time.sleep(1)
+                        screenshots.save(img)
+                    self.last_time = time.time()
+            elif (
+                len(layer_outputs.size()) == 2
+                and layer_name == list(outputs.keys())[-1]
+            ):
+                for layer_output, path in zip(layer_outputs, [paths[0]]):
+                    if isinstance(path, str):
+                        file_name = os.path.join(folder, path)
+                    else:
+                        paths_img = "{}.png".format(path)
+                        file_name = os.path.join(folder, paths_img)
+                    if not os.path.exists(os.path.split(file_name)[0]):
+                        os.makedirs(os.path.split(file_name)[0])
+                    self.plot_linear_layer(layer_output, file_name)
+                    img = image.read(file_name)
+                    if not self.last_time:
+                        screenshots.save(img)
+                    elif (time.time() - self.last_time) > 1:
+                        screenshots.save(img)
+                    else:
+                        time.sleep(1)
+                        screenshots.save(img)
+                    self.last_time = time.time()
+            else:
+                pass
         return time.time()
 

@@ -29,7 +29,7 @@ def SPSGD(context):
         "name": "SGD",
         "param": {
             "lr": args.lr,
-            "momentum": (*args.momentum,),
+            "momentum": args.momentum,
             "dampening": args.dampening,
             "weight_decay": args.weightDecay,
             "nesterov": args.nesterov,

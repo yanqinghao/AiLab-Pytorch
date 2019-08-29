@@ -48,6 +48,7 @@ def transImgSave(dataset, transform):
         output = "/out_data"
     return output
 
+
 def mkFolder():
     folder = "/out_data"
     if not os.path.exists(folder):
@@ -64,7 +65,7 @@ def plotLayers(model, input_size=None):
         if len(model.input_size) == 3
         else [1] + list(model.input_size)
     )
-    name_list = [i[0] for i in model.layers]
+    name_list = [i[0] for i in model.layers.items()]
     model_name = "{} Layer".format(name_list[-1]) if name_list else "Input Layer"
     input_name = (
         "IN (N {})".format("".join(["* {}".format(i) for i in input_size[1:]]))
@@ -102,3 +103,9 @@ def datasetScreenshot(dataset, screenshot):
     for img, _, _ in dataset:
         screenshot.save(np.asarray(img))
         break
+
+
+def getScreenshotPath():
+    env = dict(os.environ)
+    node_info = (env["SP_USER_ID"], env["SP_APP_ID"], env["SP_NODE_ID"])
+    return "studio/{}/logs/{}/screenshots/{}".format(*node_info)

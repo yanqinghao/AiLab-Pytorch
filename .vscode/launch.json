@@ -13,6 +13,7 @@
             "args": [
                 // "components.docker.layers.SPInput.SPInput",
 
+                // "components.docker.layers.activation.SPLogSoftmax.SPLogSoftmax",
                 // "components.docker.layers.activation.SPReLU.SPReLU",
                 // "components.docker.layers.activation.SPSigmoid.SPSigmoid",
                 // "components.docker.layers.activation.SPSoftmax.SPSoftmax",
@@ -65,6 +66,7 @@
                 "components.docker.visualization.SPCNNVisual.SPCNNVisual",
 
                 // "components.docker.optimizer.SPAdam.SPAdam",
+                // "components.docker.optimizer.SPRMSprop.SPRMSprop",
                 // "components.docker.optimizer.SPSGD.SPSGD",
                 // "components.docker.optimizer.scheduler.SPReduceLROnPlateau.SPReduceLROnPlateau",
                 // "components.docker.optimizer.scheduler.SPStepLR.SPStepLR",

@@ -37,15 +37,17 @@ def SPTorchPredict(context):
     with torch.no_grad():
         prediction = torch.tensor([], dtype=torch.long)
         filepath = []
+        filelabel = []
         cnnVisual = CNNNNVisualization(model)
         cnnVisual.daemon = True
         cnnVisual.start()
-        for images, _, paths in test_loader:
+        for images, labels, paths in test_loader:
             images = images.to(device)
             outputs = model(images)
             _, predicted = torch.max(outputs.data, 1)
             prediction = torch.cat((prediction, predicted), 0)
             filepath = filepath + list(paths)
+            filelabel = filelabel + list(labels)
             if not pathtmp:
                 pathtmp = list(paths)[0]
 
@@ -76,7 +78,8 @@ def SPTorchPredict(context):
 
         df = pd.DataFrame(
             {
-                "file path": filepath,
+                "file path or index": filepath,
+                "label": filelabel,
                 "predictions": [class_names[i] for i in prediction.tolist()],
             }
         )

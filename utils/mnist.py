@@ -106,7 +106,7 @@ class MNIST(VisionDataset):
 
         # doing this so that it is consistent with all other datasets
         # to return a PIL Image
-        img = Image.fromarray(img.numpy(), mode="L")
+        img = Image.fromarray(img.cpu().numpy(), mode="L")
 
         if self.transform is not None:
             img = self.transform(img)

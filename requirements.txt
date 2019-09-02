@@ -1,4 +1,4 @@
-suanpan[docker]==0.9.52
+suanpan[docker]==0.9.71
 matplotlib
 hiddenlayer
 IPython

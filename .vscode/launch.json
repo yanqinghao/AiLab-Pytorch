@@ -11,36 +11,27 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "args": [
-                // "components.docker.layers.SPInput.SPInput",
-
+                "components.docker.layers.SPInput.SPInput",
                 // "components.docker.layers.activation.SPLogSoftmax.SPLogSoftmax",
                 // "components.docker.layers.activation.SPReLU.SPReLU",
                 // "components.docker.layers.activation.SPSigmoid.SPSigmoid",
                 // "components.docker.layers.activation.SPSoftmax.SPSoftmax",
-
                 // "components.docker.layers.conv.SPConv1D.SPConv1D",
                 // "components.docker.layers.conv.SPConv2D.SPConv2D",
                 // "components.docker.layers.conv.SPConv3D.SPConv3D",
-
                 // "components.docker.layers.dropout.SPDropout.SPDropout",
                 // "components.docker.layers.dropout.SPDropout2D.SPDropout2D",
-
                 // "components.docker.layers.linear.SPLinear.SPLinear",
-
                 // "components.docker.layers.normalization.SPBatchNorm2D.SPBatchNorm2D",
-                
                 // "components.docker.layers.pooling.SPAvgPool2D.SPAvgPool2D",
                 // "components.docker.layers.pooling.SPMaxPool2D.SPMaxPool2D",
-                
                 // "components.docker.SPTorchPredict.SPTorchPredict",
                 // "components.docker.SPTorchTrain.SPTorchTrain",
-
                 // "components.docker.dataset.SPMNIST.SPMNIST",
                 // "components.docker.dataset.SPDataLoader.SPDataLoader",
                 // "components.docker.dataset.SPTransform.SPTransform",
                 // "components.docker.dataset.SPImageFolder.SPImageFolder",
                 // "components.docker.dataset.SPDatasetSampler.SPDatasetSampler",
-
                 // "components.docker.transform.SPCenterCrop.SPCenterCrop",
                 // "components.docker.transform.SPColorJitter.SPColorJitter",
                 // "components.docker.transform.SPCompose.SPCompose",
@@ -62,15 +53,12 @@
                 // "components.docker.transform.SPResize.SPResize",
                 // "components.docker.transform.SPToPILImage.SPToPILImage",
                 // "components.docker.transform.SPToTensor.SPToTensor",
-
-                "components.docker.visualization.SPCNNVisual.SPCNNVisual",
-
+                // "components.docker.visualization.SPCNNVisual.SPCNNVisual",
                 // "components.docker.optimizer.SPAdam.SPAdam",
                 // "components.docker.optimizer.SPRMSprop.SPRMSprop",
                 // "components.docker.optimizer.SPSGD.SPSGD",
                 // "components.docker.optimizer.scheduler.SPReduceLROnPlateau.SPReduceLROnPlateau",
                 // "components.docker.optimizer.scheduler.SPStepLR.SPStepLR",
-
                 // tableclf,tableregression,tableclf2
                 "--inputTable",
                 "tableclf",
@@ -105,7 +93,8 @@
                 // "/home/yanqinghao/code/AiLab-Pytorch/dataset/output/model2",
             ],
             "env": {
-                "SP_APP_TYPE": "docker"
+                "SP_APP_TYPE": "docker",
+                "SP_SCREENSHOTS_STORAGE_KEY": "/home/yanqinghao/temp/screenshots"
             }
         }
     ]

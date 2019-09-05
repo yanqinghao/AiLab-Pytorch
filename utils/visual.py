@@ -147,7 +147,8 @@ class CNNNNVisualization(Visualization):
         handles = {}
         self.outputs["Input Layer"] = data[0].unsqueeze_(0)
         for layer_name, layer in self.layers.items():
-            handles[layer_name] = self.hook_layer(layer_name)
+            if layer_name is not "Input Layer":
+                handles[layer_name] = self.hook_layer(layer_name)
         out = self.model(data[0].unsqueeze_(0))
         for handle in handles.items():
             handle[1].remove()
@@ -231,8 +232,9 @@ class CNNNNVisualization(Visualization):
         folder = "/out_data/"
         handles = {}
         self.outputs["input"] = data[0].unsqueeze_(0)
-        for layer in self.layers:
-            handles[layer[0]] = self.hook_layer(layer[0])
+        for layer_name, layer in self.layers.items():
+            if layer_name is not "Input Layer":
+                handles[layer[0]] = self.hook_layer(layer[0])
         out = self.model(data[0].unsqueeze_(0))
         for handle in handles.items():
             handle[1].remove()

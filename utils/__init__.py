@@ -8,10 +8,10 @@ import hiddenlayer as hl
 from graphviz import Digraph
 from suanpan.screenshots import screenshots
 from suanpan.utils import image
-from suanpan import g
 from .mnist import MNIST
 from .folder import ImageFolder
 from .visual import CNNNNVisualization, CNNLayerVisualization
+from .visual import getScreenshotPath
 
 
 def getLayerName(moduleList, match):
@@ -105,7 +105,3 @@ def datasetScreenshot(dataset, screenshot):
         screenshot.save(np.asarray(img))
         break
 
-
-def getScreenshotPath():
-    node_info = (g.userId, g.appId, g.nodeId)
-    return "studio/{}/logs/{}/screenshots/{}".format(*node_info)

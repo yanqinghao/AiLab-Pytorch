@@ -11,7 +11,12 @@ import matplotlib.pyplot as plt
 from scipy.special import softmax
 from suanpan.utils import image
 from suanpan.screenshots import screenshots
-from . import getScreenshotPath
+from suanpan import g
+
+
+def getScreenshotPath():
+    node_info = (g.userId, g.appId, g.nodeId)
+    return "studio/{}/logs/{}/screenshots/{}".format(*node_info)
 
 
 class ScreenshotsThread(threading.Thread):

@@ -16,7 +16,7 @@ from .visual import CNNNNVisualization, CNNLayerVisualization
 
 def getLayerName(moduleList, match):
     layersName = []
-    for name, module in moduleList:
+    for name, module in moduleList.items():
         if match in name:
             layersName.append(int(name.replace(match + "_", "")))
     return (

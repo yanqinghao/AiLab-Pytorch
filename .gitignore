@@ -123,4 +123,3 @@ Pipfile
 dataset
 tools/dataupload.py
 whl
-.dockerignore

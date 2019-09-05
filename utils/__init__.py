@@ -61,13 +61,13 @@ def plotLayers(model, input_size=None):
     file_name = "screenshots"
     output_size = (
         calOutput(model)
-        if model.layers
+        if len(model.layers) > 1
         else [1] + [model.input_size[2]] + list(model.input_size[:2])
         if len(model.input_size) == 3
         else [1] + list(model.input_size)
     )
     name_list = [i[0] for i in model.layers.items()]
-    model_name = "{} Layer".format(name_list[-1]) if name_list else "Input Layer"
+    model_name = "{} Layer".format(name_list[-1])
     input_name = (
         "IN (N {})".format("".join(["* {}".format(i) for i in input_size[1:]]))
         if len(model.layers) > 1
@@ -97,7 +97,7 @@ def calOutput(model):
         if len(model.input_size) == 3
         else [1] + list(model.input_size)
     )
-    return model(torch.zeros(input_size)).shape if model.layers else input_size
+    return model(torch.zeros(input_size)).shape if len(model.layers) > 1 else input_size
 
 
 def datasetScreenshot(dataset, screenshot):

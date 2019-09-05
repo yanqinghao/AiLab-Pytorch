@@ -70,7 +70,7 @@ def plotLayers(model, input_size=None):
     model_name = "{} Layer".format(name_list[-1]) if name_list else "Input Layer"
     input_name = (
         "IN (N {})".format("".join(["* {}".format(i) for i in input_size[1:]]))
-        if model.layers
+        if len(model.layers) > 1
         else None
     )
     output_name = "OUT (N {})".format(

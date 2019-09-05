@@ -147,7 +147,7 @@ class CNNNNVisualization(Visualization):
         handles = {}
         self.outputs["Input Layer"] = data[0].unsqueeze_(0)
         for layer_name, layer in self.layers.items():
-            if layer_name is not "Input Layer":
+            if layer_name != "Input Layer":
                 handles[layer_name] = self.hook_layer(layer_name)
         out = self.model(data[0].unsqueeze_(0))
         for handle in handles.items():

@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 from scipy.special import softmax
 from suanpan.utils import image
 from suanpan.screenshots import screenshots
-from utils import getScreenshotPath
+from . import getScreenshotPath
 
 
 class ScreenshotsThread(threading.Thread):

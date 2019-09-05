@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 from scipy.special import softmax
 from suanpan.utils import image
 from suanpan.screenshots import screenshots
+from utils import getScreenshotPath
 
 
 class ScreenshotsThread(threading.Thread):
@@ -200,6 +201,7 @@ class CNNNNVisualization(Visualization):
         return time.time()
 
     def training_log(self, log):
+        screenshots.current.storageName = getScreenshotPath()
         fig = plt.figure()
         ax = fig.add_subplot(111)
         epochs = log["epoch"]

@@ -146,7 +146,7 @@ class CNNNNVisualization(Visualization):
 
     def __init__(self, model, target=None, tag=True, last_time=None):
         super(CNNNNVisualization, self).__init__(model)
-        self._target = {"layer": self.plot_each_layer, "log": self.training_log}
+        self._target = {"layer": self.plot_each_layer_onenode, "log": self.training_log}
 
     def plot_each_layer(self, data, paths):
         folder = "/out_data/"

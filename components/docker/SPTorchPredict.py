@@ -47,7 +47,7 @@ def SPTorchPredict(context):
             _, predicted = torch.max(outputs.data, 1)
             prediction = torch.cat((prediction, predicted), 0)
             filepath = filepath + list(paths)
-            filelabel = filelabel + list(labels)
+            filelabel = filelabel + list(labels.item())
             if not pathtmp:
                 pathtmp = list(paths)[0]
 
@@ -79,7 +79,7 @@ def SPTorchPredict(context):
         df = pd.DataFrame(
             {
                 "file path or index": filepath,
-                "label": [class_names[i] for i in filelabel.tolist()],
+                "label": [class_names[i] for i in filelabel],
                 "predictions": [class_names[i] for i in prediction.tolist()],
             }
         )

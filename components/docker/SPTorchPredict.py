@@ -47,7 +47,7 @@ def SPTorchPredict(context):
             _, predicted = torch.max(outputs.data, 1)
             prediction = torch.cat((prediction, predicted), 0)
             filepath = filepath + list(paths)
-            filelabel = filelabel + list(labels.item())
+            filelabel = filelabel + list(labels.numpy())
             if not pathtmp:
                 pathtmp = list(paths)[0]
 

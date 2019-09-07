@@ -6,7 +6,7 @@ import copy
 import torch
 
 import pandas as pd
-from PIL import Image, ImageFont, ImageDraw
+from PIL import Image, ImageDraw
 from suanpan.app.arguments import Folder, Csv
 from app import app
 from arguments import PytorchLayersModel, PytorchDataloader
@@ -54,13 +54,13 @@ def SPTorchPredict(context):
             for j in range(images.size()[0]):
                 save_path = os.path.join(folder, paths[j])
                 img = Image.open(os.path.join("/sp_data/", paths[j]))
-                font = ImageFont.truetype("Ubuntu-B.ttf", size=20)
+                # font = ImageFont.truetype("Ubuntu-B.ttf", size=20)
                 draw = ImageDraw.Draw(img)
                 draw.text(
                     (5, 5),
                     "predicted: {}".format(class_names[predicted[j]]),
                     (255, 255, 255),
-                    font=font,
+                    # font=font,
                 )
                 if not os.path.exists(os.path.split(save_path)[0]):
                     os.makedirs(os.path.split(save_path)[0])

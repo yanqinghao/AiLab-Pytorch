@@ -79,7 +79,7 @@ def SPTorchPredict(context):
         df = pd.DataFrame(
             {
                 "file path or index": filepath,
-                "label": filelabel,
+                "label": [class_names[i] for i in filelabel.tolist()],
                 "predictions": [class_names[i] for i in prediction.tolist()],
             }
         )

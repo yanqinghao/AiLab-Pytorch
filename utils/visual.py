@@ -10,8 +10,20 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.special import softmax
 from suanpan.utils import image
-from suanpan.screenshots import screenshots
-from screenshot import createScreenshots, getScreenshotPath
+from suanpan.screenshots import screenshots, Screenshots
+from suanpan import g
+
+
+def getScreenshotPath():
+    node_info = (g.userId, g.appId, g.nodeId)
+    return "studio/{}/logs/{}/screenshots/{}".format(*node_info)
+
+
+def createScreenshots(storage_name):
+    screenshots_node = Screenshots()
+    screenshots_node.current.storageName = storage_name
+    screenshots_node.clean()
+    return screenshots_node
 
 
 class ScreenshotsThread(threading.Thread):

@@ -12,6 +12,7 @@ from scipy.special import softmax
 from suanpan.utils import image
 from suanpan.screenshots import screenshots
 from suanpan import g
+from screenshot import createScreenshots
 
 
 def getScreenshotPath():
@@ -144,9 +145,11 @@ class CNNNNVisualization(Visualization):
         function to display.
     """
 
+    screenshots_dict = {}
+
     def __init__(self, model, target=None, tag=True, last_time=None):
         super(CNNNNVisualization, self).__init__(model)
-        self._target = {"layer": self.plot_each_layer_onenode, "log": self.training_log}
+        self._target = {"layer": self.plot_each_layer, "log": self.training_log}
 
     def plot_each_layer(self, data, paths):
         folder = "/out_data/"
@@ -160,7 +163,10 @@ class CNNNNVisualization(Visualization):
             handle[1].remove()
         outputs = self.outputs
         for layer_name, layer_outputs in outputs.items():
-            screenshots.current.storageName = self.layers[layer_name][1]
+            if layer_name not in list(self.screenshots_dict.keys()):
+                storage_name = self.layers[layer_name][1]
+                self.screenshots_dict[layer_name] = createScreenshots(storage_name)
+            screenshots_node = self.screenshots_dict[layer_name]
             if len(layer_outputs.size()) == 4:
                 for layer_output, path in zip(layer_outputs, [paths[0]]):
                     if isinstance(path, str):
@@ -173,12 +179,12 @@ class CNNNNVisualization(Visualization):
                     self.plot_cnn_layer(layer_output, file_name)
                     img = image.read(file_name)
                     if not self.last_time:
-                        screenshots.save(img)
+                        screenshots_node.save(img)
                     elif (time.time() - self.last_time) > 1:
-                        screenshots.save(img)
+                        screenshots_node.save(img)
                     else:
                         time.sleep(1)
-                        screenshots.save(img)
+                        screenshots_node.save(img)
             elif (
                 len(layer_outputs.size()) == 2
                 and layer_name == list(outputs.keys())[-1]
@@ -194,12 +200,12 @@ class CNNNNVisualization(Visualization):
                     self.plot_linear_layer(layer_output, file_name)
                     img = image.read(file_name)
                     if not self.last_time:
-                        screenshots.save(img)
+                        screenshots_node.save(img)
                     elif (time.time() - self.last_time) > 1:
-                        screenshots.save(img)
+                        screenshots_node.save(img)
                     else:
                         time.sleep(1)
-                        screenshots.save(img)
+                        screenshots_node.save(img)
             else:
                 pass
         self.last_time = time.time()

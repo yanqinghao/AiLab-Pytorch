@@ -12,6 +12,7 @@ from .mnist import MNIST
 from .folder import ImageFolder
 from .visual import CNNNNVisualization, CNNLayerVisualization
 from .visual import getScreenshotPath
+from .screenshot import createScreenshots, getScreenshotPath
 
 
 def getLayerName(moduleList, match):

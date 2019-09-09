@@ -3,14 +3,14 @@ from __future__ import absolute_import, print_function
 
 import torch.nn as nn
 
-from suanpan.app.arguments import Int, Bool
+from suanpan.app.arguments import Float, Bool
 from app import app
 from arguments import PytorchLayersModel
 from utils import getLayerName, plotLayers, calOutput, getScreenshotPath
 
 
 @app.input(PytorchLayersModel(key="inputModel"))
-@app.param(Int(key="p", default=0.5))
+@app.param(Float(key="p", default=0.5))
 @app.param(Bool(key="inplace", default=False))
 @app.output(PytorchLayersModel(key="outputModel"))
 def SPDropout(context):

@@ -21,6 +21,7 @@
                 // "components.docker.layers.conv.SPConv3D.SPConv3D",
                 // "components.docker.layers.dropout.SPDropout.SPDropout",
                 // "components.docker.layers.dropout.SPDropout2D.SPDropout2D",
+                // "components.docker.layers.linear.SPFlatten.SPFlatten",
                 // "components.docker.layers.linear.SPLinear.SPLinear",
                 // "components.docker.layers.normalization.SPBatchNorm2D.SPBatchNorm2D",
                 // "components.docker.layers.pooling.SPAvgPool2D.SPAvgPool2D",

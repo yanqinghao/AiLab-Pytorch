@@ -21,8 +21,6 @@ class SPNet(nn.Module):
         out = x
         for _, j in self.layers.items():
             if j[0]:
-                if isinstance(j[0], nn.Linear):
-                    out = out.reshape(out.size(0), -1)
                 out = j[0](out)
         return out
 

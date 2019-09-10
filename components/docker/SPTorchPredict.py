@@ -6,8 +6,11 @@ import copy
 import torch
 
 import pandas as pd
+import numpy as np
 from PIL import Image, ImageDraw
 from suanpan.app.arguments import Folder, Csv
+from suanpan import asyncio
+from suanpan.screenshots import screenshots
 from app import app
 from arguments import PytorchLayersModel, PytorchDataloader
 from utils.visual import CNNNNVisualization
@@ -65,6 +68,7 @@ def SPTorchPredict(context):
                 if not os.path.exists(os.path.split(save_path)[0]):
                     os.makedirs(os.path.split(save_path)[0])
                 img.save(save_path)
+            asyncio.run(screenshots.save(np.array(img)))
             cnnVisual.put(
                 {
                     "status": "running",

@@ -1,5 +1,6 @@
 # coding=utf-8
 from __future__ import absolute_import, print_function
+
 import os
 import torch
 import numpy as np
@@ -8,10 +9,11 @@ import hiddenlayer as hl
 from graphviz import Digraph
 from suanpan.screenshots import screenshots
 from suanpan.utils import image
-from .mnist import MNIST
-from .folder import ImageFolder
-from .visual import CNNNNVisualization, CNNLayerVisualization
-from .visual import createScreenshots, getScreenshotPath
+from utils.mnist import MNIST
+from utils.folder import ImageFolder
+from utils.visual import CNNNNVisualization, CNNLayerVisualization
+from utils.visual import createScreenshots, getScreenshotPath
+from utils.download import downloadPretrained
 
 
 def getLayerName(moduleList, match):

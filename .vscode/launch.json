@@ -54,6 +54,7 @@
                 // "components.docker.transform.SPToPILImage.SPToPILImage",
                 // "components.docker.transform.SPToTensor.SPToTensor",
                 // "components.docker.visualization.SPCNNVisual.SPCNNVisual",
+                // "components.docker.models.SPvgg16.SPvgg16",
                 // "components.docker.optimizer.SPAdam.SPAdam",
                 // "components.docker.optimizer.SPRMSprop.SPRMSprop",
                 // "components.docker.optimizer.SPSGD.SPSGD",

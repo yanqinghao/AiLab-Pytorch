@@ -17,6 +17,7 @@ from utils import (
 @app.input(PytorchLayersModel(key="inputModel"))
 @app.param(Bool(key="pretrained", default=True))
 @app.param(Bool(key="featureExtractor", default=True))
+@app.param(Bool(key="requiresGrad", default=False))
 @app.output(PytorchLayersModel(key="outputModel"))
 def SPvgg16(context):
     """VGG16"""
@@ -31,6 +32,8 @@ def SPvgg16(context):
         if args.featureExtractor
         else models.vgg16(pretrained=args.pretrained)
     )
+    for param in pretrainedModel.parameters():
+        param.requires_grad = args.requiresGrad
     setattr(model, name, pretrainedModel)
     model.layers[name] = (getattr(model, name), getScreenshotPath())
     plotLayers(model, inputSize)

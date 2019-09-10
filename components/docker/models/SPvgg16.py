@@ -1,6 +1,7 @@
 # coding=utf-8
 from __future__ import absolute_import, print_function
 
+import pickle
 from suanpan.app.arguments import Bool
 import torchvision.models as models
 from app import app
@@ -32,6 +33,10 @@ def SPvgg16(context):
         if args.featureExtractor
         else models.vgg16(pretrained=args.pretrained)
     )
+    if not args.featureExtractor:
+        with open("./utils/imagenet1000_clsid_to_human.pkl", "rb") as f:
+            clsid_to_human = pickle.load(f)
+        model.class_to_idx = clsid_to_human
     for param in pretrainedModel.parameters():
         param.requires_grad = args.requiresGrad
     setattr(model, name, pretrainedModel)

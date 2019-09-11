@@ -36,6 +36,7 @@ def SPvgg16(context):
     if not args.featureExtractor:
         with open("./utils/imagenet1000_clsid_to_human.pkl", "rb") as f:
             clsid_to_human = pickle.load(f)
+        clsid_to_human[134] = "crane 1"
         clsid_to_human = dict(zip(clsid_to_human.values(), clsid_to_human.keys()))
         model.class_to_idx = clsid_to_human
     for param in pretrainedModel.parameters():

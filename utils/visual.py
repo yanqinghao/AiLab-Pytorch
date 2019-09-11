@@ -70,6 +70,8 @@ class Visualization(ScreenshotsThread):
         return layer.register_forward_hook(hook_function)
 
     def plot_cnn_layer(self, data, file_name):
+        if not os.path.exists(os.path.split("/tmp{}-plotcnn.png".format(file_name))[0]):
+            os.makedirs(os.path.split("/tmp{}-plotcnn.png".format(file_name))[0])
         if len(data) == 3:
             image.save(
                 "/tmp{}-plotcnn.png".format(file_name),

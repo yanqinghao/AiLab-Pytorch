@@ -31,6 +31,7 @@
                 // "components.docker.dataset.SPMNIST.SPMNIST",
                 // "components.docker.dataset.SPDataLoader.SPDataLoader",
                 // "components.docker.dataset.SPTransform.SPTransform",
+                // "components.docker.dataset.SPCatsvsDogs.SPCatsvsDogs",
                 // "components.docker.dataset.SPImageFolder.SPImageFolder",
                 // "components.docker.dataset.SPImageFolderV2.SPImageFolderV2",
                 // "components.docker.dataset.SPDatasetSampler.SPDatasetSampler",

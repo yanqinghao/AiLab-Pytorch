@@ -79,9 +79,9 @@ class Visualization(ScreenshotsThread):
                 break
             axi.axis("off")
             axi.imshow(np.round(data[i].cpu().data.numpy() * 225), cmap="gray")
-        fig.savefig("{}-plotcnn.png".format(file_name))
+        fig.savefig("/tmp/{}-plotcnn.png".format(file_name))
         plt.close(fig)
-        return "{}-plotcnn.png".format(file_name)
+        return "/tmp/{}-plotcnn.png".format(file_name)
 
     def plot_linear_layer(self, data, file_name):
         fig = plt.figure()

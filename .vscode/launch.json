@@ -32,6 +32,7 @@
                 // "components.docker.dataset.SPDataLoader.SPDataLoader",
                 // "components.docker.dataset.SPTransform.SPTransform",
                 // "components.docker.dataset.SPImageFolder.SPImageFolder",
+                // "components.docker.dataset.SPImageFolderV2.SPImageFolderV2",
                 // "components.docker.dataset.SPDatasetSampler.SPDatasetSampler",
                 // "components.docker.transform.SPCenterCrop.SPCenterCrop",
                 // "components.docker.transform.SPColorJitter.SPColorJitter",

@@ -73,7 +73,7 @@ class Visualization(ScreenshotsThread):
         if len(data) == 3:
             image.save(
                 "/tmp{}-plotcnn.png".format(file_name),
-                np.round(data.cpu().data.numpy() * 225),
+                np.transpose(np.round(data.cpu().data.numpy() * 225), (1, 2, 0)),
             )
         else:
             fig = plt.figure()

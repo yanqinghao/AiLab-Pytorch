@@ -70,18 +70,24 @@ class Visualization(ScreenshotsThread):
         return layer.register_forward_hook(hook_function)
 
     def plot_cnn_layer(self, data, file_name):
-        fig = plt.figure()
-        row_col = int(np.ceil(np.sqrt(len(data))))
-        ax = fig.subplots(row_col, row_col)
-        axArr = ax.reshape(-1) if isinstance(ax, np.ndarray) else [ax]
-        for i, axi in enumerate(axArr):
-            if i >= len(data):
-                break
-            axi.axis("off")
-            axi.imshow(np.round(data[i].cpu().data.numpy() * 225), cmap="gray")
-        fig.savefig("/tmp/{}-plotcnn.png".format(file_name))
-        plt.close(fig)
-        return "/tmp/{}-plotcnn.png".format(file_name)
+        if len(data) == 3:
+            image.save(
+                "/tmp{}-plotcnn.png".format(file_name),
+                np.round(data.cpu().data.numpy() * 225),
+            )
+        else:
+            fig = plt.figure()
+            row_col = int(np.ceil(np.sqrt(len(data))))
+            ax = fig.subplots(row_col, row_col)
+            axArr = ax.reshape(-1) if isinstance(ax, np.ndarray) else [ax]
+            for i, axi in enumerate(axArr):
+                if i >= len(data):
+                    break
+                axi.axis("off")
+                axi.imshow(np.round(data[i].cpu().data.numpy() * 225), cmap="gray")
+            fig.savefig("/tmp{}-plotcnn.png".format(file_name))
+            plt.close(fig)
+        return "/tmp{}-plotcnn.png".format(file_name)
 
     def plot_linear_layer(self, data, file_name):
         fig = plt.figure()

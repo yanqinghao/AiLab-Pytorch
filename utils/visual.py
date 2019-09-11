@@ -79,9 +79,9 @@ class Visualization(ScreenshotsThread):
                 break
             axi.axis("off")
             axi.imshow(np.round(data[i].cpu().data.numpy() * 225), cmap="gray")
-        fig.savefig(file_name)
+        fig.savefig("{}-plotcnn.png".format(file_name))
         plt.close(fig)
-        return file_name
+        return "{}-plotcnn.png".format(file_name)
 
     def plot_linear_layer(self, data, file_name):
         fig = plt.figure()
@@ -182,8 +182,8 @@ class CNNNNVisualization(Visualization):
                         file_name = os.path.join(folder, paths_img)
                     if not os.path.exists(os.path.split(file_name)[0]):
                         os.makedirs(os.path.split(file_name)[0])
-                    self.plot_cnn_layer(layer_output, file_name)
-                    img = image.read(file_name)
+                    file_name_cnn = self.plot_cnn_layer(layer_output, file_name)
+                    img = image.read(file_name_cnn)
                     if not self.last_time:
                         screenshots_node.save(img)
                     elif (time.time() - self.last_time) > 1:

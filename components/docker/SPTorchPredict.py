@@ -8,7 +8,7 @@ import torch
 import pandas as pd
 import numpy as np
 from PIL import Image, ImageDraw
-from suanpan.app.arguments import Folder, Csv
+from suanpan.app.arguments import Folder, Csv, Bool, ListOfInt
 from suanpan import asyncio
 from suanpan.screenshots import screenshots
 from app import app
@@ -18,6 +18,9 @@ from utils.visual import CNNNNVisualization
 
 @app.input(PytorchLayersModel(key="inputModel"))
 @app.input(PytorchDataloader(key="inputTestLoader"))
+@app.param(Bool(key="isLabeled", default=True))
+@app.param(ListOfInt(key="fontColor", default=[255, 255, 255]))
+@app.param(ListOfInt(key="fontXy", default=[5, 5]))
 @app.output(Folder(key="outputData1"))
 @app.output(Csv(key="outputData2"))
 def SPTorchPredict(context):
@@ -60,9 +63,9 @@ def SPTorchPredict(context):
                 # font = ImageFont.truetype("Ubuntu-B.ttf", size=20)
                 draw = ImageDraw.Draw(img)
                 draw.text(
-                    (5, 5),
+                    (*args.fontXy,),
                     "predicted: {}".format(class_names[predicted[j]]),
-                    (255, 255, 255),
+                    (*args.fontColor,),
                     # font=font,
                 )
                 if not os.path.exists(os.path.split(save_path)[0]):
@@ -79,14 +82,21 @@ def SPTorchPredict(context):
         cnnVisual.put({"status": "quit"})
         cnnVisual.tag = False
         cnnVisual.join()
-
-        df = pd.DataFrame(
-            {
-                "file path or index": filepath,
-                "label": [class_names[i] for i in filelabel],
-                "predictions": [class_names[i] for i in prediction.tolist()],
-            }
-        )
+        if args.isLabeled:
+            df = pd.DataFrame(
+                {
+                    "file path or index": filepath,
+                    "label": [class_names[i] for i in filelabel],
+                    "predictions": [class_names[i] for i in prediction.tolist()],
+                }
+            )
+        else:
+            df = pd.DataFrame(
+                {
+                    "file path or index": filepath,
+                    "predictions": [class_names[i] for i in prediction.tolist()],
+                }
+            )
         pathlist = pathtmp.split("/")
         folder = os.path.join(folder, *pathlist[:6])
 

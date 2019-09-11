@@ -9,7 +9,7 @@ from suanpan.storage import storage
 @dc.output(Folder(key="trainDir"))
 @dc.output(Folder(key="valDir"))
 @dc.output(Folder(key="testDir"))
-def SPDogvsCat(context):
+def SPCatsvsDogs(context):
     args = context.args
 
     storage.download("common/data/cats_and_dogs/train", args.trainDir)
@@ -20,4 +20,4 @@ def SPDogvsCat(context):
 
 
 if __name__ == "__main__":
-    SPDogvsCat()  # pylint: disable=no-value-for-parameter
+    SPCatsvsDogs()  # pylint: disable=no-value-for-parameter

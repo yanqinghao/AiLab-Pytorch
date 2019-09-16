@@ -26,6 +26,7 @@
                 // "components.docker.layers.normalization.SPBatchNorm2D.SPBatchNorm2D",
                 // "components.docker.layers.pooling.SPAvgPool2D.SPAvgPool2D",
                 // "components.docker.layers.pooling.SPMaxPool2D.SPMaxPool2D",
+                // "components.docker.SPFineTuning.SPFineTuning",
                 // "components.docker.SPTorchPredict.SPTorchPredict",
                 // "components.docker.SPTorchTrain.SPTorchTrain",
                 // "components.docker.dataset.SPMNIST.SPMNIST",

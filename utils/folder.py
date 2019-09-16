@@ -224,7 +224,7 @@ class DatasetFolder(VisionDataset):
         """
         folder_list = [i for i in storage.listFolders(dir)]
         classes = [
-            i.rstrip(storage.delimeter).split(storage.delimeter)[-1]
+            i.rstrip(storage.delimiter).split(storage.delimiter)[-1]
             for i in folder_list
         ]
         classes.sort()

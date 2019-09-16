@@ -10,6 +10,7 @@ from arguments import PytorchLayersModel, PytorchFinetuningModel
 @app.input(PytorchFinetuningModel(key="inputModel1"))
 @app.input(PytorchLayersModel(key="inputModel2"))
 @app.param(ListOfString(key="fineTuning", default=None))
+@app.param(ListOfString(key="freezeParam", default=None))
 @app.output(PytorchLayersModel(key="outputModel"))
 def SPFineTuning(context):
     # 从 Context 中获取相关数据
@@ -22,6 +23,11 @@ def SPFineTuning(context):
             if ".".join(name.split(".")[:-1]) in args.fineTuning:
                 logger.info("{} layer unfreezed.".format(name))
                 param.requires_grad = True
+    if args.freezeParam:
+        for name, param in model.named_parameters():
+            if ".".join(name.split(".")[:-1]) in args.freezeParam:
+                logger.info("{} layer freezed.".format(name))
+                param.requires_grad = False
     if pretrainedFineTuning["value"]:
         for name, param in model.named_parameters():
             if ".".join(name.split(".")[1:-1]) in pretrainedFineTuning["value"]:

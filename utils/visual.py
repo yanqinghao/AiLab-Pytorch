@@ -69,7 +69,7 @@ class Visualization(ScreenshotsThread):
         if "." not in selected_layer:
             layer = getattr(self.model, selected_layer)
         else:
-            layer_parent = getattr(self.model, selected_layer)
+            layer_parent = getattr(self.model, selected_layer.split(".")[0])
             layer_dict = dict(layer_parent.named_modules())
             layer = layer_dict[".".join(selected_layer.split(".")[1:])]
         return layer.register_forward_hook(hook_function)

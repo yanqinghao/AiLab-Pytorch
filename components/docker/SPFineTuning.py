@@ -28,11 +28,12 @@ def SPFineTuning(context):
             if ".".join(name.split(".")[:-1]) in args.freezeParam:
                 logger.info("{} layer freezed.".format(name))
                 param.requires_grad = False
-    if pretrainedFineTuning["value"]:
-        for name, param in model.named_parameters():
-            if ".".join(name.split(".")[1:-1]) in pretrainedFineTuning["value"]:
-                logger.info("{} layer unfreezed.".format(name))
-                param.requires_grad = True
+    if "value" in pretrainedFineTuning.keys():
+        if pretrainedFineTuning["value"]:
+            for name, param in model.named_parameters():
+                if ".".join(name.split(".")[1:-1]) in pretrainedFineTuning["value"]:
+                    logger.info("{} layer unfreezed.".format(name))
+                    param.requires_grad = True
     return model
 
 

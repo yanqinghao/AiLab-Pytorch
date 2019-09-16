@@ -223,7 +223,10 @@ class DatasetFolder(VisionDataset):
             No class is a subdirectory of another.
         """
         folder_list = [i for i in storage.listFolders(dir)]
-        classes = [os.path.split(i[:-1])[1] for i in folder_list]
+        classes = [
+            i.rstrip(storage.delimeter).split(storage.delimeter)[-1]
+            for i in folder_list
+        ]
         classes.sort()
         class_to_idx = {classes[i]: i for i in range(len(classes))}
         return classes, class_to_idx

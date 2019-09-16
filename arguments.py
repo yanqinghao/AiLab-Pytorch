@@ -92,3 +92,7 @@ class PytorchOptimModel(Model):
 
 class PytorchSchedulerModel(PytorchOptimModel):
     FILETYPE = "scheduler"
+
+
+class PytorchFinetuningModel(PytorchOptimModel):
+    FILETYPE = "finetuning"

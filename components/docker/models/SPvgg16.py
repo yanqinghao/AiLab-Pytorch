@@ -30,7 +30,7 @@ def SPvgg16(context):
     inputSize = calOutput(model)
     if args.pretrained:
         downloadPretrained("vgg16")
-    name = getLayerName(model.layers, "VGG16")
+    layerName = getLayerName(model.layers, "VGG16")
     pretrainedModel = (
         models.vgg16(pretrained=args.pretrained).features
         if args.featureExtractor
@@ -51,11 +51,11 @@ def SPvgg16(context):
             if ".".join(name.split(".")[:-1]) in args.fineTuning:
                 logger.info("{} layer unfreezed.".format(name))
                 param.requires_grad = True
-    setattr(model, name, pretrainedModel)
-    model.layers[name] = (getattr(model, name), getScreenshotPath())
+    setattr(model, layerName, pretrainedModel)
+    model.layers[layerName] = (getattr(model, layerName), getScreenshotPath())
     plotLayers(model, inputSize)
 
-    return model, {"name": name, "value": args.fineTuning}
+    return model, {"name": layerName, "value": args.fineTuning}
 
 
 if __name__ == "__main__":

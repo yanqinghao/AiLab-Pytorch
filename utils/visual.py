@@ -66,7 +66,12 @@ class Visualization(ScreenshotsThread):
             self.outputs[selected_layer] = output.detach()
 
         # Hook the selected layer
-        layer = getattr(self.model, selected_layer)
+        if "." not in selected_layer:
+            layer = getattr(self.model, selected_layer)
+        else:
+            layer_parent = getattr(self.model, selected_layer)
+            layer_dict = dict(layer_parent.named_modules())
+            layer = layer_dict[".".join(selected_layer.split(".")[1:])]
         return layer.register_forward_hook(hook_function)
 
     def plot_cnn_layer(self, data, file_name):

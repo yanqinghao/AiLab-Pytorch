@@ -275,7 +275,7 @@ def pil_loader(path):
 def default_loader(path):
     from torchvision import get_image_backend
 
-    local_path = os.path.join("/sp_data/" + path)
+    local_path = os.path.join("/sp_data/", path)
     if not os.path.exists(local_path):
         storage.download(path, local_path)
 

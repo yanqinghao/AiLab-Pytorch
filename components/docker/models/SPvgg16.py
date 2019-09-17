@@ -47,15 +47,24 @@ def SPvgg16(context):
         logger.info("{} layer {}.".format(name, isfreezed))
         param.requires_grad = args.requiresGrad
     if args.fineTuning:
+        fineTuning = (
+            args.fineTuning
+            if not args.featureExtractor
+            else [i.split(".")[-1] for i in args.fineTuning]
+        )
         for name, param in pretrainedModel.named_parameters():
-            if ".".join(name.split(".")[:-1]) in args.fineTuning:
+            if ".".join(name.split(".")[:-1]) in fineTuning:
                 logger.info("{} layer unfreezed.".format(name))
                 param.requires_grad = True
     setattr(model, layerName, pretrainedModel)
     model.layers[layerName] = (getattr(model, layerName), getScreenshotPath())
     plotLayers(model, inputSize)
-
-    return model, {"name": layerName, "value": args.fineTuning}
+    finetuning = (
+        {"name": layerName, "value": args.fineTuning, "type": "hastop"}
+        if not args.featureExtractor
+        else {"name": layerName, "value": args.fineTuning, "type": "notop"}
+    )
+    return model, finetuning
 
 
 if __name__ == "__main__":

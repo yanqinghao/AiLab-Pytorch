@@ -71,7 +71,10 @@ class Visualization(ScreenshotsThread):
         else:
             layer_parent = getattr(self.model, selected_layer.split(".")[0])
             layer_dict = dict(layer_parent.named_modules())
-            layer = layer_dict[".".join(selected_layer.split(".")[1:])]
+            if ".".join(selected_layer.split(".")[1:]) in layer_dict.keys():
+                layer = layer_dict[".".join(selected_layer.split(".")[1:])]
+            else:
+                layer = layer_dict[".".join(selected_layer.split(".")[2:])]
         return layer.register_forward_hook(hook_function)
 
     def plot_cnn_layer(self, data, file_name):

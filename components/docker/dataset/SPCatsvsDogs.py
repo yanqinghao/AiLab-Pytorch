@@ -13,7 +13,7 @@ from suanpan.storage import StorageProxy
 def SPCatsvsDogs(context):
     args = context.args
 
-    storage = StorageProxy()
+    storage = StorageProxy(None, None)
     storage.setBackend(type=args.storageType)
 
     storage.download("common/data/cats_and_dogs/train", args.trainDir)

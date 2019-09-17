@@ -139,7 +139,7 @@ class CNNLayerVisualization(Visualization):
                 file_name = os.path.join(folder, paths_img)
             if not os.path.exists(os.path.split(file_name)[0]):
                 os.makedirs(os.path.split(file_name)[0])
-            self.plot_cnn_layer(cnn_fillter, file_name)
+            file_name = self.plot_cnn_layer(cnn_fillter, file_name)
             img = image.read(file_name)
             if not self.last_time:
                 screenshots.save(img)

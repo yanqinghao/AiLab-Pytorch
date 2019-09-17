@@ -2,7 +2,7 @@
 from __future__ import absolute_import, print_function
 
 import pickle
-from suanpan.app.arguments import Bool, ListOfString
+from suanpan.app.arguments import Bool, ListOfString, String
 from suanpan.log import logger
 import torchvision.models as models
 from app import app
@@ -21,6 +21,7 @@ from utils import (
 @app.param(Bool(key="featureExtractor", default=True))
 @app.param(Bool(key="requiresGrad", default=False))
 @app.param(ListOfString(key="fineTuning", default=None))
+@app.param(String(key="storageType", default="oss"))
 @app.output(PytorchLayersModel(key="outputModel1"))
 @app.output(PytorchFinetuningModel(key="outputModel2"))
 def SPvgg16(context):
@@ -29,7 +30,7 @@ def SPvgg16(context):
     model = args.inputModel
     inputSize = calOutput(model)
     if args.pretrained:
-        downloadPretrained("vgg16")
+        downloadPretrained("vgg16", args.storageType)
     layerName = getLayerName(model.layers, "VGG16")
     pretrainedModel = (
         models.vgg16(pretrained=args.pretrained).features

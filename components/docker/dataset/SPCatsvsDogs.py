@@ -3,7 +3,7 @@ from __future__ import absolute_import, print_function
 
 from suanpan.docker import DockerComponent as dc
 from suanpan.docker.arguments import Folder
-from suanpan.storage import storage
+from suanpan.storage import StorageProxy
 
 
 @dc.output(Folder(key="trainDir"))
@@ -11,6 +11,9 @@ from suanpan.storage import storage
 @dc.output(Folder(key="testDir"))
 def SPCatsvsDogs(context):
     args = context.args
+
+    storage = StorageProxy()
+    storage.setBackend(type="oss")
 
     storage.download("common/data/cats_and_dogs/train", args.trainDir)
     storage.download("common/data/cats_and_dogs/validation", args.valDir)

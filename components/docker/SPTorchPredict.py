@@ -8,9 +8,9 @@ import torch
 import pandas as pd
 import numpy as np
 from torchvision.transforms import functional as F
-from PIL import ImageDraw
+from PIL import ImageDraw, ImageFont
 from suanpan.storage import storage
-from suanpan.app.arguments import Folder, Csv, Bool, ListOfInt
+from suanpan.app.arguments import Folder, Csv, Bool, ListOfInt, Int
 from suanpan import asyncio
 from suanpan.screenshots import screenshots
 from app import app
@@ -23,6 +23,7 @@ from utils.visual import CNNNNVisualization
 @app.param(Bool(key="isLabeled", default=True))
 @app.param(ListOfInt(key="fontColor", default=[255, 255, 255]))
 @app.param(ListOfInt(key="fontXy", default=[5, 5]))
+@app.param(Int(key="fontSize", default=8))
 @app.output(Folder(key="outputData1"))
 @app.output(Csv(key="outputData2"))
 def SPTorchPredict(context):
@@ -71,10 +72,12 @@ def SPTorchPredict(context):
                     save_path = os.path.join(folder, "{}.png".format(paths[j]))
                 img = F.to_pil_image(images[j].cpu())
                 draw = ImageDraw.Draw(img)
+                font = ImageFont.truetype("./utils/Ubuntu-B.ttf", args.fontSize)
                 draw.text(
                     (*args.fontXy,),
                     "predicted: {}".format(class_names[predicted[j]]),
                     (*args.fontColor,),
+                    font=font,
                 )
                 if not os.path.exists(os.path.split(save_path)[0]):
                     os.makedirs(os.path.split(save_path)[0])

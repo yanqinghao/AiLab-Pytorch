@@ -37,6 +37,9 @@ class ScreenshotsThread(threading.Thread):
     def put(self, data):
         self.q.put(data)
 
+    def empty(self):
+        self.q.queue.clear()
+
     def run(self):
         while True:
             if self.tag or self.q.qsize():
@@ -144,14 +147,14 @@ class CNNLayerVisualization(Visualization):
                 os.makedirs(os.path.split(file_name)[0])
             self.plot_cnn_layer(cnn_fillter, file_name)
             img = image.read(file_name)
-            if not self.last_time:
-                screenshots.save(img)
-            elif (time.time() - self.last_time) > 1:
-                screenshots.save(img)
-            else:
-                time.sleep(1)
-                screenshots.save(img)
-            self.last_time = time.time()
+        if not self.last_time:
+            screenshots.save(img)
+        elif (time.time() - self.last_time) > 1:
+            screenshots.save(img)
+        else:
+            time.sleep(1)
+            screenshots.save(img)
+        self.last_time = time.time()
         if isinstance(pathtmp, str):
             pathlist = pathtmp.split(storage.delimiter)
             output = os.path.join(folder, *pathlist[:6])

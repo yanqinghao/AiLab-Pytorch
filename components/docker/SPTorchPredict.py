@@ -52,7 +52,7 @@ def SPTorchPredict(context):
             outputs = model(images)
             _, predicted = torch.max(outputs.data, 1)
             prediction = torch.cat((prediction, predicted), 0)
-            filepath = filepath + list(paths)
+            filepath = filepath + [os.path.join(*i[6:]) for i in list(paths)]
             filelabel = filelabel + list(labels.numpy())
             if not pathtmp:
                 pathtmp = list(paths)[0]

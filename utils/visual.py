@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 from scipy.special import softmax
 from suanpan.utils import image
 from suanpan.screenshots import screenshots, Screenshots
+from suanpan.storage import storage
 from suanpan import g
 
 
@@ -152,7 +153,7 @@ class CNNLayerVisualization(Visualization):
                 screenshots.save(img)
             self.last_time = time.time()
         if isinstance(pathtmp, str):
-            pathlist = pathtmp.split("/")
+            pathlist = pathtmp.split(storage.delimiter)
             output = os.path.join(folder, *pathlist[:6])
         else:
             output = "/out_data"

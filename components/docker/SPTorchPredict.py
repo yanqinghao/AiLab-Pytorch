@@ -8,7 +8,8 @@ import torch
 import pandas as pd
 import numpy as np
 from torchvision.transforms import functional as F
-from PIL import Image, ImageDraw
+from PIL import ImageDraw
+from suanpan.storage import storage
 from suanpan.app.arguments import Folder, Csv, Bool, ListOfInt
 from suanpan import asyncio
 from suanpan.screenshots import screenshots
@@ -54,7 +55,9 @@ def SPTorchPredict(context):
             _, predicted = torch.max(outputs.data, 1)
             prediction = torch.cat((prediction, predicted), 0)
             if isinstance(list(paths)[0], str):
-                filepath = filepath + [os.path.join(*i[6:]) for i in list(paths)]
+                filepath = filepath + [
+                    os.path.join(*i.split(storage.delimiter)[6:]) for i in list(paths)
+                ]
             else:
                 filepath = filepath + list(paths.numpy())
             filelabel = filelabel + list(labels.numpy())
@@ -103,7 +106,7 @@ def SPTorchPredict(context):
                 }
             )
         if isinstance(pathtmp, str):
-            pathlist = pathtmp.split("/")
+            pathlist = pathtmp.split(storage.delimiter)
             folder = os.path.join(folder, *pathlist[:6])
 
     return folder, df

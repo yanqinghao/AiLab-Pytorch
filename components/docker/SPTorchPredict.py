@@ -32,7 +32,7 @@ def SPTorchPredict(context):
     model = args.inputModel
     test_loader = args.inputTestLoader
     class_names = list(model.class_to_idx.keys())
-    folder = "/out_data/"
+    folder = "/pred_data/"
     pathtmp = ""
     # Device configuration
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")

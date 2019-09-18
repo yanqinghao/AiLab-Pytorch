@@ -151,10 +151,10 @@ class CNNLayerVisualization(Visualization):
             img = image.read(file_name)
         if not self.last_time:
             screenshots.save(img)
-        elif (time.time() - self.last_time) > 1:
+        elif (time.time() - self.last_time) >= 1:
             screenshots.save(img)
         else:
-            time.sleep(1)
+            time.sleep(1 - (time.time() - self.last_time))
             screenshots.save(img)
         self.last_time = time.time()
         if isinstance(pathtmp, str):
@@ -207,10 +207,10 @@ class CNNNNVisualization(Visualization):
                     img = image.read(file_name)
                     if not self.last_time:
                         screenshots_node.save(img)
-                    elif (time.time() - self.last_time) > 1:
+                    elif (time.time() - self.last_time) >= 1:
                         screenshots_node.save(img)
                     else:
-                        time.sleep(1)
+                        time.sleep(1 - (time.time() - self.last_time))
                         screenshots_node.save(img)
             elif (
                 len(layer_outputs.size()) == 2
@@ -228,10 +228,10 @@ class CNNNNVisualization(Visualization):
                     img = image.read(file_name)
                     if not self.last_time:
                         screenshots_node.save(img)
-                    elif (time.time() - self.last_time) > 1:
+                    elif (time.time() - self.last_time) >= 1:
                         screenshots_node.save(img)
                     else:
-                        time.sleep(1)
+                        time.sleep(1 - (time.time() - self.last_time))
                         screenshots_node.save(img)
             else:
                 pass
@@ -259,10 +259,10 @@ class CNNNNVisualization(Visualization):
         plt.close(fig)
         if not self.last_time:
             screenshots.save(data)
-        elif (time.time() - self.last_time) > 1:
+        elif (time.time() - self.last_time) >= 1:
             screenshots.save(data)
         else:
-            time.sleep(1)
+            time.sleep(1 - (time.time() - self.last_time))
             screenshots.save(data)
         self.last_time = time.time()
 
@@ -293,10 +293,10 @@ class CNNNNVisualization(Visualization):
                     img = image.read(file_name)
                     if not self.last_time:
                         screenshots.save(img)
-                    elif (time.time() - self.last_time) > 1:
+                    elif (time.time() - self.last_time) >= 1:
                         screenshots.save(img)
                     else:
-                        time.sleep(1)
+                        time.sleep(1 - (time.time() - self.last_time))
                         screenshots.save(img)
                     self.last_time = time.time()
             elif (
@@ -315,10 +315,10 @@ class CNNNNVisualization(Visualization):
                     img = image.read(file_name)
                     if not self.last_time:
                         screenshots.save(img)
-                    elif (time.time() - self.last_time) > 1:
+                    elif (time.time() - self.last_time) >= 1:
                         screenshots.save(img)
                     else:
-                        time.sleep(1)
+                        time.sleep(1 - (time.time() - self.last_time))
                         screenshots.save(img)
                     self.last_time = time.time()
             else:

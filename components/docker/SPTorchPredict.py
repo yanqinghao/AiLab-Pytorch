@@ -7,6 +7,7 @@ import torch
 
 import pandas as pd
 import numpy as np
+from torchvision.transforms import functional as F
 from PIL import Image, ImageDraw
 from suanpan.app.arguments import Folder, Csv, Bool, ListOfInt
 from suanpan import asyncio
@@ -65,11 +66,7 @@ def SPTorchPredict(context):
                     save_path = os.path.join(folder, paths[j])
                 else:
                     save_path = os.path.join(folder, "{}.png".format(paths[j]))
-                img = Image.fromarray(
-                    np.transpose(
-                        images[j].cpu().data.numpy().astype("uint8"), (1, 2, 0)
-                    )
-                )
+                img = F.to_pil_image(images[j].cpu())
                 draw = ImageDraw.Draw(img)
                 draw.text(
                     (*args.fontXy,),

@@ -52,21 +52,27 @@ def SPTorchPredict(context):
             outputs = model(images)
             _, predicted = torch.max(outputs.data, 1)
             prediction = torch.cat((prediction, predicted), 0)
-            filepath = filepath + [os.path.join(*i[6:]) for i in list(paths)]
+            if isinstance(list(paths)[0], str):
+                filepath = filepath + [os.path.join(*i[6:]) for i in list(paths)]
+            else:
+                filepath = filepath + list(paths.numpy())
             filelabel = filelabel + list(labels.numpy())
             if not pathtmp:
                 pathtmp = list(paths)[0]
 
             for j in range(images.size()[0]):
-                save_path = os.path.join(folder, paths[j])
-                img = Image.open(os.path.join("/sp_data/", paths[j]))
-                # font = ImageFont.truetype("Ubuntu-B.ttf", size=20)
+                if isinstance(pathtmp, str):
+                    save_path = os.path.join(folder, paths[j])
+                else:
+                    save_path = os.path.join(folder, "{}.png".format(paths[j]))
+                img = Image.fromarray(
+                    np.transpose(images[j].cpu().data.numpy(), (1, 2, 0))
+                )
                 draw = ImageDraw.Draw(img)
                 draw.text(
                     (*args.fontXy,),
                     "predicted: {}".format(class_names[predicted[j]]),
                     (*args.fontColor,),
-                    # font=font,
                 )
                 if not os.path.exists(os.path.split(save_path)[0]):
                     os.makedirs(os.path.split(save_path)[0])
@@ -97,8 +103,9 @@ def SPTorchPredict(context):
                     "predictions": [class_names[i] for i in prediction.tolist()],
                 }
             )
-        pathlist = pathtmp.split("/")
-        folder = os.path.join(folder, *pathlist[:6])
+        if isinstance(pathtmp, str):
+            pathlist = pathtmp.split("/")
+            folder = os.path.join(folder, *pathlist[:6])
 
     return folder, df
 

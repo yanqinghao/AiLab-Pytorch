@@ -38,7 +38,9 @@ class ScreenshotsThread(threading.Thread):
         self.q.put(data)
 
     def empty(self):
-        self.q.queue.clear()
+        if self.q.qsize():
+            self.q.queue.clear()
+            self.put({"status": "quit"})
 
     def run(self):
         while True:

@@ -89,6 +89,7 @@ def SPTorchPredict(context):
             )
         cnnVisual.put({"status": "quit"})
         cnnVisual.tag = False
+        cnnVisual.empty()
         cnnVisual.join()
         if args.isLabeled:
             df = pd.DataFrame(

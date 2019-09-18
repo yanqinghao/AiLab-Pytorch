@@ -164,6 +164,7 @@ def SPTorchTrain(context):
 
     for i in cnnThreads:
         i.tag = False
+        i.empty()
     for i in cnnThreads:
         i.join()
 

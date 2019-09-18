@@ -78,11 +78,11 @@ class Visualization(ScreenshotsThread):
         return layer.register_forward_hook(hook_function)
 
     def plot_cnn_layer(self, data, file_name):
-        if not os.path.exists(os.path.split("/tmp{}-plotcnn.png".format(file_name))[0]):
-            os.makedirs(os.path.split("/tmp{}-plotcnn.png".format(file_name))[0])
+        if not os.path.exists(os.path.split(file_name)[0]):
+            os.makedirs(os.path.split(file_name)[0])
         if len(data) == 3:
             image.save(
-                "/tmp{}-plotcnn.png".format(file_name),
+                file_name,
                 np.transpose(np.round(data.cpu().data.numpy() * 225), (1, 2, 0)),
             )
         else:
@@ -95,9 +95,8 @@ class Visualization(ScreenshotsThread):
                     break
                 axi.axis("off")
                 axi.imshow(np.round(data[i].cpu().data.numpy() * 225), cmap="gray")
-            fig.savefig("/tmp{}-plotcnn.png".format(file_name))
+            fig.savefig(file_name)
             plt.close(fig)
-        return "/tmp{}-plotcnn.png".format(file_name)
 
     def plot_linear_layer(self, data, file_name):
         fig = plt.figure()
@@ -142,7 +141,7 @@ class CNNLayerVisualization(Visualization):
                 file_name = os.path.join(folder, paths_img)
             if not os.path.exists(os.path.split(file_name)[0]):
                 os.makedirs(os.path.split(file_name)[0])
-            file_name = self.plot_cnn_layer(cnn_fillter, file_name)
+            self.plot_cnn_layer(cnn_fillter, file_name)
             img = image.read(file_name)
             if not self.last_time:
                 screenshots.save(img)
@@ -198,8 +197,8 @@ class CNNNNVisualization(Visualization):
                         file_name = os.path.join(folder, paths_img)
                     if not os.path.exists(os.path.split(file_name)[0]):
                         os.makedirs(os.path.split(file_name)[0])
-                    file_name_cnn = self.plot_cnn_layer(layer_output, file_name)
-                    img = image.read(file_name_cnn)
+                    self.plot_cnn_layer(layer_output, file_name)
+                    img = image.read(file_name)
                     if not self.last_time:
                         screenshots_node.save(img)
                     elif (time.time() - self.last_time) > 1:

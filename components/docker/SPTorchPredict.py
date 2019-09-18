@@ -66,7 +66,9 @@ def SPTorchPredict(context):
                 else:
                     save_path = os.path.join(folder, "{}.png".format(paths[j]))
                 img = Image.fromarray(
-                    np.transpose(images[j].cpu().data.numpy(), (1, 2, 0))
+                    np.transpose(
+                        images[j].cpu().data.numpy().astype("uint8"), (1, 2, 0)
+                    )
                 )
                 draw = ImageDraw.Draw(img)
                 draw.text(

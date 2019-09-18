@@ -11,7 +11,6 @@ from torchvision.transforms import functional as F
 from PIL import ImageDraw, ImageFont
 from suanpan.storage import storage
 from suanpan.app.arguments import Folder, Csv, Bool, ListOfInt, Int
-from suanpan import asyncio
 from suanpan.screenshots import screenshots
 from app import app
 from arguments import PytorchLayersModel, PytorchDataloader
@@ -82,7 +81,7 @@ def SPTorchPredict(context):
                 if not os.path.exists(os.path.split(save_path)[0]):
                     os.makedirs(os.path.split(save_path)[0])
                 img.save(save_path)
-            asyncio.run(screenshots.save(np.array(img)))
+            screenshots.save(np.array(img))
             cnnVisual.put(
                 {
                     "status": "running",

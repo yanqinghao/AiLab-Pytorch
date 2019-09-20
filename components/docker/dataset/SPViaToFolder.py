@@ -35,7 +35,7 @@ def SPViaToFolder(context):
             fileList[list(j["file_attributes"].values())[0]] = [j["filename"]]
     for className in fileList.keys():
         for n in range(len(fileList[className])):
-            if n < len(fileList) * args.trainTestSplit:
+            if n < int(len(fileList) * args.trainTestSplit):
                 src = os.path.join(args.inputData, fileList[className][n])
                 dst = getFilePath(args.outputData1, className, os.path.split(src)[1])
                 if not os.path.exists(os.path.split(dst)[0]):

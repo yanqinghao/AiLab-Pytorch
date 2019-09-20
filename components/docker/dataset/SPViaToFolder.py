@@ -38,10 +38,14 @@ def SPViaToFolder(context):
             if n < len(fileList) * args.trainTestSplit:
                 src = os.path.join(args.inputData, fileList[className][n])
                 dst = getFilePath(args.outputData1, className, os.path.split(src)[1])
+                if not os.path.exists(os.path.split(dst)[0]):
+                    os.makedirs(os.path.split(dst)[0])
                 shutil.copy(src, dst)
             else:
                 src = os.path.join(args.inputData, fileList[className][n])
                 dst = getFilePath(args.outputData2, className, os.path.split(src)[1])
+                if not os.path.exists(os.path.split(dst)[0]):
+                    os.makedirs(os.path.split(dst)[0])
                 shutil.copy(src, dst)
 
     return args.outputData1, args.outputData2

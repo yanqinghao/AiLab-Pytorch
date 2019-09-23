@@ -29,10 +29,11 @@ def SPViaToFolder(context):
         fileInfo = json.load(load_f)
     fileList = {}
     for i, j in fileInfo["_via_img_metadata"].items():
-        if list(j["file_attributes"].values())[0] in fileList.keys():
-            fileList[list(j["file_attributes"].values())[0]].append(j["filename"])
-        else:
-            fileList[list(j["file_attributes"].values())[0]] = [j["filename"]]
+        if j["file_attributes"]:
+            if list(j["file_attributes"].values())[0] in fileList.keys():
+                fileList[list(j["file_attributes"].values())[0]].append(j["filename"])
+            else:
+                fileList[list(j["file_attributes"].values())[0]] = [j["filename"]]
     for className in fileList.keys():
         for n in range(len(fileList[className])):
             if n < int(len(fileList) * args.trainTestSplit):

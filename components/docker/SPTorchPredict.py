@@ -70,7 +70,10 @@ def SPTorchPredict(context):
             for j in range(images.size()[0]):
                 if isinstance(pathtmp, str):
                     save_path = os.path.join(
-                        folder, class_names[predicted[j]], paths[j]
+                        folder,
+                        os.path.split(paths[j])[0],
+                        class_names[predicted[j]],
+                        os.path.split(paths[j])[1],
                     )
                 else:
                     save_path = os.path.join(

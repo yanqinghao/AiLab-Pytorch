@@ -140,7 +140,7 @@ def make_dataset(dir, class_to_idx, extensions=None, is_valid_file=None):
                 continue
             images += get_all_files(d, class_to_idx[target])
     else:
-        images += get_all_files(dir, "no class")
+        images += get_all_files(dir, None)
 
     return images
 

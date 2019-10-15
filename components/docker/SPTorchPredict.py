@@ -77,7 +77,7 @@ def SPTorchPredict(context):
                         folder, class_names[predicted[j]], "{}.png".format(paths[j])
                     )
                 if isinstance(pathtmp, str):
-                    img = Image.open(paths[j])
+                    img = Image.open(os.path.join("/sp_data/", paths[j]))
                 else:
                     img = F.to_pil_image(images[j].cpu())
                 img.save(save_path)

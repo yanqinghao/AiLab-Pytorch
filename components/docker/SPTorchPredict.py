@@ -83,6 +83,9 @@ def SPTorchPredict(context):
                     img = Image.open(os.path.join("/sp_data/", paths[j]))
                 else:
                     img = F.to_pil_image(images[j].cpu())
+
+                if not os.path.exists(os.path.split(save_path)[0]):
+                    os.makedirs(os.path.split(save_path)[0])
                 img.save(save_path)
                 draw = ImageDraw.Draw(img)
                 font = ImageFont.truetype("./utils/Ubuntu-B.ttf", args.fontSize)
@@ -92,8 +95,6 @@ def SPTorchPredict(context):
                     (*args.fontColor,),
                     font=font,
                 )
-                if not os.path.exists(os.path.split(save_path)[0]):
-                    os.makedirs(os.path.split(save_path)[0])
 
             screenshots.save(np.array(img))
             cnnVisual.put(

@@ -8,7 +8,7 @@ import torch
 import pandas as pd
 import numpy as np
 from torchvision.transforms import functional as F
-from PIL import ImageDraw, ImageFont
+from PIL import ImageDraw, ImageFont, Image
 from suanpan.storage import storage
 from suanpan.app.arguments import Folder, Csv, Bool, ListOfInt, Int
 from suanpan.screenshots import screenshots
@@ -69,10 +69,18 @@ def SPTorchPredict(context):
 
             for j in range(images.size()[0]):
                 if isinstance(pathtmp, str):
-                    save_path = os.path.join(folder, paths[j])
+                    save_path = os.path.join(
+                        folder, class_names[predicted[j]], paths[j]
+                    )
                 else:
-                    save_path = os.path.join(folder, "{}.png".format(paths[j]))
-                img = F.to_pil_image(images[j].cpu())
+                    save_path = os.path.join(
+                        folder, class_names[predicted[j]], "{}.png".format(paths[j])
+                    )
+                if isinstance(pathtmp, str):
+                    img = Image.open(paths[j])
+                else:
+                    img = F.to_pil_image(images[j].cpu())
+                img.save(save_path)
                 draw = ImageDraw.Draw(img)
                 font = ImageFont.truetype("./utils/Ubuntu-B.ttf", args.fontSize)
                 draw.text(
@@ -83,7 +91,7 @@ def SPTorchPredict(context):
                 )
                 if not os.path.exists(os.path.split(save_path)[0]):
                     os.makedirs(os.path.split(save_path)[0])
-                img.save(save_path)
+
             screenshots.save(np.array(img))
             cnnVisual.put(
                 {

@@ -133,11 +133,14 @@ def get_all_files(dir, class_id):
 
 def make_dataset(dir, class_to_idx, extensions=None, is_valid_file=None):
     images = []
-    for target in sorted(class_to_idx.keys()):
-        d = os.path.join(dir, target)
-        if storage.isFile(d):
-            continue
-        images += get_all_files(d, class_to_idx[target])
+    if class_to_idx:
+        for target in sorted(class_to_idx.keys()):
+            d = os.path.join(dir, target)
+            if storage.isFile(d):
+                continue
+            images += get_all_files(d, class_to_idx[target])
+    else:
+        images += get_all_files(dir, "no class")
 
     return images
 

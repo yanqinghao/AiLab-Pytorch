@@ -17,6 +17,7 @@ from utils import (
 
 
 @app.input(PytorchLayersModel(key="inputModel"))
+@app.param(String(key="modelName", default="vgg19"))
 @app.param(Bool(key="pretrained", default=True))
 @app.param(Bool(key="featureExtractor", default=True))
 @app.param(Bool(key="requiresGrad", default=False))
@@ -24,8 +25,9 @@ from utils import (
 @app.param(String(key="storageType", default="oss"))
 @app.output(PytorchLayersModel(key="outputModel1"))
 @app.output(PytorchFinetuningModel(key="outputModel2"))
-def SPvgg19(context):
-    """VGG19"""
+def SPModels(context):
+    """resnet18 alexnet vgg16 squeezenet1_0 densenet161 inception_v3 googlenet
+    shufflenet_v2_x1_0 mobilenet_v2 resnext50_32x4d wide_resnet50_2 mnasnet1_0"""
     args = context.args
     model = args.inputModel
     inputSize = calOutput(model)
@@ -33,9 +35,9 @@ def SPvgg19(context):
         downloadPretrained("vgg19", args.storageType)
     layerName = getLayerName(model.layers, "VGG19")
     pretrainedModel = (
-        models.vgg19(pretrained=args.pretrained).features
+        getattr(models, args.modelName)(pretrained=args.pretrained).features
         if args.featureExtractor
-        else models.vgg19(pretrained=args.pretrained)
+        else getattr(models, args.modelName)(pretrained=args.pretrained)
     )
     if not args.featureExtractor:
         with open("./utils/imagenet1000_clsid_to_human.pkl", "rb") as f:
@@ -69,4 +71,4 @@ def SPvgg19(context):
 
 
 if __name__ == "__main__":
-    SPvgg19()
+    SPModels()

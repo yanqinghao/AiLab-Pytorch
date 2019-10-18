@@ -16,7 +16,8 @@ def getFilePath(path, classname, filename):
     return dst
 
 
-@app.input(Folder(key="inputData"))
+@app.input(Folder(key="inputData1"))
+@app.input(Folder(key="inputData2"))
 @app.param(Float(key="trainTestSplit", default=0.8))
 @app.output(Folder(key="outputData1"))
 @app.output(Folder(key="outputData2"))
@@ -24,7 +25,7 @@ def SPVia3ToFolder(context):
 
     args = context.args
 
-    jsonFile = os.path.join(args.inputData, "project.json")
+    jsonFile = os.path.join(args.inputData2, "project.json")
     with open(jsonFile, "rb") as load_f:
         fileInfo = json.load(load_f)
     num2Label = fileInfo["attribute"]["1"]["options"]
@@ -38,13 +39,13 @@ def SPVia3ToFolder(context):
     for className in fileList.keys():
         for n in range(len(fileList[className])):
             if n < int(len(fileList) * args.trainTestSplit):
-                src = os.path.join(args.inputData, fileList[className][n])
+                src = os.path.join(args.inputData1, fileList[className][n])
                 dst = getFilePath(args.outputData1, className, os.path.split(src)[1])
                 if not os.path.exists(os.path.split(dst)[0]):
                     os.makedirs(os.path.split(dst)[0])
                 shutil.copy(src, dst)
             else:
-                src = os.path.join(args.inputData, fileList[className][n])
+                src = os.path.join(args.inputData1, fileList[className][n])
                 dst = getFilePath(args.outputData2, className, os.path.split(src)[1])
                 if not os.path.exists(os.path.split(dst)[0]):
                     os.makedirs(os.path.split(dst)[0])

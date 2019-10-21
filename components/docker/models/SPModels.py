@@ -19,7 +19,7 @@ from utils import (
 @app.input(PytorchLayersModel(key="inputModel"))
 @app.param(String(key="modelName", default="vgg19"))
 @app.param(Bool(key="pretrained", default=True))
-@app.param(Bool(key="featureExtractor", default=True))
+@app.param(Bool(key="featureExtractor", default=False))
 @app.param(Bool(key="requiresGrad", default=False))
 @app.param(ListOfString(key="fineTuning", default=None))
 @app.param(String(key="storageType", default="oss"))

@@ -17,12 +17,16 @@ from suanpan import g
 
 def getScreenshotPath():
     node_info = (g.userId, g.appId, g.nodeId)
-    return "studio/{}/logs/{}/screenshots/{}".format(*node_info)
+    return (
+        "studio/{}/logs/{}/screenshots/{}".format(*node_info),
+        "studio/{}/logs/{}/screenshots_thumbnail/{}".format(*node_info),
+    )
 
 
-def createScreenshots(storage_name):
+def createScreenshots(storage_name, thumbnail_name):
     screenshots_node = Screenshots()
     screenshots_node.current.storageName = storage_name
+    screenshots_node.current.thumbnail = thumbnail_name
     screenshots_node.clean()
     return screenshots_node
 
@@ -192,7 +196,7 @@ class CNNNNVisualization(Visualization):
         for layer_name, layer_outputs in outputs.items():
             if layer_name not in list(self.screenshots_dict.keys()):
                 storage_name = self.layers[layer_name][1]
-                self.screenshots_dict[layer_name] = createScreenshots(storage_name)
+                self.screenshots_dict[layer_name] = createScreenshots(*storage_name)
             screenshots_node = self.screenshots_dict[layer_name]
             if len(layer_outputs.size()) == 4:
                 for layer_output, path in zip(layer_outputs, [paths[0]]):

@@ -32,8 +32,8 @@ def SPModels(context):
     model = args.inputModel
     inputSize = calOutput(model)
     if args.pretrained:
-        downloadPretrained("vgg19", args.storageType)
-    layerName = getLayerName(model.layers, "VGG19")
+        downloadPretrained(args.modelName, args.storageType)
+    layerName = getLayerName(model.layers, str(args.modelName).upper())
     pretrainedModel = (
         getattr(models, args.modelName)(pretrained=args.pretrained).features
         if args.featureExtractor

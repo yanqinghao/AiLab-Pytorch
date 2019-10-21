@@ -16,7 +16,7 @@ def SPLookupParam(context):
     args = context.args
     model = args.inputModel
     if args.modelName != "all":
-        features = getattr(getattr(models, args.modelName)(), features, None)
+        features = getattr(getattr(models, args.modelName)(), "features", None)
     paramsName = [
         ".".join(i[0].split(".")[:-1]) for i in list(model.named_parameters())
     ]

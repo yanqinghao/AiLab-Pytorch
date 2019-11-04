@@ -1,6 +1,7 @@
 # coding=utf-8
 from __future__ import absolute_import, print_function
 
+from torch import nn
 import pickle
 from suanpan.app.arguments import Bool, ListOfString, String
 from suanpan.log import logger
@@ -35,7 +36,11 @@ def SPModels(context):
         downloadPretrained(args.modelName, args.storageType)
     layerName = getLayerName(model.layers, str(args.modelName).upper())
     pretrainedModel = (
-        getattr(models, args.modelName)(pretrained=args.pretrained).features
+        nn.Sequential(
+            *list(
+                getattr(models, args.modelName)(pretrained=args.pretrained).children()
+            )[:-1]
+        )
         if args.featureExtractor
         else getattr(models, args.modelName)(pretrained=args.pretrained)
     )

@@ -13,7 +13,7 @@ from utils.mnist import MNIST
 from utils.folder import ImageFolder
 from utils.visual import CNNNNVisualization, CNNLayerVisualization
 from utils.visual import createScreenshots, getScreenshotPath
-from utils.download import downloadPretrained
+from utils.download import downloadPretrained, downloadTextDataset
 
 
 def getLayerName(moduleList, match):

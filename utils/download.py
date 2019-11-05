@@ -21,6 +21,16 @@ name_to_file = {
     "squeezenet1_0": "squeezenet1_0-a815701f.pth",
     "wide_resnet50_2": "wide_resnet50_2-95faca4d.pth",
 }
+URLS = {
+    "AG_NEWS": "ag_news_csv.tar.gz",
+    "SogouNews": "amazon_review_full_csv.tar.gz",
+    "DBpedia": "amazon_review_polarity_csv.tar.gz",
+    "YelpReviewPolarity": "dbpedia_csv.tar.gz",
+    "YelpReviewFull": "sogou_news_csv.tar.gz",
+    "YahooAnswers": "yahoo_answers_csv.tar.gz",
+    "AmazonReviewPolarity": "yelp_review_full_csv.tar.gz",
+    "AmazonReviewFull": "yelp_review_polarity_csv.tar.gz",
+}
 
 
 def downloadPretrained(name, storageType):
@@ -28,4 +38,12 @@ def downloadPretrained(name, storageType):
     storage.setBackend(type=storageType)
     file_path = "common/model/pytorch/{}".format(name_to_file[name])
     local_path = "/root/.cache/torch/checkpoints/{}".format(name_to_file[name])
+    return storage.download(file_path, local_path)
+
+
+def downloadTextDataset(name, storageType, root=".data", overwrite=False):
+    storage = StorageProxy(None, None)
+    storage.setBackend(type=storageType)
+    file_path = "common/data/sentiment_analysis/{}".format(URLS[name])
+    local_path = "{}/{}".format(root, URLS[name])
     return storage.download(file_path, local_path)

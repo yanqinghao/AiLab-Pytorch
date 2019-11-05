@@ -3,18 +3,22 @@ from __future__ import absolute_import, print_function
 
 from suanpan.app import app
 from suanpan.docker.arguments import Folder, String
-from suanpan.storage import StorageProxy
+from utils import downloadTextDataset
 
 
+@app.param(
+    String(
+        key="datasetName",
+        default="AG_NEWS",
+        help="AG_NEWS', 'SogouNews', 'DBpedia', 'YelpReviewPolarity', 'YelpReviewFull', 'YahooAnswers', 'AmazonReviewPolarity', 'AmazonReviewFull'",
+    )
+)
 @app.param(String(key="storageType", default="oss"))
 @app.output(Folder(key="outputDir"))
 def SPTEXTDataRaw(context):
     args = context.args
 
-    storage = StorageProxy(None, None)
-    storage.setBackend(type=args.storageType)
-
-    storage.download("common/data/mnist", args.outputDir)
+    downloadTextDataset(args.datasetName, args.storageType, root=args.outputDir)
 
     return args.outputDir
 

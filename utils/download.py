@@ -1,3 +1,4 @@
+import os
 from suanpan.storage import StorageProxy
 
 name_to_file = {
@@ -45,5 +46,5 @@ def downloadTextDataset(name, storageType, root=".data", overwrite=False):
     storage = StorageProxy(None, None)
     storage.setBackend(type=storageType)
     file_path = "common/data/sentiment_analysis/{}".format(URLS[name])
-    local_path = "{}/{}".format(root, URLS[name])
+    local_path = os.path.join(root, URLS[name])
     return storage.download(file_path, local_path)

@@ -3,3 +3,4 @@ hiddenlayer
 IPython
 graphviz
 scipy
+torchtext

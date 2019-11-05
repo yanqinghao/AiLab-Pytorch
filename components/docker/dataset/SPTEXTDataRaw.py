@@ -8,7 +8,7 @@ from suanpan.storage import StorageProxy
 
 @app.param(String(key="storageType", default="oss"))
 @app.output(Folder(key="outputDir"))
-def SPMNISTRAW(context):
+def SPTEXTDataRaw(context):
     args = context.args
 
     storage = StorageProxy(None, None)
@@ -20,4 +20,4 @@ def SPMNISTRAW(context):
 
 
 if __name__ == "__main__":
-    SPMNISTRAW()  # pylint: disable=no-value-for-parameter
+    SPTEXTDataRaw()  # pylint: disable=no-value-for-parameter

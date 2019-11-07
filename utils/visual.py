@@ -243,7 +243,9 @@ class CNNNNVisualization(Visualization):
         return time.time()
 
     def training_log(self, log):
-        screenshots.current.storageName = getScreenshotPath()
+        screenshots.current.storageName, screenshots.current.thumbnail = (
+            getScreenshotPath()
+        )
         fig = plt.figure()
         ax = fig.add_subplot(111)
         epochs = log["epoch"]

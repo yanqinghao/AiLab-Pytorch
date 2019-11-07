@@ -1,8 +1,9 @@
 import logging
 import torch
 import io
+import shutil
+import os
 from torchtext.utils import extract_archive, unicode_csv_reader
-from utils.download import downloadTextDataset
 from torchtext.data.utils import ngrams_iterator
 from torchtext.data.utils import get_tokenizer
 from torchtext.vocab import build_vocab_from_iterator
@@ -111,14 +112,16 @@ class TextClassificationDataset(torch.utils.data.Dataset):
 
 
 def _setup_datasets(
-    dataset_name,
-    storageType="oss",
-    root=".data",
-    ngrams=2,
-    vocab=None,
-    include_unk=False,
+    dataset_name, file_path, root=".data", ngrams=2, vocab=None, include_unk=False
 ):
-    dataset_tar = downloadTextDataset(dataset_name, storageType, root=root)
+    if os.path.exists(root):
+        os.makedirs(root)
+    shutil.copy(
+        os.path.join(file_path, URLS[dataset_name]),
+        "{}/{}".format(root, URLS[dataset_name]),
+    )
+    dataset_tar = "{}/{}".format(root, URLS[dataset_name])
+    # dataset_tar = downloadTextDataset(dataset_name, storageType, root=root)
     # dataset_tar = download_from_url(URLS[dataset_name], root=root)
     extracted_files = extract_archive(dataset_tar)
 

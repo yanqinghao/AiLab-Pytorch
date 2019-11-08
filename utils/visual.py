@@ -3,6 +3,8 @@ Created on Sun Aug 11 00:00:00 2019
 @author: Yan Qinghao
 """
 import os
+import string
+import random
 import time
 import threading
 import queue
@@ -29,6 +31,10 @@ def createScreenshots(storage_name, thumbnail_name):
     screenshots_node.current.thumbnail = thumbnail_name
     screenshots_node.clean()
     return screenshots_node
+
+
+def random_generator(size=6, chars=string.ascii_uppercase + string.digits):
+    return "".join(random.choice(chars) for x in range(size))
 
 
 class ScreenshotsThread(threading.Thread):
@@ -201,9 +207,15 @@ class CNNNNVisualization(Visualization):
             if len(layer_outputs.size()) == 4:
                 for layer_output, path in zip(layer_outputs, [paths[0]]):
                     if isinstance(path, str):
-                        file_name = os.path.join(folder, path)
+                        file_name = os.path.join(
+                            folder,
+                            os.path.splitext(path)[0]
+                            + "_"
+                            + random_generator()
+                            + os.path.splitext(path)[1],
+                        )
                     else:
-                        paths_img = "{}.png".format(path)
+                        paths_img = "{}_{}.png".format(path, random_generator())
                         file_name = os.path.join(folder, paths_img)
                     if not os.path.exists(os.path.split(file_name)[0]):
                         os.makedirs(os.path.split(file_name)[0])
@@ -222,9 +234,15 @@ class CNNNNVisualization(Visualization):
             ):
                 for layer_output, path in zip(layer_outputs, [paths[0]]):
                     if isinstance(path, str):
-                        file_name = os.path.join(folder, path)
+                        file_name = os.path.join(
+                            folder,
+                            os.path.splitext(path)[0]
+                            + "_"
+                            + random_generator()
+                            + os.path.splitext(path)[1],
+                        )
                     else:
-                        paths_img = "{}.png".format(path)
+                        paths_img = "{}_{}.png".format(path, random_generator())
                         file_name = os.path.join(folder, paths_img)
                     if not os.path.exists(os.path.split(file_name)[0]):
                         os.makedirs(os.path.split(file_name)[0])

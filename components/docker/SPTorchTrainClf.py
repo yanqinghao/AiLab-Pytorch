@@ -47,7 +47,6 @@ def SPTorchTrain(context):
     optimModel = args.inputOptimModel
     schedulerModel = args.inputSchedulerModel
     gpu = args.__gpu
-
     if valLoader:
         loader = {"train": trainLoader, "val": valLoader}
     else:
@@ -62,7 +61,8 @@ def SPTorchTrain(context):
             name,
             nn.Linear(in_features=inputSize[1], out_features=len(model.class_to_idx)),
         )
-        model.layers[name] = (getattr(model, name), list(model.layers.items())[-1][1])
+        screenshotPath = list(model.layers.items())[-1][1][1]
+        model.layers[name] = (getattr(model, name), screenshotPath)
 
     log = {
         "epoch": [],

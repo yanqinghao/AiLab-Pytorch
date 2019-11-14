@@ -34,6 +34,12 @@ def SPTorchPredict(context):
     model = args.inputModel
     test_loader = args.inputTestLoader
     class_names = list(model.class_to_idx.keys())
+    if getattr(model, "vocab", None):
+        test_loader.dataset.set_vocab(model.vocab)
+    if getattr(model, "NGRAMS", None):
+        test_loader.dataset.set_ngrams(model.NGRAMS)
+    if getattr(test_loader.dataset, "set_data", None):
+        test_loader.dataset.set_data()
     folder = "/pred_data/"
     pathtmp = ""
     # Device configuration
@@ -49,9 +55,23 @@ def SPTorchPredict(context):
         cnnVisual = CNNNNVisualization(model)
         cnnVisual.daemon = True
         cnnVisual.start()
-        for images, labels, paths in test_loader:
-            images = images.to(device)
-            outputs = model(images)
+        for data, labels, paths in test_loader:
+            if isinstance(data, torch.Tensor):
+                data = data.to(device)
+            elif isinstance(data, dict):
+                for name, value in data.items():
+                    data[name] = value.to(device)
+            else:
+                raise ("Wrong input type")
+            if isinstance(data, torch.Tensor):
+                outputs = model(data)
+            elif isinstance(data, dict):
+                x = data["input"]
+                params = data.pop("input")
+                outputs = model(x, **params)
+                data["input"] = x
+            else:
+                raise ("Wrong model input")
             _, predicted = torch.max(outputs.data, 1)
             prediction = torch.cat((prediction, predicted), 0)
             if isinstance(list(paths)[0], str):
@@ -66,42 +86,42 @@ def SPTorchPredict(context):
                 filelabel = filelabel + list(labels)
             if not pathtmp:
                 pathtmp = list(paths)[0]
+            if isinstance(data, torch.Tensor) and len(data.size()) == 4:
+                for j in range(data.size()[0]):
+                    if isinstance(pathtmp, str):
+                        save_path = os.path.join(
+                            folder,
+                            os.path.split(paths[j])[0],
+                            class_names[predicted[j]],
+                            os.path.split(paths[j])[1],
+                        )
+                    else:
+                        save_path = os.path.join(
+                            folder, class_names[predicted[j]], "{}.png".format(paths[j])
+                        )
+                    if isinstance(pathtmp, str):
+                        img = Image.open(os.path.join("/sp_data/", paths[j]))
+                    else:
+                        img = F.to_pil_image(data[j].cpu())
 
-            for j in range(images.size()[0]):
-                if isinstance(pathtmp, str):
-                    save_path = os.path.join(
-                        folder,
-                        os.path.split(paths[j])[0],
-                        class_names[predicted[j]],
-                        os.path.split(paths[j])[1],
+                    if not os.path.exists(os.path.split(save_path)[0]):
+                        os.makedirs(os.path.split(save_path)[0])
+                    img.save(save_path)
+                    draw = ImageDraw.Draw(img)
+                    font = ImageFont.truetype("./utils/Ubuntu-B.ttf", args.fontSize)
+                    draw.text(
+                        (*args.fontXy,),
+                        "predicted: {}".format(class_names[predicted[j]]),
+                        (*args.fontColor,),
+                        font=font,
                     )
-                else:
-                    save_path = os.path.join(
-                        folder, class_names[predicted[j]], "{}.png".format(paths[j])
-                    )
-                if isinstance(pathtmp, str):
-                    img = Image.open(os.path.join("/sp_data/", paths[j]))
-                else:
-                    img = F.to_pil_image(images[j].cpu())
 
-                if not os.path.exists(os.path.split(save_path)[0]):
-                    os.makedirs(os.path.split(save_path)[0])
-                img.save(save_path)
-                draw = ImageDraw.Draw(img)
-                font = ImageFont.truetype("./utils/Ubuntu-B.ttf", args.fontSize)
-                draw.text(
-                    (*args.fontXy,),
-                    "predicted: {}".format(class_names[predicted[j]]),
-                    (*args.fontColor,),
-                    font=font,
-                )
-
-            screenshots.save(np.array(img))
+                screenshots.save(np.array(img))
             cnnVisual.put(
                 {
                     "status": "running",
                     "type": "layer",
-                    "data": (copy.deepcopy(images), copy.deepcopy(paths)),
+                    "data": (copy.deepcopy(data), copy.deepcopy(paths)),
                 }
             )
         cnnVisual.put({"status": "quit"})

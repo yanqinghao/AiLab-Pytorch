@@ -1,14 +1,92 @@
 import logging
 import torch
 import io
-import shutil
-import os
-from torchtext.utils import extract_archive, unicode_csv_reader
+import sys
+import six
+import csv
 from torchtext.data.utils import ngrams_iterator
 from torchtext.data.utils import get_tokenizer
-from torchtext.vocab import build_vocab_from_iterator
 from torchtext.vocab import Vocab
 from tqdm import tqdm
+from collections import Counter
+
+
+def build_vocab_from_iterator(iterator):
+    """
+    Build a Vocab from an iterator.
+
+    Arguments:
+        iterator: Iterator used to build Vocab. Must yield list or iterator of tokens.
+    """
+
+    counter = Counter()
+    with tqdm(unit_scale=0, unit="lines") as t:
+        for _, tokens in iterator:
+            counter.update(tokens)
+            t.update(1)
+    word_vocab = Vocab(counter)
+    return word_vocab
+
+
+def unicode_csv_reader(unicode_csv_data, **kwargs):
+    r"""Since the standard csv library does not handle unicode in Python 2, we need a wrapper.
+    Borrowed and slightly modified from the Python docs:
+    https://docs.python.org/2/library/csv.html#csv-examples
+
+    Arguments:
+        unicode_csv_data: unicode csv data (see example below)
+
+    Examples:
+        >>> from torchtext.utils import unicode_csv_reader
+        >>> import io
+        >>> with io.open(data_path, encoding="utf8") as f:
+        >>>     reader = unicode_csv_reader(f)
+
+    """
+
+    # Fix field larger than field limit error
+    maxInt = sys.maxsize
+    while True:
+        # decrease the maxInt value by factor 10
+        # as long as the OverflowError occurs.
+        try:
+            csv.field_size_limit(maxInt)
+            break
+        except OverflowError:
+            maxInt = int(maxInt / 10)
+
+    csv.field_size_limit(sys.maxsize)
+    if kwargs:
+        columns = []
+        if "label" in kwargs.keys() and kwargs["label"]:
+            columns += [kwargs["label"]]
+        if "features" in kwargs.keys() and kwargs["features"]:
+            columns += kwargs["features"]
+        if six.PY2:
+            # csv.py doesn't do Unicode; encode temporarily as UTF-8:
+            csv_reader = csv.DictReader(utf_8_encoder(unicode_csv_data))
+            for row in csv_reader:
+                # decode UTF-8 back to Unicode, cell by cell:
+                yield [row[col].decode("utf-8") for col in columns]
+        else:
+            for line in csv.DictReader(unicode_csv_data):
+                yield [line[col] for col in columns]
+    else:
+        if six.PY2:
+            # csv.py doesn't do Unicode; encode temporarily as UTF-8:
+            csv_reader = csv.reader(utf_8_encoder(unicode_csv_data))
+            for row in csv_reader:
+                # decode UTF-8 back to Unicode, cell by cell:
+                yield [cell.decode("utf-8") for cell in row]
+        else:
+            for line in csv.reader(unicode_csv_data):
+                yield line
+
+
+def utf_8_encoder(unicode_csv_data):
+    for line in unicode_csv_data:
+        yield line.encode("utf-8")
+
 
 FILEPATH = "common/data/sentiment_analysis/"
 URLS = {
@@ -23,17 +101,20 @@ URLS = {
 }
 
 
-def _csv_iterator(data_path, ngrams, yield_cls=False):
+def _csv_iterator(data_path, ngrams, yield_cls=False, **kwargs):
     tokenizer = get_tokenizer("basic_english")
     with io.open(data_path, encoding="utf8") as f:
-        reader = unicode_csv_reader(f)
+        reader = unicode_csv_reader(f, **kwargs)
         for row in reader:
-            tokens = " ".join(row[1:])
+            if not kwargs or ("label" in kwargs.keys() and kwargs["label"]):
+                tokens = " ".join(row[1:])
+            else:
+                tokens = " ".join(row)
             tokens = tokenizer(tokens)
             if yield_cls:
                 yield int(row[0]) - 1, ngrams_iterator(tokens, ngrams)
             else:
-                yield ngrams_iterator(tokens, ngrams)
+                yield None, ngrams_iterator(tokens, ngrams)
 
 
 def _create_data_from_iterator(vocab, iterator, include_unk):
@@ -95,7 +176,7 @@ class TextClassificationDataset(torch.utils.data.Dataset):
         self._vocab = vocab
 
     def __getitem__(self, i):
-        return self._data[i]
+        return self._data[i][0], self._data[i][1], i
 
     def __len__(self):
         return len(self._data)
@@ -112,18 +193,18 @@ class TextClassificationDataset(torch.utils.data.Dataset):
 
 
 def _setup_datasets(
-    dataset_name, file_path, root=".data", ngrams=2, vocab=None, include_unk=False
+    dataset_name, extracted_files, root=".data", ngrams=2, vocab=None, include_unk=False
 ):
-    if os.path.exists(root):
-        os.makedirs(root)
-    shutil.copy(
-        os.path.join(file_path, URLS[dataset_name]),
-        "{}/{}".format(root, URLS[dataset_name]),
-    )
-    dataset_tar = "{}/{}".format(root, URLS[dataset_name])
+    # if os.path.exists(root):
+    #     os.makedirs(root)
+    # shutil.copy(
+    #     os.path.join(file_path, URLS[dataset_name]),
+    #     "{}/{}".format(root, URLS[dataset_name]),
+    # )
+    # dataset_tar = "{}/{}".format(root, URLS[dataset_name])
     # dataset_tar = downloadTextDataset(dataset_name, storageType, root=root)
     # dataset_tar = download_from_url(URLS[dataset_name], root=root)
-    extracted_files = extract_archive(dataset_tar)
+    # extracted_files = extract_archive(dataset_tar)
 
     for fname in extracted_files:
         if fname.endswith("train.csv"):
@@ -385,6 +466,57 @@ def AmazonReviewFull(*args, **kwargs):
     return _setup_datasets(*(("AmazonReviewFull",) + args), **kwargs)
 
 
+class TextClassificationPredictDataset(torch.utils.data.Dataset):
+    def __init__(self, csv_path, features, label=None):
+        """
+        Initiate text-classification dataset.
+        """
+        super(TextClassificationPredictDataset, self).__init__()
+        self.csv_path = csv_path
+        self._features = features
+        self._label = label
+        self._data = None
+        self._labels = None
+        self._vocab = None
+        self._ngrams = None
+
+    def __getitem__(self, i):
+        return self._data[i][0], self._data[i][1], i
+
+    def __len__(self):
+        return len(self._data)
+
+    def __iter__(self):
+        for x in self._data:
+            yield x
+
+    def set_vocab(self, vocab):
+        self._vocab = vocab
+
+    def set_ngrams(self, ngrams):
+        self._ngrams = ngrams
+
+    def set_data(self):
+        include_unk = False
+        yield_cls_label = False
+        if self._label:
+            yield_cls_label = True
+        params = {"features": self._features, "label": self._label}
+        self._data, self._labels = _create_data_from_iterator(
+            self._vocab,
+            _csv_iterator(
+                self.csv_path, self._ngrams, yield_cls=yield_cls_label, **params
+            ),
+            include_unk,
+        )
+
+    def get_labels(self):
+        return self._labels
+
+    def get_vocab(self):
+        return self._vocab
+
+
 DATASETS = {
     "AG_NEWS": AG_NEWS,
     "SogouNews": SogouNews,
@@ -394,6 +526,7 @@ DATASETS = {
     "YahooAnswers": YahooAnswers,
     "AmazonReviewPolarity": AmazonReviewPolarity,
     "AmazonReviewFull": AmazonReviewFull,
+    "PRED_Data": TextClassificationPredictDataset,
 }
 
 
@@ -451,3 +584,4 @@ LABELS = {
         5: "score 5",
     },
 }
+

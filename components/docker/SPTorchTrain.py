@@ -53,6 +53,12 @@ def SPTorchTrain(context):
         logger.info("Use train_dataset as default val_dataset in training.")
         loader = {"train": trainLoader, "val": trainLoader}
     model.class_to_idx = trainLoader.dataset.class_to_idx
+    model.vocab = (
+        getattr(trainLoader.dataset, "get_vocab", None)()
+        if getattr(trainLoader.dataset, "get_vocab", None)
+        else None
+    )
+    model.NGRAMS = getattr(trainLoader.dataset, "NGRAMS", None)
     log = {
         "epoch": [],
         "train_acc": [],
@@ -114,8 +120,14 @@ def SPTorchTrain(context):
             running_loss = 0.0
             running_corrects = 0
             running_steps = len(loader[phase])
-            for i, (images, labels, paths) in enumerate(loader[phase]):
-                images = images.to(device)
+            for i, (data, labels, paths) in enumerate(loader[phase]):
+                if isinstance(data, torch.Tensor):
+                    data = data.to(device)
+                elif isinstance(data, dict):
+                    for name, value in data.items():
+                        data[name] = value.to(device)
+                else:
+                    raise ("Wrong input type")
                 labels = labels.to(device)
 
                 # zero the parameter gradients
@@ -124,7 +136,15 @@ def SPTorchTrain(context):
                 # forward
                 # track history if only in train
                 with torch.set_grad_enabled(phase == "train"):
-                    outputs = model(images)
+                    if isinstance(data, torch.Tensor):
+                        outputs = model(data)
+                    elif isinstance(data, dict):
+                        x = data["input"]
+                        params = data.pop("input")
+                        outputs = model(x, **params)
+                        data["input"] = x
+                    else:
+                        raise ("Wrong model input")
                     _, preds = torch.max(outputs, 1)
                     loss = criterion(outputs, labels)
 
@@ -136,13 +156,13 @@ def SPTorchTrain(context):
                 running_loss += loss.item()
                 running_corrects += torch.sum(
                     preds == labels.data
-                ).double() / images.size(0)
-                if phase == "val" and i == 0:
+                ).double() / labels.size(0)
+                if phase == "val" and i == 0 and isinstance(data, torch.Tensor):
                     cnnVisual.put(
                         {
                             "status": "running",
                             "type": "layer",
-                            "data": (copy.deepcopy(images), copy.deepcopy(paths)),
+                            "data": (copy.deepcopy(data), copy.deepcopy(paths)),
                         }
                     )
 

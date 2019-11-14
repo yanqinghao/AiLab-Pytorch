@@ -11,17 +11,21 @@ from suanpan.storage.arguments import Folder
 
 
 class SPNet(nn.Module):
-    def __init__(self, input_size):
+    def __init__(self, input_size, task):
         super(SPNet, self).__init__()
         self.layers = {}
         self.class_to_idx = None
         self.input_size = tuple(input_size)
+        self.task = task
 
-    def forward(self, x):
+    def forward(self, x, offsets=None):
         out = x
         for _, j in self.layers.items():
-            if j[0]:
-                out = j[0](out)
+            if j[0] is not None:
+                if isinstance(j[0], nn.EmbeddingBag):
+                    out = j[0](out, offsets)
+                else:
+                    out = j[0](out)
         return out
 
 

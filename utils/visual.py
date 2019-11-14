@@ -191,9 +191,9 @@ class CNNNNVisualization(Visualization):
     def plot_each_layer(self, data, paths):
         folder = "/out_data/"
         handles = {}
-        self.outputs["Input Layer"] = data[0].unsqueeze_(0)
+        self.outputs["Input"] = data[0].unsqueeze_(0)
         for layer_name, layer in self.layers.items():
-            if layer_name != "Input Layer":
+            if layer_name != "Input":
                 handles[layer_name] = self.hook_layer(layer_name)
         out = self.model(data[0].unsqueeze_(0))
         for handle in handles.items():
@@ -295,9 +295,9 @@ class CNNNNVisualization(Visualization):
     def plot_each_layer_onenode(self, data, paths):
         folder = "/out_data/"
         handles = {}
-        self.outputs["input"] = data[0].unsqueeze_(0)
+        self.outputs["Input"] = data[0].unsqueeze_(0)
         for layer_name, layer in self.layers.items():
-            if layer_name != "Input Layer":
+            if layer_name != "Input":
                 handles[layer_name] = self.hook_layer(layer_name)
         out = self.model(data[0].unsqueeze_(0))
         for handle in handles.items():

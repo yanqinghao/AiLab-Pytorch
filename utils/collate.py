@@ -2,7 +2,11 @@ import torch
 
 
 def generate_batch(batch):
-    label = torch.tensor([entry[0] for entry in batch])
+    label = (
+        torch.tensor([entry[0] for entry in batch])
+        if batch[0][0]
+        else [entry[0] for entry in batch]
+    )
     text = [entry[1] for entry in batch]
     offsets = [0] + [len(entry) for entry in text]
     idxs = torch.tensor([entry[2] for entry in batch])

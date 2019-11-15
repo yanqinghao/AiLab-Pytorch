@@ -484,7 +484,13 @@ class TextClassificationPredictDataset(torch.utils.data.Dataset):
         return self._data[i][0], self._data[i][1], i
 
     def __len__(self):
-        return len(self._data)
+        if self._data:
+            return len(self._data)
+        else:
+            with open(self.csv_path, "r") as f:
+                reader = csv.DictReader(f)
+                row_count = sum(1 for row in reader)
+            return row_count
 
     def __iter__(self):
         for x in self._data:

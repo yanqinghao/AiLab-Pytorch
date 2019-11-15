@@ -121,6 +121,8 @@ def SPTorchTrain(context):
             running_corrects = 0
             running_steps = len(loader[phase])
             for i, (data, labels, paths) in enumerate(loader[phase]):
+                if i % 100 == 0:
+                    logger.info("train {} batch".format(i))
                 if isinstance(data, torch.Tensor):
                     data = data.to(device)
                 elif isinstance(data, dict):

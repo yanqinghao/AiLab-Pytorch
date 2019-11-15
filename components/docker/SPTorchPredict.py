@@ -66,9 +66,8 @@ def SPTorchPredict(context):
             if isinstance(data, torch.Tensor):
                 outputs = model(data)
             elif isinstance(data, dict):
-                x = data["input"]
-                params = data.pop("input")
-                outputs = model(x, **params)
+                x = data.pop("input")
+                outputs = model(x, **data)
                 data["input"] = x
             else:
                 raise ("Wrong model input")

@@ -15,7 +15,7 @@ class SPNet(nn.Module):
         super(SPNet, self).__init__()
         self.layers = {}
         self.class_to_idx = None
-        self.input_size = tuple(input_size)
+        self.input_size = tuple(input_size) if input_size else None
         self.task = task
 
     def forward(self, x, offsets=None):

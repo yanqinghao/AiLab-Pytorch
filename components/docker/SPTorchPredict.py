@@ -80,7 +80,9 @@ def SPTorchPredict(context):
                 ]
             else:
                 filepath = filepath + list(paths.numpy())
-            if not isinstance(labels[0], str):
+            if labels[0] is None:
+                filelabel = filelabel + list(labels)
+            elif not isinstance(labels[0], str):
                 filelabel = filelabel + list(labels.numpy())
             else:
                 filelabel = filelabel + list(labels)

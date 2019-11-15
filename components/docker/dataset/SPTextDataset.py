@@ -24,7 +24,7 @@ def find_all_files(folder):
 @app.input(Folder(key="inputData"))
 @app.param(ListOfString(key="featureColumns"))
 @app.param(String(key="labelColumn"))
-@app.param(Int(key="dataSets", default="AG_NEWS"))
+@app.param(String(key="dataSets", default="AG_NEWS"))
 @app.param(Int(key="NGRAMS", default=2))
 @app.output(PytorchDataset(key="outputTrainData"))
 @app.output(PytorchDataset(key="outputTestData"))

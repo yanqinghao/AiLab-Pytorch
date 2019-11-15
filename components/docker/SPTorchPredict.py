@@ -147,7 +147,7 @@ def SPTorchPredict(context):
         if isinstance(pathtmp, str):
             pathlist = pathtmp.split(storage.delimiter)
             folder = os.path.join(folder, *pathlist[:6])
-    if os.path.exists(folder):
+    if not os.path.exists(folder):
         os.makedirs(folder)
     return folder, df
 

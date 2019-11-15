@@ -4,6 +4,8 @@ import io
 import sys
 import six
 import csv
+import pandas as pd
+from suanpan import path
 from torchtext.data.utils import ngrams_iterator
 from torchtext.data.utils import get_tokenizer
 from torchtext.vocab import Vocab
@@ -473,6 +475,7 @@ class TextClassificationPredictDataset(torch.utils.data.Dataset):
         """
         super(TextClassificationPredictDataset, self).__init__()
         self.csv_path = csv_path
+        self.df = pd.read_csv(self.csv_path, encoding="utf-8")
         self._features = features
         self._label = label
         self._data = None
@@ -487,6 +490,8 @@ class TextClassificationPredictDataset(torch.utils.data.Dataset):
         if self._data:
             return len(self._data)
         else:
+            path.mkdirs(self.csv_path)
+            self.df.to_csv(self.csv_path, index=False)
             with open(self.csv_path, "r") as f:
                 reader = csv.DictReader(f)
                 row_count = sum(1 for row in reader)
@@ -503,6 +508,8 @@ class TextClassificationPredictDataset(torch.utils.data.Dataset):
         self._ngrams = ngrams
 
     def set_data(self):
+        path.mkdirs(self.csv_path)
+        self.df.to_csv(self.csv_path, index=False)
         include_unk = False
         yield_cls_label = False
         if self._label:

@@ -16,7 +16,7 @@ def SPInput(context):
     args = context.args
     model = SPNet(args.inputSize, args.type)
     model.layers["Input"] = (None, getScreenshotPath())
-    if len(args.inputSize) > 3:
+    if args.type == "image" and len(args.inputSize) > 3:
         logger.error("Wrong image size, pls input like (28,28,1).")
     plotLayers(model)
     return model

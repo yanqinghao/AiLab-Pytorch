@@ -1,3 +1,4 @@
+import os
 import logging
 import torch
 import io
@@ -490,7 +491,7 @@ class TextClassificationPredictDataset(torch.utils.data.Dataset):
         if self._data:
             return len(self._data)
         else:
-            path.mkdirs(self.csv_path)
+            path.mkdirs(os.path.split(self.csv_path)[0])
             self.df.to_csv(self.csv_path, index=False)
             with open(self.csv_path, "r") as f:
                 reader = csv.DictReader(f)
@@ -508,7 +509,7 @@ class TextClassificationPredictDataset(torch.utils.data.Dataset):
         self._ngrams = ngrams
 
     def set_data(self):
-        path.mkdirs(self.csv_path)
+        path.mkdirs(os.path.split(self.csv_path)[0])
         self.df.to_csv(self.csv_path, index=False)
         include_unk = False
         yield_cls_label = False

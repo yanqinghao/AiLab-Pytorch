@@ -60,7 +60,7 @@ def SPTextDataset(context):
             label=args.labelColumn,
         )
         setattr(pred_dataset, "collate", "generate_batch")
-        return pred_dataset
+        return pred_dataset, None
 
 
 if __name__ == "__main__":

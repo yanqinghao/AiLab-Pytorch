@@ -7,7 +7,7 @@ import suanpan
 from suanpan.app import app
 from suanpan.app.arguments import Folder, Model, Int, Json
 from suanpan.utils import npy, csv
-from utils.model import PytorchModel
+from model import PytorchModel
 
 
 def find_all_files(folder):

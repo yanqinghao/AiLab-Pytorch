@@ -100,3 +100,13 @@ class PytorchSchedulerModel(PytorchOptimModel):
 
 class PytorchFinetuningModel(PytorchOptimModel):
     FILETYPE = "finetuning"
+
+
+class PytorchLayersStreamModel(PytorchLayersModel):
+    def format(self, context):
+        if self.filePath:
+            with open(self.filePath, "rb") as f:
+                device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+                self.value = torch.load(f, map_location=device)
+
+        return self.value

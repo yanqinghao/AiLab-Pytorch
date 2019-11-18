@@ -41,8 +41,6 @@ def predict(context):
             prediction = args.model1.predict(data, "text")
             predictions += prediction
 
-    predictions = np.argmax(predictions, axis=1)
-
     return predictions
 
 

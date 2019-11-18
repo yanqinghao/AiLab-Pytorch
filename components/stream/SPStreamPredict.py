@@ -22,23 +22,23 @@ def find_all_files(folder):
     return files_
 
 
-@app.input(Folder(key="inputData"))
-@app.input(Model(key="model", type=PytorchModel))
-@app.output(Json(key="predictions"))
+@app.input(Folder(key="inputData1"))
+@app.input(Model(key="model1", type=PytorchModel))
+@app.output(Json(key="outputData1"))
 @app.param(Int(key="duration", default=3600))
 def predict(context):
     args = context.args
-    filePath = find_all_files(args.inputData)[0]
+    filePath = find_all_files(args.inputData1)[0]
     predictions = []
     if filePath.endswith("npy"):
         arr = npy.load(filePath)
         for data in arr:
-            prediction = args.model.predict(data, "image")
+            prediction = args.model1.predict(data, "image")
             predictions += prediction
     elif filePath.endswith("csv"):
         dataframe = csv.load(filePath)
         for data in dataframe["text"].values:
-            prediction = args.model.predict(data, "text")
+            prediction = args.model1.predict(data, "text")
             predictions += prediction
 
     predictions = np.argmax(predictions, axis=1)
@@ -50,7 +50,7 @@ def predict(context):
 def modelHotReload(context):
     args = context.args
     if app.isStream:
-        args.model.reload(duration=args.duration)
+        args.model1.reload(duration=args.duration)
 
 
 if __name__ == "__main__":

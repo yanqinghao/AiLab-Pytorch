@@ -1,10 +1,9 @@
 import os
 import torch
 from torch import nn
-import pandas as pd
 from torchtext.data.utils import get_tokenizer, ngrams_iterator
 from suanpan.model import Model as BaseModel
-from ..arguments import PytorchLayersStreamModel
+from arguments import PytorchLayersStreamModel
 
 
 class PytorchModel(BaseModel):

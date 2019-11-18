@@ -34,7 +34,7 @@ class PytorchModel(BaseModel):
                 offset_flag = True
                 break
         if offset_flag:
-            return {"input": text, "offset": torch.tensor([0])}
+            return {"input": text, "offsets": torch.tensor([0])}
         else:
             return text
 

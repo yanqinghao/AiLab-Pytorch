@@ -3,6 +3,7 @@ from __future__ import absolute_import, print_function
 
 import os
 import torch
+import numpy as np
 from torch import nn
 from PIL import Image
 from torchvision.transforms import functional as F
@@ -19,7 +20,11 @@ class PytorchModel(BaseModel):
         return self.model
 
     def image_preprocess(self, X):
-        image = Image.fromarray(X[:, :, ::-1])
+        image = (
+            Image.fromarray(np.uint(X[:, :, ::-1]))
+            if len(X.shape) == 3
+            else Image.fromarray(np.uint(X))
+        )
         image = F.resize(image, (*self.model.input_size[:2],))
         image = F.center_crop(image, (*self.model.input_size[:2],))
         data = F.to_tensor(image)

@@ -21,9 +21,9 @@ class PytorchModel(BaseModel):
 
     def image_preprocess(self, X):
         image = (
-            Image.fromarray(np.uint(X[:, :, ::-1]))
+            Image.fromarray(np.uint8(X[:, :, ::-1]))
             if len(X.shape) == 3
-            else Image.fromarray(np.uint(X))
+            else Image.fromarray(np.uint8(X))
         )
         image = F.resize(image, (*self.model.input_size[:2],))
         image = F.center_crop(image, (*self.model.input_size[:2],))

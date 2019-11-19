@@ -4,6 +4,8 @@ from __future__ import absolute_import, print_function
 import os
 import torch
 from torch import nn
+from PIL import Image
+from torchvision.transforms import F
 from torchtext.data.utils import get_tokenizer, ngrams_iterator
 from suanpan.model import Model as BaseModel
 from arguments import PytorchLayersStreamModel
@@ -17,9 +19,13 @@ class PytorchModel(BaseModel):
         return self.model
 
     def image_preprocess(self, X):
-        data = torch.from_numpy(X)
-        image = data.permute(2, 0, 1).unsqueeze(0)
-        return image
+        image = Image.fromarray(X[:, :, ::-1])
+        image = F.resize(image, (*self.model.input_size[:2],))
+        image = F.center_crop(image, (*self.model.input_size[:2],))
+        data = F.to_tensor(image)
+        data = data.unsqueeze(0)
+
+        return data
 
     def text_preprocess(self, X):
         vocab = self.model.vocab

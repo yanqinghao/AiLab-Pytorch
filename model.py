@@ -5,7 +5,7 @@ import os
 import torch
 from torch import nn
 from PIL import Image
-from torchvision.transforms import F
+from torchvision.transforms import functional as F
 from torchtext.data.utils import get_tokenizer, ngrams_iterator
 from suanpan.model import Model as BaseModel
 from arguments import PytorchLayersStreamModel

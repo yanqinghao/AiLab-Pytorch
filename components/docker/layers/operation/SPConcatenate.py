@@ -29,7 +29,7 @@ def SPConcatenate(context):
         raise ("expect one input node")
     param = {"dim": args.dim}
     model = SPMathOP(
-        modelList[0].input_size, modelList[0].type, modelList, "cat", param=param
+        modelList[0].input_size, modelList[0].task, modelList, "cat", param=param
     )
     return model
 

@@ -31,6 +31,7 @@ def SPConcatenate(context):
     model = SPMathOP(
         modelList[0].input_size, modelList[0].task, modelList, "cat", param=param
     )
+    model.layers["Input"] = modelList[0].layers["Input"]
     return model
 
 

@@ -23,6 +23,7 @@ def SPAdd(context):
         logger.error("support one input node for now")
         raise ("expect one input node")
     model = SPMathOP(modelList[0].input_size, modelList[0].task, modelList, "add")
+    model.layers["Input"] = modelList[0].layers["Input"]
     return model
 
 

@@ -16,6 +16,7 @@ from utils.visual import CNNNNVisualization, CNNLayerVisualization
 from utils.visual import createScreenshots, getScreenshotPath
 from utils.download import downloadPretrained, downloadTextDataset
 from utils.collate import generate_batch
+from arguments import SPMathOP
 
 
 def getLayerName(moduleList, match):
@@ -67,7 +68,7 @@ def plotLayers(model, input_size=None):
             file_name = "screenshots"
             output_size = (
                 calOutput(model)
-                if len(model.layers) > 1
+                if len(model.layers) > 1 or isinstance(model, SPMathOP)
                 else [1] + [model.input_size[2]] + list(model.input_size[:2])
                 if len(model.input_size) == 3
                 else [1] + list(model.input_size)
@@ -108,7 +109,7 @@ def calOutput(model):
         )
         return (
             model(torch.zeros(input_size)).shape
-            if len(model.layers) > 1
+            if len(model.layers) > 1 or isinstance(model, SPMathOP)
             else input_size
         )
     except:

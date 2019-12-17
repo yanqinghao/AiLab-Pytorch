@@ -4,7 +4,7 @@ import torch
 def generate_batch(batch):
     label = (
         torch.tensor([entry[0] for entry in batch])
-        if batch[0][0]
+        if batch[0][0] is not None
         else [entry[0] for entry in batch]
     )
     text = [entry[1] for entry in batch]

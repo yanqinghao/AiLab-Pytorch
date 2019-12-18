@@ -19,14 +19,14 @@ def SPCatsvsDogs(context):
     storage.setBackend(type=args.storageType)
 
     storage.download("common/data/cats_and_dogs/cats_and_dogs.zip", "cats_and_dogs.zip")
-    outpath = "./"
+    outpath = "./cats_and_dogs"
     with open("cats_and_dogs.zip", "rb") as f:
         z = zipfile.ZipFile(f)
         for name in z.namelist():
             z.extract(name, outpath)
-    trainDir = os.path.join(outpath, "cats_and_dogs", "train")
-    valDir = os.path.join(outpath, "cats_and_dogs", "validation")
-    testDir = os.path.join(outpath, "cats_and_dogs", "test")
+    trainDir = os.path.join(outpath, "train")
+    valDir = os.path.join(outpath, "validation")
+    testDir = os.path.join(outpath, "test")
     return trainDir, valDir, testDir
 
 

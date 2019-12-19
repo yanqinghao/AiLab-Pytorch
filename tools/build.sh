@@ -1,5 +1,5 @@
-NAMESPACE=(shuzhi,shuzhi-amd64)
-for i in ${NAMESPACE}
+NAMESPACE=("shuzhi" "shuzhi-amd64")
+for i in ${NAMESPACE[*]}
 do
     docker build --build-arg NAME_SPACE=${i} -t registry-vpc.cn-shanghai.aliyuncs.com/${i}/pytorch-docker-gpu:$1 -f docker/docker_yanqing_gpu/Dockerfile .
     docker build --build-arg NAME_SPACE=${i} -t registry-vpc.cn-shanghai.aliyuncs.com/${i}/pytorch-stream-gpu:$1 -f docker/stream_yanqing_gpu/Dockerfile .

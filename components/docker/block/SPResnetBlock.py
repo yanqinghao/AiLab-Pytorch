@@ -28,22 +28,22 @@ def conv1x1(in_planes, out_planes, stride=1):
 
 
 class ResnetBlock(nn.Module):
-    def __init__(self, planes, stride=1, groups=1, base_width=64, dilation=1):
+    def __init__(self, inplanes, planes, stride=1, groups=1, base_width=64, dilation=1):
         super(ResnetBlock, self).__init__()
         if groups != 1 or base_width != 64:
             raise ValueError("BasicBlock only supports groups=1 and base_width=64")
         if dilation > 1:
             raise NotImplementedError("Dilation > 1 not supported in BasicBlock")
         # Both self.conv1 and self.downsample layers downsample the input when stride != 1
-        self.conv1 = conv3x3(planes, planes, stride)
+        self.conv1 = conv3x3(inplanes, planes, stride)
         self.bn1 = nn.BatchNorm2d(planes)
         self.relu = nn.ReLU(inplace=True)
         self.conv2 = conv3x3(planes, planes)
         self.bn2 = nn.BatchNorm2d(planes)
         downsample = None
-        if stride != 1 or self.inplanes != planes:
+        if stride != 1 or inplanes != planes:
             downsample = nn.Sequential(
-                conv1x1(self.inplanes, planes, stride), nn.BatchNorm2d(planes)
+                conv1x1(inplanes, planes, stride), nn.BatchNorm2d(planes)
             )
         self.downsample = downsample
 
@@ -63,6 +63,7 @@ class ResnetBlock(nn.Module):
 
 
 @app.input(PytorchLayersModel(key="inputModel"))
+@app.param(Int(key="inplanes", default=64))
 @app.param(Int(key="planes", default=64))
 @app.output(PytorchLayersModel(key="outputModel"))
 def SPResnetBlock(context):
@@ -72,7 +73,7 @@ def SPResnetBlock(context):
     model = args.inputModel
     inputSize = calOutput(model)
     name = getLayerName(model.layers, "ResnetBlock")
-    setattr(model, name, ResnetBlock(args.planes))
+    setattr(model, name, ResnetBlock(args.inplanes, args.planes))
     model.layers[name] = (getattr(model, name), getScreenshotPath())
     plotLayers(model, inputSize)
 

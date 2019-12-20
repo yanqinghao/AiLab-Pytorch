@@ -43,9 +43,9 @@ class ResnetBlockV2(nn.Module):
         self.relu = nn.ReLU(inplace=True)
         self.stride = stride
         downsample = None
-        if stride != 1 or self.inplanes != planes * self.expansion:
+        if stride != 1 or inplanes != planes * self.expansion:
             downsample = nn.Sequential(
-                conv1x1(self.inplanes, planes * self.expansion, stride),
+                conv1x1(inplanes, planes * self.expansion, stride),
                 nn.BatchNorm2d(planes * self.expansion),
             )
         self.downsample = downsample

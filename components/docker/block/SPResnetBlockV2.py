@@ -28,7 +28,7 @@ def conv1x1(in_planes, out_planes, stride=1):
 
 
 class ResnetBlockV2(nn.Module):
-    expansion = 4
+    expansion = 1
 
     def __init__(self, inplanes, planes, stride=1, groups=1, base_width=64, dilation=1):
         super(ResnetBlockV2, self).__init__()

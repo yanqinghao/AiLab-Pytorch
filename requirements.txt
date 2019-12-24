@@ -1,4 +1,4 @@
-suanpan==0.10.2
+suanpan==0.10.18
 matplotlib
 hiddenlayer
 IPython

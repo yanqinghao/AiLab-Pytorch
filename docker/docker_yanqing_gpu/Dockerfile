@@ -34,13 +34,13 @@ RUN apt-get install graphviz -y
 
 COPY --from=builder /build /yanqing
 
-RUN pip install -r requirements.txt
-
 RUN pip install ./whl/cu100/torch-1.2.0-cp37-cp37m-manylinux1_x86_64.whl
 
 RUN pip install ./whl/cu100/torchvision-0.4.0-cp37-cp37m-manylinux1_x86_64.whl
 
-RUN rm -rf ./whl
+RUN rm -rf whl
+
+RUN pip install -r requirements.txt
 
 ENTRYPOINT [ "/sbin/my_init", "--" ]
 

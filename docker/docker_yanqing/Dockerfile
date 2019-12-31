@@ -1,6 +1,6 @@
 ARG PYTHON_VERSION=3.7
 
-ARG NAME_SPACE
+ARG NAME_SPACE=shuzhi-amd64
 
 FROM registry-vpc.cn-shanghai.aliyuncs.com/${NAME_SPACE}/docker_base:${PYTHON_VERSION} as builder
 

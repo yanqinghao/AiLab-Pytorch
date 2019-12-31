@@ -34,11 +34,7 @@ RUN apt-get install graphviz -y
 
 COPY --from=builder /build /yanqing
 
-RUN pip install ./whl/cpu/torch-1.2.0+cpu-cp37-cp37m-manylinux1_x86_64.whl
-
-RUN pip install ./whl/cpu/torchvision-0.4.0+cpu-cp37-cp37m-manylinux1_x86_64.whl
-
-RUN rm -rf whl
+RUN pip install torch==1.2.0+cpu torchvision==0.4.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
 
 RUN pip install -r requirements.txt
 

@@ -20,7 +20,7 @@ RUN bash tools/compress.sh
 
 FROM registry-vpc.cn-shanghai.aliyuncs.com/${NAME_SPACE}/cuda_docker_base:${PYTHON_VERSION}
 
-WORKDIR /yanqing
+WORKDIR /pytorch
 
 ENV PYPI_MIRROR "https://mirrors.aliyun.com/pypi/simple"
 
@@ -32,7 +32,7 @@ RUN add-apt-repository ppa:deadsnakes/ppa
 
 RUN apt-get install graphviz -y
 
-COPY --from=builder /build /yanqing
+COPY --from=builder /build /pytorch
 
 RUN pip install torch==1.2.0 torchvision==0.4.0
 

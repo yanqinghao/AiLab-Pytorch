@@ -1,4 +1,4 @@
-NAMESPACE=("shuzhi" "shuzhi-amd64")
+NAMESPACE=("shuzhi-amd64")
 for i in ${NAMESPACE[*]}
 do
     docker build -t registry-vpc.cn-shanghai.aliyuncs.com/${i}/pytorch-docker-gpu:$1 -f docker/docker_yanqing_gpu/Dockerfile .

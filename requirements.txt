@@ -4,3 +4,4 @@ IPython
 graphviz
 scipy
 torchtext
+pillow==6.1.0

@@ -5,4 +5,4 @@ graphviz
 scipy
 torchtext
 pillow==6.1.0
-suanpan==0.10.4
+suanpan==0.10.5

@@ -34,7 +34,7 @@ RUN apt-get install graphviz -y
 
 COPY --from=builder /build /pytorch
 
-RUN pip install torch==1.2.0+cpu torchvision==0.4.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
+RUN pip install torch==1.2.0 torchvision==0.4.0
 
 RUN pip install -r requirements.txt
 

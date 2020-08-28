@@ -133,11 +133,14 @@ def get_all_files(dir, class_id):
 
 def make_dataset(dir, class_to_idx, extensions=None, is_valid_file=None):
     images = []
-    for target in sorted(class_to_idx.keys()):
-        d = os.path.join(dir, target)
-        if storage.isFile(d):
-            continue
-        images += get_all_files(d, class_to_idx[target])
+    if class_to_idx:
+        for target in sorted(class_to_idx.keys()):
+            d = os.path.join(dir, target)
+            if storage.isFile(d):
+                continue
+            images += get_all_files(d, class_to_idx[target])
+    else:
+        images += get_all_files(dir, "None")
 
     return images
 
@@ -223,7 +226,10 @@ class DatasetFolder(VisionDataset):
             No class is a subdirectory of another.
         """
         folder_list = [i for i in storage.listFolders(dir)]
-        classes = [os.path.split(i[:-1])[1] for i in folder_list]
+        classes = [
+            i.rstrip(storage.delimiter).split(storage.delimiter)[-1]
+            for i in folder_list
+        ]
         classes.sort()
         class_to_idx = {classes[i]: i for i in range(len(classes))}
         return classes, class_to_idx
@@ -272,7 +278,7 @@ def pil_loader(path):
 def default_loader(path):
     from torchvision import get_image_backend
 
-    local_path = os.path.join("/sp_data/" + path)
+    local_path = os.path.join("/sp_data/", path)
     if not os.path.exists(local_path):
         storage.download(path, local_path)
 

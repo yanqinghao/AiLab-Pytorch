@@ -1,3 +1,8 @@
+"""
+Created on Sun Aug 21 2019
+@author: Yan Qinghao
+transforms
+"""
 # coding=utf-8
 from __future__ import absolute_import, print_function
 
@@ -15,14 +20,16 @@ from arguments import PytorchOptimModel
 @app.param(Bool(key="amsgrad", default=False))
 @app.output(PytorchOptimModel(key="outputModel"))
 def SPAdam(context):
-    # 从 Context 中获取相关数据
+    """
+    Implements Adam algorithm.
+    """
     args = context.args
 
     data = {
         "name": "Adam",
         "param": {
             "lr": args.lr,
-            "betas": (args.betas[0], args.betas[1]),
+            "betas": (*args.betas,),
             "eps": args.eps,
             "weight_decay": args.weightDecay,
             "amsgrad": args.amsgrad,

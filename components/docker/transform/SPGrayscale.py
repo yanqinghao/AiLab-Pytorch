@@ -6,7 +6,7 @@ import torchvision.transforms as transforms
 from suanpan.app.arguments import Int, Folder
 from app import app
 from arguments import PytorchTransModel, PytorchDataset
-from utils import transImgSave
+from utils import transImgSave, mkFolder
 
 
 @app.input(PytorchDataset(key="inputData"))
@@ -24,9 +24,7 @@ def SPGrayscale(context):
 
     args = context.args
     transform = transforms.Grayscale(num_output_channels=args.numOutputChannels)
-    folder = None
-    if args.inputData:
-        folder = transImgSave(args.inputData, transform)
+    folder = transImgSave(args.inputData, transform) if args.inputData else mkFolder()
 
     return transform, folder
 

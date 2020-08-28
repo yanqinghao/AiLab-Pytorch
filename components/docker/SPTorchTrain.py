@@ -15,7 +15,6 @@ from arguments import (
     PytorchOptimModel,
     PytorchSchedulerModel,
 )
-from utils import trainingLog
 from utils.visual import CNNNNVisualization
 
 
@@ -24,6 +23,7 @@ from utils.visual import CNNNNVisualization
 @app.input(PytorchDataloader(key="inputValLoader"))
 @app.input(PytorchOptimModel(key="inputOptimModel"))
 @app.input(PytorchSchedulerModel(key="inputSchedulerModel"))
+@app.param(Int(key="__gpu", default=0))
 @app.param(Int(key="epochs", default=5))
 @app.param(
     String(
@@ -45,12 +45,20 @@ def SPTorchTrain(context):
     valLoader = args.inputValLoader
     optimModel = args.inputOptimModel
     schedulerModel = args.inputSchedulerModel
+    gpu = args.__gpu
+
     if valLoader:
         loader = {"train": trainLoader, "val": valLoader}
     else:
         logger.info("Use train_dataset as default val_dataset in training.")
         loader = {"train": trainLoader, "val": trainLoader}
     model.class_to_idx = trainLoader.dataset.class_to_idx
+    model.vocab = (
+        getattr(trainLoader.dataset, "get_vocab", None)()
+        if getattr(trainLoader.dataset, "get_vocab", None)
+        else None
+    )
+    model.NGRAMS = getattr(trainLoader.dataset, "NGRAMS", None)
     log = {
         "epoch": [],
         "train_acc": [],
@@ -64,7 +72,11 @@ def SPTorchTrain(context):
     best_acc = 0.0
 
     # Device configuration
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda:0" if gpu > 0 else "cpu")
+
+    logger.info("Use {} as device in training.".format("cuda:0" if gpu > 0 else "cpu"))
+
+    model = model.to(device)
 
     # Hyper parameters
     num_epochs = args.epochs
@@ -89,7 +101,7 @@ def SPTorchTrain(context):
         )
     else:
         logger.info("No model lr_scheduler is used in training.")
-
+    cnnThreads = []
     for epoch in range(num_epochs):
         logger.info("Epoch {}/{}".format(epoch + 1, num_epochs))
         log["epoch"].append(epoch)
@@ -101,12 +113,23 @@ def SPTorchTrain(context):
             else:
                 model.eval()  # Set model to evaluate mode
                 cnnVisual = CNNNNVisualization(model)
+                cnnThreads.append(cnnVisual)
+                cnnVisual.daemon = True
+                cnnVisual.start()
 
             running_loss = 0.0
             running_corrects = 0
             running_steps = len(loader[phase])
-            for i, (images, labels, paths) in enumerate(loader[phase]):
-                images = images.to(device)
+            for i, (data, labels, paths) in enumerate(loader[phase]):
+                if i % 100 == 0:
+                    logger.info("train {} batch".format(i))
+                if isinstance(data, torch.Tensor):
+                    data = data.to(device)
+                elif isinstance(data, dict):
+                    for name, value in data.items():
+                        data[name] = value.to(device)
+                else:
+                    raise ("Wrong input type")
                 labels = labels.to(device)
 
                 # zero the parameter gradients
@@ -115,7 +138,14 @@ def SPTorchTrain(context):
                 # forward
                 # track history if only in train
                 with torch.set_grad_enabled(phase == "train"):
-                    outputs = model(images)
+                    if isinstance(data, torch.Tensor):
+                        outputs = model(data)
+                    elif isinstance(data, dict):
+                        x = data.pop("input")
+                        outputs = model(x, **data)
+                        data["input"] = x
+                    else:
+                        raise ("Wrong model input")
                     _, preds = torch.max(outputs, 1)
                     loss = criterion(outputs, labels)
 
@@ -127,12 +157,18 @@ def SPTorchTrain(context):
                 running_loss += loss.item()
                 running_corrects += torch.sum(
                     preds == labels.data
-                ).double() / images.size(0)
-                if phase == "val":
-                    cnnVisual.plot_each_layer(images, paths)
+                ).double() / labels.size(0)
+                if phase == "val" and i == 0 and isinstance(data, torch.Tensor):
+                    cnnVisual.put(
+                        {
+                            "status": "running",
+                            "type": "layer",
+                            "data": (copy.deepcopy(data), copy.deepcopy(paths)),
+                        }
+                    )
 
             epoch_loss = running_loss / running_steps
-            epoch_acc = running_corrects.double() / running_steps
+            epoch_acc = running_corrects.double().item() / running_steps
             log["{}_loss".format(phase)].append(epoch_loss)
             log["{}_acc".format(phase)].append(epoch_acc)
             logger.info(
@@ -142,7 +178,16 @@ def SPTorchTrain(context):
             if phase == "val" and epoch_acc > best_acc:
                 best_acc = epoch_acc
                 best_model_wts = copy.deepcopy(model.state_dict())
-        trainingLog(log)
+        cnnVisual.put(
+            {"status": "running", "type": "log", "data": (copy.deepcopy(log),)}
+        )
+        cnnVisual.put({"status": "quit"})
+
+    for i in cnnThreads:
+        i.tag = False
+
+    for i in cnnThreads:
+        i.join()
 
     time_elapsed = time.time() - since
     logger.info(

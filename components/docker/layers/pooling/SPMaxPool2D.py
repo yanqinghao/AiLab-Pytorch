@@ -6,7 +6,7 @@ import torch.nn as nn
 from suanpan.app.arguments import Int, Bool
 from app import app
 from arguments import PytorchLayersModel
-from utils import getLayerName, plotLayers, calOutput
+from utils import getLayerName, plotLayers, calOutput, getScreenshotPath
 
 
 @app.input(PytorchLayersModel(key="inputModel"))
@@ -36,7 +36,7 @@ def SPMaxPool2D(context):
             ceil_mode=args.ceilMode,
         ),
     )
-    model.layers.append((name, getattr(model, name)))
+    model.layers[name] = (getattr(model, name), getScreenshotPath())
     plotLayers(model, inputSize)
 
     return model

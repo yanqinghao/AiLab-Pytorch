@@ -120,7 +120,7 @@ rcs/
 .vscode/settings.json
 catboost_info
 Pipfile
-dataset
 tools/dataupload.py
 whl
-.vscode/launch.json
+dataset
+.vscode

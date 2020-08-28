@@ -6,13 +6,13 @@ import torch.nn as nn
 from suanpan.app.arguments import Int, Bool
 from app import app
 from arguments import PytorchLayersModel
-from utils import getLayerName, plotLayers, calOutput
+from utils import getLayerName, plotLayers, calOutput, getScreenshotPath
 
 
 @app.input(PytorchLayersModel(key="inputModel"))
 @app.param(Int(key="inFeature", default=7 * 7 * 32))
 @app.param(Int(key="outFeature", default=10))
-@app.param(Bool(key="bias", default=False))
+@app.param(Bool(key="bias", default=True))
 @app.output(PytorchLayersModel(key="outputModel"))
 def SPLinear(context):
     # 从 Context 中获取相关数据
@@ -28,7 +28,7 @@ def SPLinear(context):
             in_features=args.inFeature, out_features=args.outFeature, bias=args.bias
         ),
     )
-    model.layers.append((name, getattr(model, name)))
+    model.layers[name] = (getattr(model, name), getScreenshotPath())
     plotLayers(model, inputSize)
 
     return model

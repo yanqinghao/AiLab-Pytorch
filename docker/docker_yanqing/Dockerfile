@@ -1,6 +1,8 @@
-ARG PYTHON_VERSION=latest
+ARG PYTHON_VERSION=3.7
 
-FROM registry.cn-shanghai.aliyuncs.com/shuzhi/docker_base:${PYTHON_VERSION} as builder
+ARG NAME_SPACE
+
+FROM registry-vpc.cn-shanghai.aliyuncs.com/${NAME_SPACE}/suanpan-python-sdk:${PYTHON_VERSION} as builder
 
 ENV PYPI_MIRROR "https://mirrors.aliyun.com/pypi/simple"
 
@@ -16,9 +18,9 @@ COPY . /build
 
 RUN bash tools/compress.sh
 
-FROM registry.cn-shanghai.aliyuncs.com/shuzhi/docker_base:${PYTHON_VERSION}
+FROM registry-vpc.cn-shanghai.aliyuncs.com/${NAME_SPACE}/suanpan-python-sdk:${PYTHON_VERSION}
 
-WORKDIR /yanqing
+WORKDIR /pytorch
 
 ENV PYPI_MIRROR "https://mirrors.aliyun.com/pypi/simple"
 
@@ -30,13 +32,11 @@ RUN add-apt-repository ppa:deadsnakes/ppa
 
 RUN apt-get install graphviz -y
 
-COPY --from=builder /build /yanqing
+COPY --from=builder /build /pytorch
+
+RUN pip install torch==1.2.0 torchvision==0.4.0
 
 RUN pip install -r requirements.txt
-
-RUN pip install ./whl/cpu/torch-1.1.0-cp37-cp37m-linux_x86_64.whl
-
-RUN pip install ./whl/cpu/torchvision-0.3.0-cp37-cp37m-linux_x86_64.whl
 
 ENTRYPOINT [ "/sbin/my_init", "--" ]
 

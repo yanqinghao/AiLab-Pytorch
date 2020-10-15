@@ -3,7 +3,7 @@
 set -e
 
 VERSION=$(bash tools/version.sh)
-DOCKERBASE=("suanpan-python-sdk", "suanpan-python-sdk-cuda")
+DOCKERBASE=("suanpan-python-sdk" "suanpan-python-sdk-cuda")
 if [[ $1 == "master" ]]; then
     echo "build from suanpan-python-sdk:3.7 and suanpan-python-sdk-cuda:3.7"
     echo "build pytorch-docker:latest and ${VERSION} and pytorch-docker-gpu:latest and ${VERSION}"
@@ -17,9 +17,9 @@ else
     BUILD_VERSIONS=("preview-${VERSION}")
     BUILD_TAGS=("preview")
 fi
-BUILDNAMES=("pytorch-docker", "pytorch-docker-gpu")
-REQUIREMENTS=("requirements.txt", "requirements.txt")
-ENTRYPOINT=("/sbin/my_init", "/usr/bin/dumb-init")
+BUILDNAMES=("pytorch-docker" "pytorch-docker-gpu")
+REQUIREMENTS=("requirements.txt" "requirements.txt")
+ENTRYPOINT=("/sbin/my_init" "/usr/bin/dumb-init")
 NAMESPACE="shuzhi-amd64"
 for ((i = 0; i < ${#TAGS[@]}; i++)); do
     for ((j = 0; j < ${#BUILDNAMES[@]}; j++)); do

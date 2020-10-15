@@ -27,7 +27,10 @@ def SPColorJitter(context):
     """
     args = context.args
 
-    transform = transforms.ColorJitter(brightness=0, contrast=0, saturation=0, hue=0)
+    transform = transforms.ColorJitter(brightness=args.brightness,
+                                       contrast=args.contrast,
+                                       saturation=args.saturation,
+                                       hue=args.hue)
     folder = transImgSave(args.inputData, transform) if args.inputData else mkFolder()
 
     return transform, folder

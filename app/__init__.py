@@ -4,13 +4,16 @@ from __future__ import absolute_import, print_function
 import os
 
 from suanpan.proxy import Proxy
+from suanpan.app.docker import DockerApp
+from suanpan.app.spark import SparkApp
+from suanpan.app.stream import StreamApp
 
 
 class App(Proxy):
     MAPPING = {
-        "spark": "suanpan.app.spark.SparkApp",
-        "docker": "app.docker.DockerApp",
-        "stream": "suanpan.app.stream.StreamApp",
+        "spark": SparkApp,
+        "docker": DockerApp,
+        "stream": StreamApp,
     }
 
     def __init__(self, *args, **kwargs):

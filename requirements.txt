@@ -5,3 +5,5 @@ graphviz
 scipy
 torchtext
 pillow==6.1.0
+torch==1.2.0
+torchvision==0.4.0

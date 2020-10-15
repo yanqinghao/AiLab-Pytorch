@@ -5,6 +5,7 @@ import torch
 import pickle
 import torch.nn as nn
 
+from suanpan import path
 from suanpan.components import Result
 from suanpan.storage.arguments import Model
 from suanpan.storage.arguments import Folder
@@ -71,6 +72,7 @@ class PytorchLayersModel(Model):
         return self.value
 
     def save(self, result):
+        path.mkdirs(self.filePath, parent=True)
         with open(self.filePath, "wb") as f:
             torch.save(result.value, f)
 
@@ -113,6 +115,7 @@ class PytorchOptimModel(Model):
         return self.value
 
     def save(self, context, result):
+        path.mkdirs(self.filePath, parent=True)
         with open(self.filePath, "wb") as f:
             pickle.dump(result.value, f)
 

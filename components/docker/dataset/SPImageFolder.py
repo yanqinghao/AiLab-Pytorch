@@ -4,7 +4,8 @@ from __future__ import absolute_import, print_function
 from suanpan.app import app
 
 from utils.folder import ImageFolder
-from arguments import PytorchDataset, PytorchTransModel, String
+from suanpan.arguments import String
+from arguments import PytorchDataset, PytorchTransModel
 
 
 @app.input(String(key="inputData"))

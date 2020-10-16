@@ -109,7 +109,7 @@ class PytorchOptimModel(Model):
 
         return self.value
 
-    def save(self, context, result):
+    def save(self, result):
         path.mkdirs(self.filePath, parent=True)
         with open(self.filePath, "wb") as f:
             pickle.dump(result.value, f)

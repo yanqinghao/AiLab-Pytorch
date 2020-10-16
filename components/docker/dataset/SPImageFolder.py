@@ -4,10 +4,10 @@ from __future__ import absolute_import, print_function
 from suanpan.app import app
 
 from utils.folder import ImageFolder
-from arguments import PytorchDataset, PytorchTransModel, FolderPath
+from arguments import PytorchDataset, PytorchTransModel, String
 
 
-@app.input(FolderPath(key="inputData"))
+@app.input(String(key="inputData"))
 @app.input(PytorchTransModel(key="inputModel"))
 @app.output(PytorchDataset(key="outputData"))
 def SPImageFolder(context):

@@ -94,13 +94,8 @@ class PytorchTransModel(PytorchLayersModel):
 
 
 class FolderPath(Folder):
-    def load(self, args):
-        self.value = getattr(args, self.key)
-        self.logLoaded(self.value)
-        return self.value
-
-    def format(self, context):
-        return self.value
+    def transform(self, value):
+        return self.folderPath
 
 
 class PytorchOptimModel(Model):

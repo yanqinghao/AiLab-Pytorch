@@ -1,7 +1,8 @@
 # coding=utf-8
 
 import os
-
+import copy
+import time
 import torch
 import numpy as np
 from torch import nn
@@ -33,18 +34,18 @@ class PytorchModel(Model):
         self.needTrain = kwargs.pop("needTrain", True)
         self.model = modelClass(**kwargs)
 
-    def train(self, X, y=None, **kwargs):
-        if self.needTrain:
-            self.model.fit(X, y, **kwargs)
+    # def train(self, X, y=None, **kwargs):
+    #     if self.needTrain:
+    #         self.model.fit(X, y, **kwargs)
 
-    def predict(self, X):
-        logger.info("model is an estimator, use predict()")
-        predictions = self.model.predict(X)
-        labelCount = 1 if len(predictions.shape) == 1 else predictions.shape[1]
-        predictions = (predictions.T if labelCount > 1 else predictions.reshape(
-            1, len(predictions)))
+    # def predict(self, X):
+    #     logger.info("model is an estimator, use predict()")
+    #     predictions = self.model.predict(X)
+    #     labelCount = 1 if len(predictions.shape) == 1 else predictions.shape[1]
+    #     predictions = (predictions.T if labelCount > 1 else predictions.reshape(
+    #         1, len(predictions)))
 
-        return predictions
+    #     return predictions
 
     def transform(self, X):
         logger.info("model is an transformer, use transform()")
@@ -59,7 +60,7 @@ class PytorchModel(Model):
     def trainTransform(self, X, y=None):  # pylint: disable=unused-argument
         return (self.model.fit_transform(X) if y is None else self.model.fit_transform(X, y))
 
-    def setModel(self, model):
+    def set_model(self, model):
         self.model = model
 
     def image_preprocess(self, X):
@@ -123,3 +124,78 @@ class PytorchModel(Model):
             prediction = torch.cat((prediction, predicted), 0)
 
         return [class_names[i] for i in prediction.tolist()]
+
+    def set_epoch(self, num_epochs):
+        self.num_epochs = num_epochs
+
+    def set_scheduler(self, scheduler):
+        self.scheduler = scheduler
+
+    def set_device(self, device):
+        self.device = device
+
+    def set_loader(self, loader):
+        self.loader = loader
+
+    def set_optimizer(self, optimizer):
+        self.optimizer = optimizer
+
+    def set_criterion(self, criterion):
+        self.criterion = criterion
+
+    def train(self):
+        best_acc = 0.0
+        since = time.time()
+        best_model_wts = copy.deepcopy(self.model.state_dict())
+        for epoch in range(self.num_epochs):
+            logger.info("Epoch {}/{}".format(epoch + 1, self.num_epochs))
+            for phase in ["train", "val"]:
+                if phase == "train":
+                    if self.scheduler:
+                        self.scheduler.step()
+                    self.model.train()
+                else:
+                    self.model.eval()
+                running_loss = 0.0
+                running_corrects = 0
+                running_steps = len(self.loader[phase])
+                for i, (data, labels, paths) in enumerate(self.loader[phase]):
+                    if i % 100 == 0:
+                        logger.info("train {} batch".format(i))
+                    if isinstance(data, torch.Tensor):
+                        data = data.to(self.device)
+                    elif isinstance(data, dict):
+                        for name, value in data.items():
+                            data[name] = value.to(self.device)
+                    else:
+                        raise ("Wrong input type")
+                    labels = labels.to(self.device)
+                    self.optimizer.zero_grad()
+                    with torch.set_grad_enabled(phase == "train"):
+                        if isinstance(data, torch.Tensor):
+                            outputs = self.model(data)
+                        elif isinstance(data, dict):
+                            x = data.pop("input")
+                            outputs = self.model(x, **data)
+                            data["input"] = x
+                        else:
+                            raise ("Wrong model input")
+                        _, preds = torch.max(outputs, 1)
+                        loss = self.criterion(outputs, labels)
+                        if phase == "train":
+                            loss.backward()
+                            self.optimizer.step()
+                    running_loss += loss.item()
+                    running_corrects += torch.sum(preds == labels.data).double() / labels.size(0)
+                epoch_loss = running_loss / running_steps
+                epoch_acc = running_corrects.double().item() / running_steps
+                logger.info("{} Loss: {:.4f} Acc: {:.4f}".format(phase, epoch_loss, epoch_acc))
+                if phase == "val" and epoch_acc > best_acc:
+                    best_acc = epoch_acc
+                    best_model_wts = copy.deepcopy(self.model.state_dict())
+        time_elapsed = time.time() - since
+        logger.info("Training complete in {:.0f}m {:.0f}s".format(time_elapsed // 60,
+                                                                  time_elapsed % 60))
+        logger.info("Best val Acc: {:4f}".format(best_acc))
+        self.model.load_state_dict(best_model_wts)
+        return self

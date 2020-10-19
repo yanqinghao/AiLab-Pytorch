@@ -6,13 +6,12 @@ transforms
 # coding=utf-8
 from __future__ import absolute_import, print_function
 
-
+import suanpan
 from suanpan.app import app
-from suanpan.app.arguments import Folder, Float, Bool
-from arguments import PytorchOptimModel
+from suanpan.app.arguments import Float, Bool
+from args import PytorchOptimModel
 
 
-@app.input(Folder(key="inputData"))
 @app.param(Float(key="lr", default=0.01))
 @app.param(Float(key="alpha", default=0.99))
 @app.param(Float(key="eps", default=1e-08))
@@ -25,7 +24,6 @@ def SPRMSprop(context):
     Implements stochastic gradient descent (optionally with momentum).
     """
     args = context.args
-
     data = {
         "name": "RMSprop",
         "param": {
@@ -37,9 +35,8 @@ def SPRMSprop(context):
             "centered": args.centered,
         },
     }
-
     return data
 
 
 if __name__ == "__main__":
-    SPRMSprop()
+    suanpan.run(app)

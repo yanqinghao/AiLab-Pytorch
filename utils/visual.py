@@ -17,22 +17,6 @@ from suanpan.storage import storage
 from suanpan import g
 
 
-def getScreenshotPath():
-    node_info = (g.userId, g.appId, g.nodeId)
-    return (
-        "studio/{}/logs/{}/screenshots/{}".format(*node_info),
-        "studio/{}/logs/{}/screenshots_thumbnail/{}".format(*node_info),
-    )
-
-
-def createScreenshots(storage_name, thumbnail_name):
-    screenshots_node = Screenshots()
-    screenshots_node.current.storageName = storage_name
-    screenshots_node.current.thumbnail = thumbnail_name
-    screenshots_node.clean()
-    return screenshots_node
-
-
 def random_generator(size=6, chars=string.ascii_uppercase + string.digits):
     return "".join(random.choice(chars) for x in range(size))
 

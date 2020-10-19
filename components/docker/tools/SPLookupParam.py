@@ -2,9 +2,10 @@
 from __future__ import absolute_import, print_function
 
 import torchvision.models as models
+import suanpan
 from suanpan.app.arguments import String, Json
 from suanpan.app import app
-from arguments import PytorchLayersModel
+from args import PytorchLayersModel
 
 
 @app.input(PytorchLayersModel(key="inputModel"))
@@ -37,9 +38,8 @@ def SPLookupParam(context):
                         paramsOut.append(".".join(layer.split(".")[1:]))
                 else:
                     paramsOut.append(".".join(layer.split(".")[1:]))
-
     return paramsOut
 
 
 if __name__ == "__main__":
-    SPLookupParam()
+    suanpan.run(app)

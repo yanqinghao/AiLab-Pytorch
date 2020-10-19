@@ -7,10 +7,10 @@ transforms
 from __future__ import absolute_import, print_function
 
 import torchvision.transforms as transforms
-
+import suanpan
 from suanpan.app.arguments import Folder
 from suanpan.app import app
-from arguments import PytorchTransModel, PytorchDataset
+from args import PytorchTransModel, PytorchDataset
 from utils import transImgSave, mkFolder
 
 
@@ -34,9 +34,8 @@ def SPRandomChoice(context):
             transformLst.append(transform)
     transformsAug = transforms.RandomChoice(transformLst)
     folder = transImgSave(args.inputData, transformsAug) if args.inputData else mkFolder()
-
     return transformsAug, folder
 
 
 if __name__ == "__main__":
-    SPRandomChoice()
+    suanpan.run(app)

@@ -7,10 +7,10 @@ transforms
 from __future__ import absolute_import, print_function
 
 import torchvision.transforms as transforms
-
+import suanpan
 from suanpan.app.arguments import Float, Folder, ListOfFloat, Int
-from app import app
-from arguments import PytorchTransModel, PytorchDataset
+from suanpan.app import app
+from args import PytorchTransModel, PytorchDataset
 from utils import transImgSave, mkFolder
 
 
@@ -21,8 +21,7 @@ from utils import transImgSave, mkFolder
         key="translate",
         default=None,
         help="tuple of maximum absolute fraction for horizontal and vertical translations.",
-    )
-)
+    ))
 @app.param(ListOfFloat(key="scale", default=None, help="scaling factor interval"))
 @app.param(Float(key="shear", default=None, help="Range of degrees to select from."))
 @app.param(
@@ -31,23 +30,20 @@ from utils import transImgSave, mkFolder
         default=0,
         help="An optional resampling filter.PIL.Image.BILINEAR 2, PIL.Image.NEAREST 0,"
         " PIL.Image.BICUBIC 3",
-    )
-)
+    ))
 @app.param(
     Int(
         key="fillcolor",
         default=0,
         help="Optional fill color (Tuple for RGB Image And int for grayscale) for the"
         " area outside the transform in the output image.",
-    )
-)
+    ))
 @app.output(PytorchTransModel(key="outputModel"))
 @app.output(Folder(key="outputData"))
 def SPRandomAffine(context):
     """
     Random affine transformation of the image keeping center invariant
     """
-
     args = context.args
     transform = transforms.RandomAffine(
         args.degrees,
@@ -58,9 +54,8 @@ def SPRandomAffine(context):
         fillcolor=args.fillcolor,
     )
     folder = transImgSave(args.inputData, transform) if args.inputData else mkFolder()
-
     return transform, folder
 
 
 if __name__ == "__main__":
-    SPRandomAffine()
+    suanpan.run(app)

@@ -24,11 +24,7 @@ def getLayerName(moduleList, match):
     for name, module in moduleList.items():
         if match in name:
             layersName.append(int(name.replace(match + "_", "")))
-    return (
-        "{}_{}".format(match, max(layersName) + 1)
-        if layersName
-        else "{}_{}".format(match, 0)
-    )
+    return (f"{match}_{max(layersName) + 1}" if layersName else f"{match}_0"
 
 
 def transImgSave(dataset, transform):
@@ -66,23 +62,15 @@ def plotLayers(model, input_size=None):
     try:
         if model.task == "image":
             file_name = "screenshots"
-            output_size = (
-                calOutput(model)
-                if len(model.layers) > 1 or isinstance(model, SPMathOP)
-                else [1] + [model.input_size[2]] + list(model.input_size[:2])
-                if len(model.input_size) == 3
-                else [1] + list(model.input_size)
-            )
+            output_size = (calOutput(model) if len(model.layers) > 1
+                           or isinstance(model, SPMathOP) else [1] + [model.input_size[2]] +
+                           list(model.input_size[:2]) if len(model.input_size) == 3 else [1] +
+                           list(model.input_size))
             name_list = [i[0] for i in model.layers.items()]
             model_name = "{} Layer".format(name_list[-1])
-            input_name = (
-                "IN (N {})".format("".join(["* {}".format(i) for i in input_size[1:]]))
-                if len(model.layers) > 1
-                else None
-            )
-            output_name = "OUT (N {})".format(
-                "".join(["* {}".format(i) for i in output_size[1:]])
-            )
+            input_name = ("IN (N {})".format("".join(["* {}".format(i) for i in input_size[1:]]))
+                          if len(model.layers) > 1 else None)
+            output_name = "OUT (N {})".format("".join(["* {}".format(i) for i in output_size[1:]]))
             dot = Digraph(comment="Pytorch Model")
             dot.attr("graph", size="12,12", dpi="300", bgcolor="#E8E8E8")
             if input_name:
@@ -102,16 +90,11 @@ def plotLayers(model, input_size=None):
 def calOutput(model):
     try:
         model.to(torch.device("cpu"))
-        input_size = (
-            [1] + [model.input_size[-1]] + list(model.input_size[:-1])
-            if len(model.input_size) == 3
-            else [1] + list(model.input_size)
-        )
-        return (
-            model(torch.zeros(input_size)).shape
-            if len(model.layers) > 1 or isinstance(model, SPMathOP)
-            else input_size
-        )
+        input_size = ([1] + [model.input_size[-1]] +
+                      list(model.input_size[:-1]) if len(model.input_size) == 3 else [1] +
+                      list(model.input_size))
+        return (model(torch.zeros(input_size)).shape
+                if len(model.layers) > 1 or isinstance(model, SPMathOP) else input_size)
     except:
         return None
 
@@ -120,4 +103,3 @@ def datasetScreenshot(dataset, screenshot):
     for img, _, _ in dataset:
         screenshot.save(np.asarray(img))
         break
-

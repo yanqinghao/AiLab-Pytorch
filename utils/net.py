@@ -13,11 +13,11 @@ class SPNet(nn.Module):
     def forward(self, x, offsets=None):
         out = x
         for _, j in self.layers.items():
-            if j[0] is not None:
-                if isinstance(j[0], nn.EmbeddingBag):
-                    out = j[0](out, offsets)
+            if j is not None:
+                if isinstance(j, nn.EmbeddingBag):
+                    out = j(out, offsets)
                 else:
-                    out = j[0](out)
+                    out = j(out)
         return out
 
 

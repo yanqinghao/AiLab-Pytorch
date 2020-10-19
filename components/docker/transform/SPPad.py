@@ -7,10 +7,10 @@ transforms
 from __future__ import absolute_import, print_function
 
 import torchvision.transforms as transforms
-
+import suanpan
 from suanpan.app.arguments import Int, Folder, String
-from app import app
-from arguments import PytorchTransModel, PytorchDataset
+from suanpan.app import app
+from args import PytorchTransModel, PytorchDataset
 from utils import transImgSave, mkFolder
 
 
@@ -22,23 +22,18 @@ from utils import transImgSave, mkFolder
         key="paddingMode",
         default="constant",
         help="Type of padding.constant, edge, reflect, symmetric",
-    )
-)
+    ))
 @app.output(PytorchTransModel(key="outputModel"))
 @app.output(Folder(key="outputData"))
 def SPPad(context):
     """
     Pad the given PIL Image on all sides with the given “pad” value.
     """
-
     args = context.args
-    transform = transforms.Pad(
-        args.padding, fill=args.fill, padding_mode=args.paddingMode
-    )
+    transform = transforms.Pad(args.padding, fill=args.fill, padding_mode=args.paddingMode)
     folder = transImgSave(args.inputData, transform) if args.inputData else mkFolder()
-
     return transform, folder
 
 
 if __name__ == "__main__":
-    SPPad()
+    suanpan.run(app)

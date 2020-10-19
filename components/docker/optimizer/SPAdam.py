@@ -6,13 +6,12 @@ transforms
 # coding=utf-8
 from __future__ import absolute_import, print_function
 
-
+import suanpan
 from suanpan.app import app
-from suanpan.app.arguments import Folder, Float, ListOfFloat, Bool
-from arguments import PytorchOptimModel
+from suanpan.app.arguments import Float, ListOfFloat, Bool
+from args import PytorchOptimModel
 
 
-@app.input(Folder(key="inputData"))
 @app.param(Float(key="lr", default=0.001))
 @app.param(ListOfFloat(key="betas", default=[0.9, 0.999]))
 @app.param(Float(key="eps", default=1e-08))
@@ -24,7 +23,6 @@ def SPAdam(context):
     Implements Adam algorithm.
     """
     args = context.args
-
     data = {
         "name": "Adam",
         "param": {
@@ -35,9 +33,8 @@ def SPAdam(context):
             "amsgrad": args.amsgrad,
         },
     }
-
     return data
 
 
 if __name__ == "__main__":
-    SPAdam()
+    suanpan.run(app)

@@ -1,10 +1,10 @@
 # coding=utf-8
 from __future__ import absolute_import, print_function
 
-
+import suanpan
 from suanpan.app.arguments import Folder, String
-from app import app
-from arguments import PytorchLayersModel, PytorchDataloader
+from suanpan.app import app
+from args import PytorchLayersModel, PytorchDataloader
 from utils.visual import CNNLayerVisualization
 
 
@@ -13,9 +13,7 @@ from utils.visual import CNNLayerVisualization
 @app.param(String(key="selectedLayer", default="Conv2D_0"))
 @app.output(Folder(key="outputData"))
 def SPCNNVisual(context):
-    # 从 Context 中获取相关数据
     args = context.args
-    # 查看上一节点发送的 args.inputData 数据
     model = args.inputModel
     selectedLayer = args.selectedLayer
     dataLoader = args.inputLoader
@@ -26,4 +24,4 @@ def SPCNNVisual(context):
 
 
 if __name__ == "__main__":
-    SPCNNVisual()
+    suanpan.run(app)

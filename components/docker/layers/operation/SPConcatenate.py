@@ -1,10 +1,12 @@
 # coding=utf-8
 from __future__ import absolute_import, print_function
 
+import suanpan
 from suanpan.app.arguments import Int
-from suanpan.log import logger
-from app import app
-from arguments import PytorchLayersModel, SPMathOP
+from suanpan.error import NodeError
+from suanpan.app import app
+from args import PytorchLayersModel
+from utils import net
 
 
 @app.input(PytorchLayersModel(key="inputModel1"))
@@ -21,19 +23,15 @@ def SPConcatenate(context):
         if getattr(args, "inputModel" + str(i + 1)):
             modelList.append(getattr(args, "inputModel" + str(i + 1)))
     if len(modelList) < 2:
-        logger.error("input must have one more models.")
-        raise ("expect more input")
+        NodeError("expect more input")
     inputCheck = set([model.layers["Input"][1] for model in modelList])
     if len(inputCheck) > 1:
-        logger.error("support one input node for now")
-        raise ("expect one input node")
+        NodeError("expect one input node")
     param = {"dim": args.dim}
-    model = SPMathOP(
-        modelList[0].input_size, modelList[0].task, modelList, "cat", param=param
-    )
+    model = net.SPMathOP(modelList[0].input_size, modelList[0].task, modelList, "cat", param=param)
     model.layers["Input"] = modelList[0].layers["Input"]
     return model
 
 
 if __name__ == "__main__":
-    SPConcatenate()
+    suanpan.run(app)

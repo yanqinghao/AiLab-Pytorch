@@ -7,10 +7,10 @@ transforms
 from __future__ import absolute_import, print_function
 
 import torchvision.transforms as transforms
-
+import suanpan
 from suanpan.app.arguments import Folder, Float
-from app import app
-from arguments import PytorchTransModel, PytorchDataset
+from suanpan.app import app
+from args import PytorchTransModel, PytorchDataset
 from utils import transImgSave, mkFolder
 
 
@@ -23,12 +23,10 @@ def SPRandomVerticalFlip(context):
     Vertically flip the given PIL Image randomly with a given probability.
     """
     args = context.args
-
     transform = transforms.RandomVerticalFlip(p=args.p)
     folder = transImgSave(args.inputData, transform) if args.inputData else mkFolder()
-
     return transform, folder
 
 
 if __name__ == "__main__":
-    SPRandomVerticalFlip()
+    suanpan.run(app)

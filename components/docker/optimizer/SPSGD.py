@@ -6,13 +6,12 @@ transforms
 # coding=utf-8
 from __future__ import absolute_import, print_function
 
-
+import suanpan
 from suanpan.app import app
-from suanpan.app.arguments import Folder, Float, Bool
-from arguments import PytorchOptimModel
+from suanpan.app.arguments import Float, Bool
+from args import PytorchOptimModel
 
 
-@app.input(Folder(key="inputData"))
 @app.param(Float(key="lr", default=0.001))
 @app.param(Float(key="momentum", default=0))
 @app.param(Float(key="dampening", default=0))
@@ -24,7 +23,6 @@ def SPSGD(context):
     Implements stochastic gradient descent (optionally with momentum).
     """
     args = context.args
-
     data = {
         "name": "SGD",
         "param": {
@@ -35,9 +33,8 @@ def SPSGD(context):
             "nesterov": args.nesterov,
         },
     }
-
     return data
 
 
 if __name__ == "__main__":
-    SPSGD()
+    suanpan.run(app)

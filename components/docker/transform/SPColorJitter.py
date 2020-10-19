@@ -7,10 +7,10 @@ transforms
 from __future__ import absolute_import, print_function
 
 import torchvision.transforms as transforms
-
+import suanpan
 from suanpan.app.arguments import Folder, Float
-from app import app
-from arguments import PytorchTransModel, PytorchDataset
+from suanpan.app import app
+from args import PytorchTransModel, PytorchDataset
 from utils import transImgSave, mkFolder
 
 
@@ -26,15 +26,13 @@ def SPColorJitter(context):
     Randomly change the brightness, contrast and saturation of an image.
     """
     args = context.args
-
     transform = transforms.ColorJitter(brightness=args.brightness,
                                        contrast=args.contrast,
                                        saturation=args.saturation,
                                        hue=args.hue)
     folder = transImgSave(args.inputData, transform) if args.inputData else mkFolder()
-
     return transform, folder
 
 
 if __name__ == "__main__":
-    SPColorJitter()
+    suanpan.run(app)

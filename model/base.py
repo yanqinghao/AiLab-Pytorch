@@ -5,16 +5,18 @@ import copy
 import time
 import torch
 import numpy as np
+import pandas as pd
 from torch import nn
 from PIL import Image
 from torchvision.transforms import functional as F
 from torchtext.data.utils import get_tokenizer, ngrams_iterator
 from suanpan.error import AppError
+from suanpan.storage import storage
 from suanpan.log import logger
 from suanpan.model import Model
 from utils import io
 
-MODEL_FILE = "model.model"
+MODEL_FILE = "model.layers"
 
 
 class PytorchModel(Model):
@@ -88,7 +90,7 @@ class PytorchModel(Model):
         else:
             return text
 
-    def predict(self, data, preprocess):
+    def predict_stream(self, data, preprocess):
         if preprocess == "text":
             processedData = self.text_preprocess(data)
         elif preprocess == "image":
@@ -133,6 +135,7 @@ class PytorchModel(Model):
 
     def set_device(self, device):
         self.device = device
+        self.model = self.model.to(device)
 
     def set_loader(self, loader):
         self.loader = loader
@@ -199,3 +202,88 @@ class PytorchModel(Model):
         logger.info("Best val Acc: {:4f}".format(best_acc))
         self.model.load_state_dict(best_model_wts)
         return self
+
+    def predict(self, labeled=False):
+        folder = "/pred_data/"
+        pathtmp = ""
+        class_names = list(self.model.class_to_idx.keys())
+        self.model.eval()
+        with torch.no_grad():
+            prediction = torch.tensor([], dtype=torch.long)
+            filepath = []
+            filelabel = []
+            for data, labels, paths in self.loader["predict"]:
+                if isinstance(data, torch.Tensor):
+                    data = data.to(self.device)
+                elif isinstance(data, dict):
+                    for name, value in data.items():
+                        data[name] = value.to(self.device)
+                else:
+                    raise ("Wrong input type")
+                if isinstance(data, torch.Tensor):
+                    outputs = self.model(data)
+                elif isinstance(data, dict):
+                    x = data.pop("input")
+                    outputs = self.model(x, **data)
+                    data["input"] = x
+                else:
+                    raise ("Wrong model input")
+                _, predicted = torch.max(outputs.data, 1)
+                prediction = torch.cat((prediction, predicted), 0)
+                if isinstance(list(paths)[0], str):
+                    filepath = filepath + [
+                        os.path.join(*i.split(storage.delimiter)[6:]) for i in list(paths)
+                    ]
+                else:
+                    filepath = filepath + list(paths.numpy())
+                if labels[0] is None:
+                    filelabel = filelabel + list(labels)
+                elif not isinstance(labels[0], str):
+                    filelabel = filelabel + list(labels.numpy())
+                else:
+                    filelabel = filelabel + list(labels)
+                if not pathtmp:
+                    pathtmp = list(paths)[0]
+                if isinstance(data, torch.Tensor) and len(data.size()) == 4:
+                    for j in range(data.size()[0]):
+                        if isinstance(pathtmp, str):
+                            save_path = os.path.join(
+                                folder,
+                                os.path.split(paths[j])[0],
+                                class_names[predicted[j]],
+                                os.path.split(paths[j])[1],
+                            )
+                        else:
+                            save_path = os.path.join(
+                                folder, class_names[predicted[j]], "{}.png".format(paths[j])
+                            )
+                        if isinstance(pathtmp, str):
+                            img = Image.open(os.path.join("/sp_data/", paths[j]))
+                        else:
+                            img = F.to_pil_image(data[j].cpu())
+
+                        if not os.path.exists(os.path.split(save_path)[0]):
+                            os.makedirs(os.path.split(save_path)[0])
+                        img.save(save_path)
+
+            if labeled:
+                df = pd.DataFrame(
+                    {
+                        "file path or index": filepath,
+                        "label": [class_names[i] for i in filelabel],
+                        "predictions": [class_names[i] for i in prediction.tolist()],
+                    }
+                )
+            else:
+                df = pd.DataFrame(
+                    {
+                        "file path or index": filepath,
+                        "predictions": [class_names[i] for i in prediction.tolist()],
+                    }
+                )
+            if isinstance(pathtmp, str):
+                pathlist = pathtmp.split(storage.delimiter)
+                folder = os.path.join(folder, *pathlist[:6])
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+        return folder, df

@@ -3,11 +3,11 @@ from __future__ import absolute_import, print_function
 
 import os
 import shutil
-
+import suanpan
 from suanpan.app import app
 from suanpan.app.arguments import Folder
 import utils
-from arguments import PytorchDataset, PytorchTransModel
+from args import PytorchDataset, PytorchTransModel
 
 
 @app.input(Folder(key="inputData"))
@@ -15,9 +15,7 @@ from arguments import PytorchDataset, PytorchTransModel
 @app.output(PytorchDataset(key="outputData1"))
 @app.output(PytorchDataset(key="outputData2"))
 def SPMNIST(context):
-
     args = context.args
-
     filePath = os.path.join(args.inputData, "MNIST", "raw")
     if "MNIST" not in os.listdir(args.inputData):
         os.mkdir(os.path.join(args.inputData, "MNIST"))
@@ -32,18 +30,14 @@ def SPMNIST(context):
     for i in filename:
         if not os.path.exists(os.path.join(filePath, i)):
             shutil.move(os.path.join(args.inputData, i), os.path.join(filePath, i))
-
     # MNIST dataset
-    train_dataset = utils.mnist.MNIST(
-        root=args.inputData, train=True, transform=args.inputModel, download=True
-    )
-
-    test_dataset = utils.mnist.MNIST(
-        root=args.inputData, train=False, transform=args.inputModel
-    )
-
+    train_dataset = utils.mnist.MNIST(root=args.inputData,
+                                      train=True,
+                                      transform=args.inputModel,
+                                      download=True)
+    test_dataset = utils.mnist.MNIST(root=args.inputData, train=False, transform=args.inputModel)
     return train_dataset, test_dataset
 
 
 if __name__ == "__main__":
-    SPMNIST()
+    suanpan.run(app)

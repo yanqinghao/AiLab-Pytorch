@@ -2,10 +2,11 @@
 from __future__ import absolute_import, print_function
 
 import torch.nn as nn
+import suanpan
 from suanpan.app.arguments import Int
-from app import app
-from arguments import PytorchLayersModel
-from utils import getLayerName, plotLayers, calOutput, getScreenshotPath
+from suanpan.app import app
+from args import PytorchLayersModel
+from utils import getLayerName
 
 
 class ConvBNReLU(nn.Sequential):
@@ -39,15 +40,13 @@ class InvertedResidual(nn.Module):
         if expand_ratio != 1:
             # pw
             layers.append(ConvBNReLU(inp, hidden_dim, kernel_size=1))
-        layers.extend(
-            [
-                # dw
-                ConvBNReLU(hidden_dim, hidden_dim, stride=stride, groups=hidden_dim),
-                # pw-linear
-                nn.Conv2d(hidden_dim, oup, 1, 1, 0, bias=False),
-                nn.BatchNorm2d(oup),
-            ]
-        )
+        layers.extend([
+            # dw
+            ConvBNReLU(hidden_dim, hidden_dim, stride=stride, groups=hidden_dim),
+            # pw-linear
+            nn.Conv2d(hidden_dim, oup, 1, 1, 0, bias=False),
+            nn.BatchNorm2d(oup),
+        ])
         self.conv = nn.Sequential(*layers)
 
     def forward(self, x):
@@ -64,24 +63,17 @@ class InvertedResidual(nn.Module):
 @app.param(Int(key="expandRatio", default=1))
 @app.output(PytorchLayersModel(key="outputModel"))
 def SPInvertedResidual(context):
-    # 从 Context 中获取相关数据
     args = context.args
-    # 查看上一节点发送的 args.inputData 数据
     model = args.inputModel
-    inputSize = calOutput(model)
     name = getLayerName(model.layers, "InvertedResidual")
     setattr(
         model,
         name,
-        InvertedResidual(
-            args.inChannels, args.outChannels, args.stride, args.expandRatio
-        ),
+        InvertedResidual(args.inChannels, args.outChannels, args.stride, args.expandRatio),
     )
-    model.layers[name] = (getattr(model, name), getScreenshotPath())
-    plotLayers(model, inputSize)
-
+    model.layers[name] = getattr(model, name)
     return model
 
 
 if __name__ == "__main__":
-    SPInvertedResidual()
+    suanpan.run(app)

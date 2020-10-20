@@ -2,10 +2,11 @@
 from __future__ import absolute_import, print_function
 
 import os
+import suanpan
 from suanpan.app import app
 from suanpan.app.arguments import Int, Folder, String, ListOfString
 from utils import text_classification
-from arguments import PytorchDataset
+from args import PytorchDataset
 
 
 def find_all_files(folder):
@@ -29,26 +30,36 @@ def find_all_files(folder):
 @app.output(PytorchDataset(key="outputTrainData"))
 @app.output(PytorchDataset(key="outputTestData"))
 def SPTextDataset(context):
-    # 从 Context 中获取相关数据
     args = context.args
     NGRAMS = args.NGRAMS
     dataSets = args.dataSets
-
     if dataSets != "PRED_Data":
-        train_dataset, test_dataset = text_classification.DATASETS[dataSets](
-            find_all_files(args.inputData), root="./.data", ngrams=NGRAMS, vocab=None
-        )
+        train_dataset, test_dataset = text_classification.DATASETS[dataSets](find_all_files(
+            args.inputData),
+                                                                             root="./.data",
+                                                                             ngrams=NGRAMS,
+                                                                             vocab=None)
         setattr(train_dataset, "collate", "generate_batch")
         setattr(test_dataset, "collate", "generate_batch")
         setattr(
             train_dataset,
             "class_to_idx",
-            {"World": 1, "Sports": 2, "Business": 3, "Sci/Tec": 4},
+            {
+                "World": 1,
+                "Sports": 2,
+                "Business": 3,
+                "Sci/Tec": 4
+            },
         )
         setattr(
             test_dataset,
             "class_to_idx",
-            {"World": 1, "Sports": 2, "Business": 3, "Sci/Tec": 4},
+            {
+                "World": 1,
+                "Sports": 2,
+                "Business": 3,
+                "Sci/Tec": 4
+            },
         )
         setattr(train_dataset, "NGRAMS", NGRAMS)
         setattr(test_dataset, "NGRAMS", NGRAMS)
@@ -64,4 +75,4 @@ def SPTextDataset(context):
 
 
 if __name__ == "__main__":
-    SPTextDataset()
+    suanpan.run(app)

@@ -3,6 +3,7 @@ from __future__ import absolute_import, print_function
 
 import os
 import zipfile
+import suanpan
 from suanpan.app import app
 from suanpan.docker.arguments import Folder, String
 from suanpan.storage import StorageProxy
@@ -15,10 +16,8 @@ from suanpan import path
 @app.output(Folder(key="testDir"))
 def SPCatsvsDogs(context):
     args = context.args
-
     storage = StorageProxy(None, None)
     storage.setBackend(type=args.storageType)
-
     storage.download("common/data/cats_and_dogs/cats_and_dogs.zip", "cats_and_dogs.zip")
     outpath = "./cats_and_dogs"
     with open("cats_and_dogs.zip", "rb") as f:
@@ -35,4 +34,4 @@ def SPCatsvsDogs(context):
 
 
 if __name__ == "__main__":
-    SPCatsvsDogs()  # pylint: disable=no-value-for-parameter
+    suanpan.run(app)

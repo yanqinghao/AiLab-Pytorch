@@ -23,9 +23,9 @@ def find_all_files(folder):
 
 
 @app.input(Folder(key="inputData1"))
-@app.input(Model(key="model1", type=PytorchModel))
-@app.output(Json(key="outputData1"))
+@app.input(Model(key="model1", model=PytorchModel))
 @app.param(Int(key="duration", default=3600))
+@app.output(Json(key="outputData1"))
 def predict(context):
     args = context.args
     filePath = find_all_files(args.inputData1)[0]
@@ -33,12 +33,12 @@ def predict(context):
     if filePath.endswith("npy"):
         arr = npy.load(filePath)
         for data in arr:
-            prediction = args.model1.predict(data, "image")
+            prediction = args.model1.predict_stream(data, "image")
             predictions += prediction
     elif filePath.endswith("csv"):
         dataframe = csv.load(filePath)
         for data in dataframe["text"].values:
-            prediction = args.model1.predict(data, "text")
+            prediction = args.model1.predict_stream(data, "text")
             predictions += prediction
 
     return predictions

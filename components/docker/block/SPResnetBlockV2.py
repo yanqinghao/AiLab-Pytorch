@@ -2,10 +2,11 @@
 from __future__ import absolute_import, print_function
 
 import torch.nn as nn
+import suanpan
 from suanpan.app.arguments import Int
-from app import app
-from arguments import PytorchLayersModel
-from utils import getLayerName, plotLayers, calOutput, getScreenshotPath
+from suanpan.app import app
+from args import PytorchLayersModel
+from utils import getLayerName
 
 
 def conv3x3(in_planes, out_planes, stride=1, groups=1, dilation=1):
@@ -73,18 +74,13 @@ class ResnetBlockV2(nn.Module):
 @app.param(Int(key="planes", default=64))
 @app.output(PytorchLayersModel(key="outputModel"))
 def SPResnetBlockV2(context):
-    # 从 Context 中获取相关数据
     args = context.args
-    # 查看上一节点发送的 args.inputData 数据
     model = args.inputModel
-    inputSize = calOutput(model)
     name = getLayerName(model.layers, "ResnetBlockV2")
     setattr(model, name, ResnetBlockV2(args.inplanes, args.planes))
-    model.layers[name] = (getattr(model, name), getScreenshotPath())
-    plotLayers(model, inputSize)
-
+    model.layers[name] = getattr(model, name)
     return model
 
 
 if __name__ == "__main__":
-    SPResnetBlockV2()
+    suanpan.run(app)

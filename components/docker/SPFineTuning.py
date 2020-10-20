@@ -1,10 +1,11 @@
 # coding=utf-8
 from __future__ import absolute_import, print_function
 
+import suanpan
 from suanpan.arguments import ListOfString
 from suanpan.log import logger
-from app import app
-from arguments import PytorchLayersModel, PytorchFinetuningModel
+from suanpan.app import app
+from args import PytorchLayersModel, PytorchFinetuningModel
 
 
 @app.input(PytorchFinetuningModel(key="inputModel1"))
@@ -13,9 +14,7 @@ from arguments import PytorchLayersModel, PytorchFinetuningModel
 @app.param(ListOfString(key="freezeParam", default=None))
 @app.output(PytorchLayersModel(key="outputModel"))
 def SPFineTuning(context):
-    # 从 Context 中获取相关数据
     args = context.args
-    # 查看上一节点发送的 args.inputData 数据
     model = args.inputModel2
     pretrainedFineTuning = args.inputModel1
     if args.fineTuning:
@@ -44,4 +43,4 @@ def SPFineTuning(context):
 
 
 if __name__ == "__main__":
-    SPFineTuning()
+    suanpan.run(app)

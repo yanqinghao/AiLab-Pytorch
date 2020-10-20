@@ -4,6 +4,7 @@ from __future__ import absolute_import, print_function
 import os
 import shutil
 import json
+import suanpan
 from suanpan.app import app
 from suanpan.app.arguments import Folder, Float
 
@@ -21,9 +22,7 @@ def getFilePath(path, classname, filename):
 @app.output(Folder(key="outputData1"))
 @app.output(Folder(key="outputData2"))
 def SPViaToFolder(context):
-
     args = context.args
-
     jsonFile = os.path.join(args.inputData, "project.json")
     with open(jsonFile, "rb") as load_f:
         fileInfo = json.load(load_f)
@@ -48,9 +47,8 @@ def SPViaToFolder(context):
                 if not os.path.exists(os.path.split(dst)[0]):
                     os.makedirs(os.path.split(dst)[0])
                 shutil.copy(src, dst)
-
     return args.outputData1, args.outputData2
 
 
 if __name__ == "__main__":
-    SPViaToFolder()
+    suanpan.run(app)

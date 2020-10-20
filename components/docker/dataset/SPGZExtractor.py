@@ -2,6 +2,7 @@
 from __future__ import absolute_import, print_function
 
 import os
+import suanpan
 from suanpan.app import app
 from suanpan.app.arguments import Folder
 from torchtext.utils import extract_archive
@@ -23,13 +24,11 @@ def find_all_gz(folder):
 @app.input(Folder(key="inputData"))
 @app.output(Folder(key="outputData"))
 def SPGZExtractor(context):
-    # 从 Context 中获取相关数据
     args = context.args
-
-    extract_archive(find_all_gz(args.inputData)[0], to_path=args.outputData)
-
-    return args.outputData
+    outputPath = "/tmp/output"
+    extract_archive(find_all_gz(args.inputData)[0], to_path=outputPath)
+    return outputPath
 
 
 if __name__ == "__main__":
-    SPGZExtractor()
+    suanpan.run(app)

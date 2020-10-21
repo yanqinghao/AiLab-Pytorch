@@ -2,7 +2,6 @@
 from __future__ import absolute_import, print_function
 
 import os
-import numpy as np
 import suanpan
 from suanpan.app import app
 from suanpan.app.arguments import Folder, Model, Int, Json

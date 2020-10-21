@@ -205,7 +205,7 @@ class PytorchModel(Model):
         return self
 
     def predict(self, labeled=False):
-        folder = "/tmp/pred_data/"
+        folder = "pred_imgs/"
         pathtmp = ""
         class_names = list(self.model.class_to_idx.keys())
         self.model.eval()

@@ -14,9 +14,9 @@ RUN pip config set global.index-url ${PYPI_MIRROR}
 
 RUN pip install --upgrade pip
 
-RUN add-apt-repository ppa:deadsnakes/ppa
+# RUN add-apt-repository ppa:deadsnakes/ppa
 
-RUN apt-get install graphviz -y
+# RUN apt-get install graphviz -y
 
 COPY . /pytorch
 

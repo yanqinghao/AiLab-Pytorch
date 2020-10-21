@@ -205,7 +205,7 @@ class PytorchModel(Model):
         return self
 
     def predict(self, labeled=False):
-        folder = "/pred_data/"
+        folder = "/tmp/pred_data/"
         pathtmp = ""
         class_names = list(self.model.class_to_idx.keys())
         self.model.eval()
@@ -250,7 +250,8 @@ class PytorchModel(Model):
                         if isinstance(pathtmp, str):
                             save_path = os.path.join(
                                 folder,
-                                os.path.split(paths[j])[0],
+                                os.path.join(
+                                    *os.path.split(paths[j])[0].split(storage.delimiter)[6:]),
                                 class_names[predicted[j]],
                                 os.path.split(paths[j])[1],
                             )
@@ -277,9 +278,9 @@ class PytorchModel(Model):
                     "file path or index": filepath,
                     "predictions": [class_names[i] for i in prediction.tolist()],
                 })
-            if isinstance(pathtmp, str):
-                pathlist = pathtmp.split(storage.delimiter)
-                folder = os.path.join(folder, *pathlist[:6])
+            # if isinstance(pathtmp, str):
+            #     pathlist = pathtmp.split(storage.delimiter)
+            #     folder = os.path.join(folder, *pathlist[:6])
         os.makedirs(folder, exist_ok=True)
         prediction_images = "/tmp/zip_res"
         os.makedirs(prediction_images, exist_ok=True)

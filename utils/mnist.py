@@ -9,7 +9,7 @@ import numpy as np
 import torch
 import codecs
 from suanpan.log import logger
-from torchvision.datasets.utils import download_url, makedir_exist_ok
+from torchvision.datasets.utils import download_url
 
 
 class MNIST(VisionDataset):
@@ -152,8 +152,8 @@ class MNIST(VisionDataset):
         if self._check_exists():
             return
 
-        makedir_exist_ok(self.raw_folder)
-        makedir_exist_ok(self.processed_folder)
+        os.makedirs(self.raw_folder, exist_ok=True)
+        os.makedirs(self.processed_folder, exist_ok=True)
 
         # download files
         for url in self.urls:
@@ -299,8 +299,8 @@ class EMNIST(MNIST):
         if self._check_exists():
             return
 
-        makedir_exist_ok(self.raw_folder)
-        makedir_exist_ok(self.processed_folder)
+        os.makedirs(self.raw_folder, exist_ok=True)
+        os.makedirs(self.processed_folder, exist_ok=True)
 
         # download files
         filename = self.url.rpartition("/")[2]

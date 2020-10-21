@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 # import hiddenlayer as hl
 # from graphviz import Digraph
 from suanpan.screenshots import screenshots
+from suanpan.storage import storage
 from suanpan.utils import image
 from suanpan.log import logger
 from utils.mnist import MNIST
@@ -39,7 +40,7 @@ def transImgSave(dataset, transform):
     pathtmp = ""
     for img, _, paths in dataset:
         if isinstance(paths, str):
-            save_path = os.path.join(folder, paths)
+            save_path = os.path.join(folder, os.path.join(*paths.split(storage.delimiter)[6:]))
         else:
             paths_img = "{}.png".format(paths)
             save_path = os.path.join(folder, paths_img)
@@ -49,16 +50,16 @@ def transImgSave(dataset, transform):
         transformed_img.save(save_path)
         if not pathtmp:
             pathtmp = paths
-    if isinstance(pathtmp, str):
-        pathlist = pathtmp.split("/")
-        output = os.path.join(folder, *pathlist[:6])
-    else:
-        output = "/out_data"
+    # if isinstance(pathtmp, str):
+    #     pathlist = pathtmp.split("/")
+    #     output = os.path.join(folder, *pathlist[:6])
+    # else:
+    #     output = "/out_data"
     transform_images = "/tmp/zip_res"
     os.makedirs(transform_images, exist_ok=True)
     zipf = zipfile.ZipFile(os.path.join(transform_images, 'transform-result.zip'), 'w',
                            zipfile.ZIP_DEFLATED)
-    zipdir(output, zipf)
+    zipdir(folder, zipf)
     zipf.close()
     return transform_images
 

@@ -1,25 +1,11 @@
 # coding=utf-8
 from __future__ import absolute_import, print_function
 
-import torch.nn as nn
-import torch.nn.functional as F
 import suanpan
 from suanpan.app.arguments import Int, Bool
 from suanpan.app import app
 from args import PytorchLayersModel
-from utils import getLayerName
-
-
-class BasicConv2d(nn.Module):
-    def __init__(self, in_channels, out_channels, **kwargs):
-        super(BasicConv2d, self).__init__()
-        self.conv = nn.Conv2d(in_channels, out_channels, **kwargs)
-        self.bn = nn.BatchNorm2d(out_channels, eps=0.001)
-
-    def forward(self, x):
-        x = self.conv(x)
-        x = self.bn(x)
-        return F.relu(x, inplace=True)
+from utils import getLayerName, net
 
 
 @app.input(PytorchLayersModel(key="inputModel"))
@@ -37,7 +23,7 @@ def SPBasicConv2d(context):
     setattr(
         model,
         name,
-        BasicConv2d(
+        net.BasicConv2d(
             args.inChannels,
             args.outChannels,
             bias=args.bias,

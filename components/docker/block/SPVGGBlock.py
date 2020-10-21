@@ -1,42 +1,11 @@
 # coding=utf-8
 from __future__ import absolute_import, print_function
 
-import torch.nn as nn
 import suanpan
 from suanpan.app.arguments import Int, Bool
 from suanpan.app import app
 from args import PytorchLayersModel
-from utils import getLayerName
-
-
-class VGGBlock(nn.Module):
-    def __init__(
-        self,
-        in_channels,
-        out_channels,
-        conv2d_ks,
-        padding,
-        maxpool_ks,
-        maxpool_stride,
-        batch_norm=True,
-        max_pool=True,
-    ):
-        super(VGGBlock, self).__init__()
-        layers = []
-        conv2d = nn.Conv2d(
-            in_channels, out_channels, kernel_size=conv2d_ks, padding=padding
-        )
-        if batch_norm:
-            layers += [conv2d, nn.BatchNorm2d(out_channels), nn.ReLU(inplace=True)]
-        else:
-            layers += [conv2d, nn.ReLU(inplace=True)]
-        if max_pool:
-            layers += [nn.MaxPool2d(kernel_size=maxpool_ks, stride=maxpool_stride)]
-        self.layer = nn.Sequential(*layers)
-
-    def forward(self, x):
-        x = self.layer(x)
-        return x
+from utils import getLayerName, net
 
 
 @app.input(PytorchLayersModel(key="inputModel"))
@@ -56,7 +25,7 @@ def SPVGGBlock(context):
     setattr(
         model,
         name,
-        VGGBlock(
+        net.VGGBlock(
             args.inChannel,
             args.outChannel,
             args.kernelSize,

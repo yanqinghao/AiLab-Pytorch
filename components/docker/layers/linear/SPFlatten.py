@@ -6,12 +6,7 @@ import torch.nn as nn
 import suanpan
 from suanpan.app import app
 from args import PytorchLayersModel
-from utils import getLayerName
-
-
-class Flatten(nn.Module):
-    def forward(self, x):
-        return x.view(x.size()[0], -1)
+from utils import getLayerName, net
 
 
 @app.input(PytorchLayersModel(key="inputModel"))
@@ -20,7 +15,7 @@ def SPFlatten(context):
     args = context.args
     model = args.inputModel
     name = getLayerName(model.layers, "Flatten")
-    setattr(model, name, Flatten())
+    setattr(model, name, net.Flatten())
     model.layers[name] = getattr(model, name)
     return model
 

@@ -44,7 +44,7 @@ def SPTorchTrain(context):
     else:
         logger.info("Use train_dataset as default val_dataset in training.")
         loader = {"train": trainLoader, "val": trainLoader}
-    outputModel.set_loader(loader)
+    outputModel.set_dataloader(loader)
     model.class_to_idx = trainLoader.dataset.class_to_idx
     model.vocab = (getattr(trainLoader.dataset, "get_vocab", None)() if getattr(
         trainLoader.dataset, "get_vocab", None) else None)
@@ -67,6 +67,7 @@ def SPTorchTrain(context):
         scheduler = getattr(torch.optim.lr_scheduler,
                             schedulerModel["name"])(optimizer, **schedulerModel["param"])
     else:
+        scheduler = None
         logger.info("No model lr_scheduler is used in training.")
     outputModel.set_scheduler(scheduler)
     # for epoch in range(num_epochs):

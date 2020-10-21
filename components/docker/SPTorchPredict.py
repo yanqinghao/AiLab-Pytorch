@@ -33,7 +33,7 @@ def SPTorchPredict(context):
         loader.dataset.set_ngrams(model.NGRAMS)
     if getattr(loader.dataset, "set_data", None):
         loader.dataset.set_data()
-    model.set_loader({"predict": loader})
+    model.set_dataloader({"predict": loader})
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model.set_device(device)
     # model.eval()

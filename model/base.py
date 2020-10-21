@@ -137,8 +137,8 @@ class PytorchModel(Model):
         self.device = device
         self.model = self.model.to(device)
 
-    def set_loader(self, loader):
-        self.loader = loader
+    def set_dataloader(self, dataloader):
+        self.dataloader = dataloader
 
     def set_optimizer(self, optimizer):
         self.optimizer = optimizer
@@ -161,8 +161,8 @@ class PytorchModel(Model):
                     self.model.eval()
                 running_loss = 0.0
                 running_corrects = 0
-                running_steps = len(self.loader[phase])
-                for i, (data, labels, paths) in enumerate(self.loader[phase]):
+                running_steps = len(self.dataloader[phase])
+                for i, (data, labels, paths) in enumerate(self.dataloader[phase]):
                     if i % 100 == 0:
                         logger.info("train {} batch".format(i))
                     if isinstance(data, torch.Tensor):
@@ -212,7 +212,7 @@ class PytorchModel(Model):
             prediction = torch.tensor([], dtype=torch.long)
             filepath = []
             filelabel = []
-            for data, labels, paths in self.loader["predict"]:
+            for data, labels, paths in self.dataloader["predict"]:
                 if isinstance(data, torch.Tensor):
                     data = data.to(self.device)
                 elif isinstance(data, dict):

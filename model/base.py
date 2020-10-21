@@ -3,6 +3,7 @@
 import os
 import copy
 import time
+import zipfile
 import torch
 import numpy as np
 import pandas as pd
@@ -254,9 +255,8 @@ class PytorchModel(Model):
                                 os.path.split(paths[j])[1],
                             )
                         else:
-                            save_path = os.path.join(
-                                folder, class_names[predicted[j]], "{}.png".format(paths[j])
-                            )
+                            save_path = os.path.join(folder, class_names[predicted[j]],
+                                                     "{}.png".format(paths[j]))
                         if isinstance(pathtmp, str):
                             img = Image.open(os.path.join("/sp_data/", paths[j]))
                         else:
@@ -267,23 +267,29 @@ class PytorchModel(Model):
                         img.save(save_path)
 
             if labeled:
-                df = pd.DataFrame(
-                    {
-                        "file path or index": filepath,
-                        "label": [class_names[i] for i in filelabel],
-                        "predictions": [class_names[i] for i in prediction.tolist()],
-                    }
-                )
+                df = pd.DataFrame({
+                    "file path or index": filepath,
+                    "label": [class_names[i] for i in filelabel],
+                    "predictions": [class_names[i] for i in prediction.tolist()],
+                })
             else:
-                df = pd.DataFrame(
-                    {
-                        "file path or index": filepath,
-                        "predictions": [class_names[i] for i in prediction.tolist()],
-                    }
-                )
+                df = pd.DataFrame({
+                    "file path or index": filepath,
+                    "predictions": [class_names[i] for i in prediction.tolist()],
+                })
             if isinstance(pathtmp, str):
                 pathlist = pathtmp.split(storage.delimiter)
                 folder = os.path.join(folder, *pathlist[:6])
         if not os.path.exists(folder):
             os.makedirs(folder)
-        return folder, df
+        prediction_images = "/tmp/zip_res"
+        zipf = zipfile.ZipFile(os.path.join(prediction_images, 'prediction-result.zip'), 'w',
+                               zipfile.ZIP_DEFLATED)
+        self.zipdir(folder, zipf)
+        zipf.close()
+        return prediction_images, df
+
+    def zipdir(path, ziph):
+        for root, dirs, files in os.walk(path):
+            for file in files:
+                ziph.write(os.path.join(root, file))

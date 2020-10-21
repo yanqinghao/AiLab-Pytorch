@@ -280,16 +280,16 @@ class PytorchModel(Model):
             if isinstance(pathtmp, str):
                 pathlist = pathtmp.split(storage.delimiter)
                 folder = os.path.join(folder, *pathlist[:6])
-        if not os.path.exists(folder):
-            os.makedirs(folder)
+        os.makedirs(folder, exist_ok=True)
         prediction_images = "/tmp/zip_res"
+        os.makedirs(prediction_images, exist_ok=True)
         zipf = zipfile.ZipFile(os.path.join(prediction_images, 'prediction-result.zip'), 'w',
                                zipfile.ZIP_DEFLATED)
         self.zipdir(folder, zipf)
         zipf.close()
         return prediction_images, df
 
-    def zipdir(path, ziph):
+    def zipdir(self, path, ziph):
         for root, dirs, files in os.walk(path):
             for file in files:
                 ziph.write(os.path.join(root, file))

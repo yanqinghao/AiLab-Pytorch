@@ -110,7 +110,7 @@ def SPTorchPredict(context):
     #         folder = os.path.join(folder, *pathlist[:6])
     # if not os.path.exists(folder):
     #     os.makedirs(folder)
-    folder, df = model.predict()
+    folder, df = model.predict(args.isLabeled)
     return folder, df
 
 

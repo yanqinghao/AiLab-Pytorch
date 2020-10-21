@@ -2,6 +2,7 @@
 from __future__ import absolute_import, print_function
 
 import os
+import zipfile
 import torch
 import numpy as np
 import matplotlib.pyplot as plt
@@ -27,6 +28,12 @@ def getLayerName(moduleList, match):
     return f"{match}_{max(layersName) + 1}" if layersName else f"{match}_0"
 
 
+def zipdir(path, ziph):
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            ziph.write(os.path.join(root, file))
+
+
 def transImgSave(dataset, transform):
     folder = "/out_data/"
     pathtmp = ""
@@ -42,13 +49,18 @@ def transImgSave(dataset, transform):
         transformed_img.save(save_path)
         if not pathtmp:
             pathtmp = paths
-    screenshots.save(np.asarray(transformed_img))
     if isinstance(pathtmp, str):
         pathlist = pathtmp.split("/")
         output = os.path.join(folder, *pathlist[:6])
     else:
         output = "/out_data"
-    return output
+    transform_images = "/tmp/zip_res"
+    os.makedirs(transform_images, exist_ok=True)
+    zipf = zipfile.ZipFile(os.path.join(transform_images, 'transform-result.zip'), 'w',
+                           zipfile.ZIP_DEFLATED)
+    zipdir(output, zipf)
+    zipf.close()
+    return transform_images
 
 
 def mkFolder():

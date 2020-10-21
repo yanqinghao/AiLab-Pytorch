@@ -13,10 +13,10 @@ from suanpan.log import logger
 from utils.mnist import MNIST
 from utils.folder import ImageFolder
 from utils.visual import CNNNNVisualization, CNNLayerVisualization
-from utils.visual import createScreenshots, getScreenshotPath
+# from utils.visual import createScreenshots, getScreenshotPath
 from utils.download import downloadPretrained, downloadTextDataset
 from utils.collate import generate_batch
-from arguments import SPMathOP
+from utils.net import SPMathOP
 
 
 def getLayerName(moduleList, match):
@@ -24,7 +24,7 @@ def getLayerName(moduleList, match):
     for name, module in moduleList.items():
         if match in name:
             layersName.append(int(name.replace(match + "_", "")))
-    return (f"{match}_{max(layersName) + 1}" if layersName else f"{match}_0"
+    return f"{match}_{max(layersName) + 1}" if layersName else f"{match}_0"
 
 
 def transImgSave(dataset, transform):

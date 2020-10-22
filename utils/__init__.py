@@ -37,9 +37,9 @@ def zipdir(path, ziph):
 
 def find_all_files(folder):
     files_ = []
-    l = [i for i in os.listdir(folder)]
-    for i in range(0, len(l)):
-        path = os.path.join(folder, list[i])
+    subpaths = [i for i in os.listdir(folder)]
+    for i in range(0, len(subpaths)):
+        path = os.path.join(folder, subpaths[i])
         if os.path.isdir(path):
             files_.extend(find_all_files(path))
         if not os.path.isdir(path):

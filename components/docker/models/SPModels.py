@@ -27,7 +27,10 @@ def SPModels(context):
     args = context.args
     model = args.inputModel
     if args.pretrained:
-        downloadPretrained(args.modelName, args.storageType)
+        try:
+            downloadPretrained(args.modelName, args.storageType)
+        except:
+            logger.info("Can not download from OSS, download the model weight from default url")
     layerName = getLayerName(model.layers, str(args.modelName).upper())
     pretrainedModel = (nn.Sequential(
         *list(getattr(models, args.modelName)(pretrained=args.pretrained).children())[:-1])

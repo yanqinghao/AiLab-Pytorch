@@ -7,7 +7,6 @@ import suanpan
 from suanpan.app import app
 from suanpan.docker.arguments import Folder, String
 from suanpan.storage import StorageProxy
-from suanpan import path
 
 
 @app.param(String(key="storageType", default="oss"))
@@ -27,10 +26,7 @@ def SPCatsvsDogs(context):
     trainDir = os.path.join(outpath, "train")
     valDir = os.path.join(outpath, "validation")
     testDir = os.path.join(outpath, "test")
-    path.copyFolder(trainDir, args.trainDir)
-    path.copyFolder(valDir, args.valDir)
-    path.copyFolder(testDir, args.testDir)
-    return args.trainDir, args.valDir, args.testDir
+    return trainDir, valDir, testDir
 
 
 if __name__ == "__main__":

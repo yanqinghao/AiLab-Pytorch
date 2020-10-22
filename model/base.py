@@ -15,7 +15,7 @@ from suanpan.error import AppError
 from suanpan.storage import storage
 from suanpan.log import logger
 from suanpan.model import Model
-from utils import io
+from utils import io, find_all_files
 
 MODEL_FILE = "model.layers"
 
@@ -282,13 +282,16 @@ class PytorchModel(Model):
             #     pathlist = pathtmp.split(storage.delimiter)
             #     folder = os.path.join(folder, *pathlist[:6])
         os.makedirs(folder, exist_ok=True)
-        prediction_images = "/tmp/zip_res"
-        os.makedirs(prediction_images, exist_ok=True)
-        zipf = zipfile.ZipFile(os.path.join(prediction_images, 'prediction-result.zip'), 'w',
-                               zipfile.ZIP_DEFLATED)
-        self.zipdir(folder, zipf)
-        zipf.close()
-        return prediction_images, df
+        if len(find_all_files(folder)) > 50:
+            prediction_images = "/tmp/zip_res"
+            os.makedirs(prediction_images, exist_ok=True)
+            zipf = zipfile.ZipFile(os.path.join(prediction_images, 'prediction-result.zip'), 'w',
+                                   zipfile.ZIP_DEFLATED)
+            self.zipdir(folder, zipf)
+            zipf.close()
+            return prediction_images, df
+        else:
+            return folder, df
 
     def zipdir(self, path, ziph):
         for root, dirs, files in os.walk(path):

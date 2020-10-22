@@ -35,6 +35,18 @@ def zipdir(path, ziph):
             ziph.write(os.path.join(root, file))
 
 
+def find_all_files(folder):
+    files_ = []
+    l = [i for i in os.listdir(folder)]
+    for i in range(0, len(l)):
+        path = os.path.join(folder, list[i])
+        if os.path.isdir(path):
+            files_.extend(find_all_files(path))
+        if not os.path.isdir(path):
+            files_.append(path)
+    return files_
+
+
 def transImgSave(dataset, transform):
     folder = "/out_data/"
     pathtmp = ""
@@ -55,13 +67,16 @@ def transImgSave(dataset, transform):
     #     output = os.path.join(folder, *pathlist[:6])
     # else:
     #     output = "/out_data"
-    transform_images = "/tmp/zip_res"
-    os.makedirs(transform_images, exist_ok=True)
-    zipf = zipfile.ZipFile(os.path.join(transform_images, 'transform-result.zip'), 'w',
-                           zipfile.ZIP_DEFLATED)
-    zipdir(folder, zipf)
-    zipf.close()
-    return transform_images
+    if len(find_all_files(folder)) > 50:
+        transform_images = "/tmp/zip_res"
+        os.makedirs(transform_images, exist_ok=True)
+        zipf = zipfile.ZipFile(os.path.join(transform_images, 'transform-result.zip'), 'w',
+                               zipfile.ZIP_DEFLATED)
+        zipdir(folder, zipf)
+        zipf.close()
+        return transform_images
+    else:
+        return folder
 
 
 def mkFolder():

@@ -5,18 +5,14 @@ import os
 import zipfile
 import suanpan
 from suanpan.app import app
-from suanpan.docker.arguments import Folder, String
-from suanpan.storage import StorageProxy
+from suanpan.docker.arguments import Folder
+from suanpan.storage import storage
 
 
-@app.param(String(key="storageType", default="oss"))
 @app.output(Folder(key="trainDir"))
 @app.output(Folder(key="valDir"))
 @app.output(Folder(key="testDir"))
 def SPCatsvsDogs(context):
-    args = context.args
-    storage = StorageProxy(None, None)
-    storage.setBackend(type=args.storageType)
     storage.download("common/data/cats_and_dogs/cats_and_dogs.zip", "cats_and_dogs.zip")
     outpath = "./cats_and_dogs"
     with open("cats_and_dogs.zip", "rb") as f:

@@ -1,5 +1,5 @@
 import os
-from suanpan.storage import StorageProxy
+from suanpan.storage import storage
 
 name_to_file = {
     "vgg11": "vgg11-bbd30ac9.pth",
@@ -35,16 +35,12 @@ URLS = {
 
 
 def downloadPretrained(name, storageType):
-    storage = StorageProxy(None, None)
-    storage.setBackend(type=storageType)
     file_path = "common/model/pytorch/{}".format(name_to_file[name])
     local_path = "/root/.cache/torch/checkpoints/{}".format(name_to_file[name])
     return storage.download(file_path, local_path)
 
 
 def downloadTextDataset(name, storageType, root=".data", overwrite=False):
-    storage = StorageProxy(None, None)
-    storage.setBackend(type=storageType)
     file_path = "common/data/sentiment_analysis/{}".format(URLS[name])
     local_path = os.path.join(root, URLS[name])
     return storage.download(file_path, local_path)
